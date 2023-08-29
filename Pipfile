@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+python_version = "3.11"
+
+[packages]
+pre-commit = "*"
+mypy = "*"
+black = "*"
+fastapi = "*"
+pytest = "*"
+httpx = "*"
+pydantic = "==1.10.12"
+commit-helper = "*"
