@@ -1,0 +1,79 @@
+[build-system]
+requires = [
+ "hatchling>=1.18.0",
+]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 80
+target-version = ["py311"]
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    |^temp|
+    |ignore
+  )/
+  | pyproject.toml
+)
+'''
+
+[project]
+name = "extrawest_ocpi"
+description = "Python implementation of Open Charge Point Interface (OCPI) protocol based on fastapi."
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+dynamic = ["version"]
+dependencies = [
+    "pydantic==1.10.12",
+    "fastapi==0.101.1",
+    "httpx==0.24.1",
+]
+
+[[project.authors]]
+name = "Oleksandr Bozbei"
+email = "oleksandr.bozbei@extrawest.com"
+
+[project.urls]
+Homepage = "https://github.com/extrawest/extrawest_ocpi"
+Repository = "https://github.com/extrawest/extrawest_ocpi"
+
+[tool.hatch.version]
+path = "py_ocpi/__init__.py"
+
+[tool.flake8]
+max-line-length = 88
+per-file-ignores = [
+    '__init__.py:F401',
+]
+count = true
+exclude = "tests/*"
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = "True"
+plugins = ["pydantic.mypy", ]
+exclude = ["venv", "tests"]
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+testpaths = "tests"
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = [
+  "." ,"ocpi"
+]
