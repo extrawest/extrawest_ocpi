@@ -1,3 +1,5 @@
+import copy
+
 from fastapi import APIRouter, Depends, Request
 
 from py_ocpi.core.utils import (
@@ -200,15 +202,13 @@ async def add_or_update_evse(
         version=VersionNumber.v_2_1_1,
     )
     old_location = adapter.location_adapter(old_data)
+    new_location = copy.deepcopy(old_location)
 
-    is_new_evse = True
     for old_evse in old_location.evses:
         if old_evse.uid == evse_uid:
-            is_new_evse = False
+            new_location.evses.remove(old_evse)
             break
-    new_location = old_location
-    if not is_new_evse:
-        new_location.evses.remove(old_evse)
+
     new_location.evses.append(evse)
 
     await crud.update(
@@ -259,14 +259,14 @@ async def add_or_update_connector(
     is_new_connector = True
     for old_evse in old_location.evses:
         if old_evse.uid == evse_uid:
-            for old_onnector in old_evse.connectors:
-                if old_onnector.id == connector_id:
+            for old_connector in old_evse.connectors:
+                if old_connector.id == connector_id:
                     is_new_connector = False
                     break
     new_location = old_location
     new_location.evses.remove(old_evse)
     if not is_new_connector:
-        old_evse.connectors.remove(old_onnector)
+        old_evse.connectors.remove(old_connector)
     new_evse = old_evse
     new_evse.connectors.append(connector)
     new_location.evses.append(new_evse)
@@ -418,10 +418,10 @@ async def partial_update_connector(
 
     for old_evse in old_location.evses:
         if old_evse.uid == evse_uid:
-            for old_onnector in old_evse.connectors:
-                if old_onnector.id == connector_id:
+            for old_connector in old_evse.connectors:
+                if old_connector.id == connector_id:
                     break
-    new_connector = old_onnector
+    new_connector = old_connector
     partially_update_attributes(
         new_connector, connector.dict(exclude_defaults=True, exclude_unset=True)
     )
