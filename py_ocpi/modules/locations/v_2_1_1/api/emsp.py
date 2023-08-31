@@ -255,36 +255,38 @@ async def add_or_update_connector(
         version=VersionNumber.v_2_1_1,
     )
     old_location = adapter.location_adapter(old_data)
+    new_location = copy.deepcopy(old_location)
 
-    is_new_connector = True
     for old_evse in old_location.evses:
         if old_evse.uid == evse_uid:
+            new_location.evses.remove(old_evse)
+            new_evse = copy.deepcopy(old_evse)
             for old_connector in old_evse.connectors:
                 if old_connector.id == connector_id:
-                    is_new_connector = False
+                    new_evse.connectors.remove(old_connector)
                     break
-    new_location = old_location
-    new_location.evses.remove(old_evse)
-    if not is_new_connector:
-        old_evse.connectors.remove(old_connector)
-    new_evse = old_evse
-    new_evse.connectors.append(connector)
-    new_location.evses.append(new_evse)
+            new_evse.connectors.append(connector)
+            new_location.evses.append(new_evse)
 
-    await crud.update(
-        ModuleID.locations,
-        RoleEnum.emsp,
-        new_location.dict(),
-        location_id,
-        auth_token=auth_token,
-        country_code=country_code,
-        party_id=party_id,
-        version=VersionNumber.v_2_1_1,
-    )
+            await crud.update(
+                ModuleID.locations,
+                RoleEnum.emsp,
+                new_location.dict(),
+                location_id,
+                auth_token=auth_token,
+                country_code=country_code,
+                party_id=party_id,
+                version=VersionNumber.v_2_1_1,
+            )
+
+            return OCPIResponse(
+                data=[connector.dict()],
+                **status.OCPI_1000_GENERIC_SUCESS_CODE,
+            )
 
     return OCPIResponse(
-        data=[connector.dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        data=[],
+        **status.OCPI_2001_INVALID_OR_MISSING_PARAMETERS,
     )
 
 
