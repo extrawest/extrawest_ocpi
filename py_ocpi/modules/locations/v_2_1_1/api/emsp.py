@@ -361,30 +361,35 @@ async def partial_update_evse(
         version=VersionNumber.v_2_1_1,
     )
     old_location = adapter.location_adapter(old_data)
+    new_location = copy.deepcopy(old_location)
 
     for old_evse in old_location.evses:
         if old_evse.uid == evse_uid:
-            break
-    new_evse = old_evse
-    partially_update_attributes(
-        new_evse, evse.dict(exclude_defaults=True, exclude_unset=True)
-    )
-    new_location = old_location
+            new_location.evses.remove(old_evse)
+            new_evse = copy.deepcopy(old_evse)
+            partially_update_attributes(
+                new_evse, evse.dict(exclude_defaults=True, exclude_unset=True)
+            )
+            new_location.evses.append(new_evse)
 
-    await crud.update(
-        ModuleID.locations,
-        RoleEnum.emsp,
-        new_location.dict(),
-        location_id,
-        auth_token=auth_token,
-        country_code=country_code,
-        party_id=party_id,
-        version=VersionNumber.v_2_1_1,
-    )
+            await crud.update(
+                ModuleID.locations,
+                RoleEnum.emsp,
+                new_location.dict(),
+                location_id,
+                auth_token=auth_token,
+                country_code=country_code,
+                party_id=party_id,
+                version=VersionNumber.v_2_1_1,
+            )
 
+            return OCPIResponse(
+                data=[new_evse.dict()],
+                **status.OCPI_1000_GENERIC_SUCESS_CODE,
+            )
     return OCPIResponse(
-        data=[new_evse.dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        data=[],
+        **status.OCPI_2001_INVALID_OR_MISSING_PARAMETERS,
     )
 
 
