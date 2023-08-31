@@ -312,8 +312,8 @@ async def partial_update_location(
         version=VersionNumber.v_2_1_1,
     )
     old_location = adapter.location_adapter(old_data)
+    new_location = copy.deepcopy(old_location)
 
-    new_location = old_location
     partially_update_attributes(
         new_location, location.dict(exclude_defaults=True, exclude_unset=True)
     )
