@@ -6,14 +6,17 @@ from fastapi import (
     status as fastapistatus,
 )
 
-from py_ocpi.modules.versions.schemas import VersionDetail
-from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.core.crud import Crud
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.dependencies import get_endpoints, get_crud
 from py_ocpi.core.utils import get_auth_token
 from py_ocpi.core.enums import Action, ModuleID
+
+from py_ocpi.modules.versions.v_2_2_1.schemas import (
+    VersionDetail,
+    VersionNumber,
+)
 
 router = APIRouter()
 

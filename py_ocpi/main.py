@@ -10,7 +10,7 @@ from starlette.middleware.base import (
 )
 from py_ocpi.core.endpoints import ENDPOINTS
 
-from py_ocpi.modules.versions.api import (
+from py_ocpi.modules.versions import (
     router as versions_router,
     versions_v_2_2_1_router,
 )
