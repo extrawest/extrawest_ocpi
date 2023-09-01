@@ -12,7 +12,7 @@ from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 
 def test_get_versions():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     client = TestClient(app)
