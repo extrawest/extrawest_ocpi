@@ -45,14 +45,12 @@ CDRS = Endpoint(
     ),
 )
 
-TARIFFS = (
-    Endpoint(
-        identifier=ModuleID.tariffs,
-        role=InterfaceRole.sender,
-        url=URL(
-            f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/cpo"
-            f"/{VersionNumber.v_2_2_1.value}/{ModuleID.tariffs.value}"
-        ),
+TARIFFS = Endpoint(
+    identifier=ModuleID.tariffs,
+    role=InterfaceRole.sender,
+    url=URL(
+        f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/cpo"
+        f"/{VersionNumber.v_2_2_1.value}/{ModuleID.tariffs.value}"
     ),
 )
 
