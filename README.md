@@ -150,6 +150,9 @@ Example: `http://127.0.0.1:8000/ocpi/docs/`
 ---
 
 - [in progress] Add support for OCPI v2.1.1
+  - What's done so far:
+    - Add version, credentials and locations module;
+    - Add support for initializing v2.1.1 (It's possible to initialize only one version for one project); 
 
 
 ## Related
