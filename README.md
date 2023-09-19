@@ -18,7 +18,7 @@ Python implementation of Open Charge Point Interface (OCPI) protocol based on fa
 
 ---
 
-Python >= 3.11.1
+Python >= 3.10
 
 
 ## Installation
