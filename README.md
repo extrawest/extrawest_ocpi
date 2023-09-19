@@ -92,24 +92,7 @@ class Crud:
 
 ```
 
-2) Implement all needed module adapters inside Adapter class.
-
-adapter.py
-```python
-from py_ocpi.modules.versions.enums import VersionNumber
-from py_ocpi.modules.locations.v_2_2_1.schemas import Location
-
-
-class Adapter:
-
-    @classmethod
-    def location_adapter(cls, data: dict, version: VersionNumber) -> Location:
-        """Return location."""
-        return Location(**data)
-
-```
-
-3) Initialize fastapi application
+2) Initialize fastapi application
 
 main.py
 ```python
@@ -117,7 +100,6 @@ from py_ocpi import get_application
 from py_ocpi.core.enums import RoleEnum
 from py_ocpi.modules.versions.enums import VersionNumber
 
-from adapter import Adapter
 from crud import Crud
 
 
@@ -125,12 +107,11 @@ app = get_application(
     version_numbers=[VersionNumber.v_2_2_1],
     roles=[RoleEnum.cpo],
     crud=Crud,
-    adapter=Adapter,
 )
 
 ```
 
-4) Run
+3) Run
 
 ```bash
   uvicorn main:app --reload
@@ -152,7 +133,9 @@ Example: `http://127.0.0.1:8000/ocpi/docs/`
 - [in progress] Add support for OCPI v2.1.1
   - What's done so far:
     - Add version, credentials and locations module;
-    - Add support for initializing v2.1.1 (It's possible to initialize only one version for one project); 
+    - Add support for initializing v2.1.1;
+    - It's now possible to initialize a few versions of ocpi for one project;
+    - Minimal required python version is 3.10;
 
 
 ## Related
