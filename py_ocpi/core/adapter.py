@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from py_ocpi.core.utils import get_module_model
 from py_ocpi.modules.versions.enums import VersionNumber
 
 
@@ -163,3 +164,75 @@ class Adapter(ABC):
             AuthorizationInfo: The object data in proper OCPI schema
         """
         pass
+
+
+class BaseAdapter(Adapter):
+    @classmethod
+    def location_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI Location schema"""
+        return get_module_model("Location", version.name)(**data)
+
+    @classmethod
+    def session_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI Session schema"""
+        return get_module_model("Session", version.name)(**data)
+
+    @classmethod
+    def charging_preference_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ChargingPreference schema"""
+        return get_module_model("ChargingPreference", version.name)(**data)
+
+    @classmethod
+    def credentials_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI Credential schema"""
+        return get_module_model("Credential", version.name)(**data)
+
+    @classmethod
+    def cdr_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI CDR schema"""
+        return get_module_model("CDR", version.name)(**data)
+
+    @classmethod
+    def tariff_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI Tariff schema"""
+        return get_module_model("Tariff", version.name)(**data)
+
+    @classmethod
+    def command_response_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI CommandResponse schema"""
+        return get_module_model("CommandResponse", version.name)(**data)
+
+    @classmethod
+    def command_result_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI CommandResult schema"""
+        return get_module_model("CommandResult", version.name)(**data)
+
+    @classmethod
+    def token_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI Token schema"""
+        return get_module_model("Token", version.name)(**data)
+
+    @classmethod
+    def authorization_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI AuthorizationInfo schema"""
+        return get_module_model("AuthorizationInfo", version.name)(**data)
