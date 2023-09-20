@@ -284,6 +284,7 @@ async def add_or_update_connector(
 
             response_data.append(connector.dict())
             response_status = status.OCPI_1000_GENERIC_SUCESS_CODE
+            break
 
     return OCPIResponse(data=response_data, **response_status)
 
@@ -388,6 +389,7 @@ async def partial_update_evse(
 
             response_data.append(new_evse.dict())
             response_status = status.OCPI_1000_GENERIC_SUCESS_CODE
+            break
 
     return OCPIResponse(data=response_data, **response_status)
 
