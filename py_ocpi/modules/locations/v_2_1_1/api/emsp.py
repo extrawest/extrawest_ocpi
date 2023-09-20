@@ -257,6 +257,9 @@ async def add_or_update_connector(
     old_location = adapter.location_adapter(old_data)
     new_location = copy.deepcopy(old_location)
 
+    response_data = []
+    response_status = status.OCPI_2001_INVALID_OR_MISSING_PARAMETERS
+
     for old_evse in old_location.evses:
         if old_evse.uid == evse_uid:
             new_location.evses.remove(old_evse)
@@ -279,15 +282,10 @@ async def add_or_update_connector(
                 version=VersionNumber.v_2_1_1,
             )
 
-            return OCPIResponse(
-                data=[connector.dict()],
-                **status.OCPI_1000_GENERIC_SUCESS_CODE,
-            )
+            response_data.append(connector.dict())
+            response_status = status.OCPI_1000_GENERIC_SUCESS_CODE
 
-    return OCPIResponse(
-        data=[],
-        **status.OCPI_2001_INVALID_OR_MISSING_PARAMETERS,
-    )
+    return OCPIResponse(data=response_data, **response_status)
 
 
 @router.patch(
@@ -365,6 +363,9 @@ async def partial_update_evse(
     old_location = adapter.location_adapter(old_data)
     new_location = copy.deepcopy(old_location)
 
+    response_data = []
+    response_status = status.OCPI_2001_INVALID_OR_MISSING_PARAMETERS
+
     for old_evse in old_location.evses:
         if old_evse.uid == evse_uid:
             new_location.evses.remove(old_evse)
@@ -385,14 +386,10 @@ async def partial_update_evse(
                 version=VersionNumber.v_2_1_1,
             )
 
-            return OCPIResponse(
-                data=[new_evse.dict()],
-                **status.OCPI_1000_GENERIC_SUCESS_CODE,
-            )
-    return OCPIResponse(
-        data=[],
-        **status.OCPI_2001_INVALID_OR_MISSING_PARAMETERS,
-    )
+            response_data.append(new_evse.dict())
+            response_status = status.OCPI_1000_GENERIC_SUCESS_CODE
+
+    return OCPIResponse(data=response_data, **response_status)
 
 
 @router.patch(
