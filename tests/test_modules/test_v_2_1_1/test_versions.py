@@ -12,7 +12,10 @@ from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 
 def test_get_versions():
     app = get_application(
-        [VersionNumber.v_2_1_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_1_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[],
     )
 
     client = TestClient(app)
@@ -42,7 +45,10 @@ def test_get_versions_v_2_1_1():
             return {}
 
     app = get_application(
-        [VersionNumber.v_2_1_1], [enums.RoleEnum.cpo], MockCrud, Adapter
+        version_numbers=[VersionNumber.v_2_1_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=MockCrud,
+        modules=[],
     )
 
     client = TestClient(app)
@@ -71,7 +77,10 @@ def test_get_versions_v_2_1_1_requires_auth():
             return None
 
     app = get_application(
-        [VersionNumber.v_2_1_1], [enums.RoleEnum.cpo], MockCrud, Adapter
+        version_numbers=[VersionNumber.v_2_1_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=MockCrud,
+        modules=[],
     )
 
     client = TestClient(app)

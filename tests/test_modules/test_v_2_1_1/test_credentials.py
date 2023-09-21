@@ -83,7 +83,10 @@ class Adapter:
 
 def test_cpo_get_credentials_v_2_1_1():
     app = get_application(
-        [VersionNumber.v_2_1_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_1_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.credentials_and_registration],
     )
     token = str(uuid4())
     header = {"Authorization": f"Token {token}"}
@@ -113,7 +116,10 @@ async def test_cpo_post_credentials_v_2_1_1(async_client):
             return {}
 
     app_1 = get_application(
-        [VersionNumber.v_2_1_1], [enums.RoleEnum.emsp], MockCrud, Adapter
+        version_numbers=[VersionNumber.v_2_1_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=MockCrud,
+        modules=[enums.ModuleID.credentials_and_registration],
     )
 
     def override_get_versions():
@@ -131,7 +137,10 @@ async def test_cpo_post_credentials_v_2_1_1(async_client):
     async_client.return_value = AsyncClient(app=app_1, base_url="http://test")
 
     app_2 = get_application(
-        [VersionNumber.v_2_1_1], [enums.RoleEnum.cpo], MockCrud, Adapter
+        version_numbers=[VersionNumber.v_2_1_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=MockCrud,
+        modules=[enums.ModuleID.credentials_and_registration],
     )
 
     async with AsyncClient(app=app_2, base_url="http://test") as client:
