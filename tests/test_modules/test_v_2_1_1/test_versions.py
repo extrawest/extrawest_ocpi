@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 from py_ocpi.main import get_application
 from py_ocpi.core import enums
 from py_ocpi.core.crud import Crud
-from py_ocpi.core.adapter import Adapter
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 

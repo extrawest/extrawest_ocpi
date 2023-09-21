@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 from py_ocpi.main import get_application
 from py_ocpi.core import enums
 from py_ocpi.core.config import settings
-from py_ocpi.modules.locations.v_2_1_1.schemas import Location
 from py_ocpi.modules.versions.enums import VersionNumber
 
 

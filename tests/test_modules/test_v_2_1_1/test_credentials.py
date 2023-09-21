@@ -12,7 +12,6 @@ from py_ocpi.core import enums
 from py_ocpi.core.data_types import URL
 from py_ocpi.core.config import settings
 from py_ocpi.core.dependencies import get_versions
-from py_ocpi.modules.credentials.v_2_1_1.schemas import Credentials
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.versions.schemas import Version
 
