@@ -82,10 +82,10 @@ def decode_string_base64(input: str) -> str:
     return input_bytes.decode("utf-8")
 
 
-def get_module_model(class_name, version_name: str) -> Any:
-    module_name = f"py_ocpi.modules.locations.{version_name}.schemas"
+def get_module_model(class_name, module_name: str, version_name: str) -> Any:
+    module_dir = f"py_ocpi.modules.{module_name}.{version_name}.schemas"
     try:
-        module = importlib.import_module(module_name)
+        module = importlib.import_module(module_dir)
         return getattr(module, class_name)
     except ImportError:
         raise NotImplementedError(
