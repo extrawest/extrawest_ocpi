@@ -197,10 +197,11 @@ def test_push(async_client):
     adapter.location_adapter.return_value = Location(**LOCATIONS[0])
 
     app = get_application(
-        [VersionNumber.v_2_2_1],
-        [enums.RoleEnum.cpo],
-        crud,
-        adapter,
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=crud,
+        adapter=adapter,
+        modules=[],
         http_push=True,
     )
 
