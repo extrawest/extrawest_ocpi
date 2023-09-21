@@ -2,7 +2,7 @@ from py_ocpi.core.dependencies import get_versions
 from py_ocpi.core.endpoints import ENDPOINTS
 from py_ocpi.core.enums import RoleEnum
 from py_ocpi.modules.versions.enums import VersionNumber
-from py_ocpi.modules.versions.schemas import VersionDetail
+from py_ocpi.modules.versions.v_2_2_1.schemas import VersionDetail
 
 fake_endpoints_data = {
     "data": [

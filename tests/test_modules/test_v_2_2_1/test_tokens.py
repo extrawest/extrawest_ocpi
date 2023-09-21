@@ -116,7 +116,7 @@ class Adapter:
 
 def test_cpo_get_token_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     client = TestClient(app)
@@ -132,7 +132,7 @@ def test_cpo_get_token_v_2_2_1():
 
 def test_cpo_add_token_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     client = TestClient(app)
@@ -149,7 +149,7 @@ def test_cpo_add_token_v_2_2_1():
 
 def test_cpo_update_token_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     client = TestClient(app)
@@ -169,7 +169,7 @@ def test_cpo_update_token_v_2_2_1():
 
 def test_emsp_get_tokens_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.emsp], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
     )
 
     client = TestClient(app)
@@ -182,7 +182,7 @@ def test_emsp_get_tokens_v_2_2_1():
 
 def test_emsp_authorize_token_success_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.emsp], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
     )
 
     client = TestClient(app)
@@ -211,7 +211,7 @@ def test_emsp_authorize_token_unknown_v_2_2_1():
     Crud.get = get
 
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.emsp], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
     )
 
     client = TestClient(app)
@@ -243,7 +243,7 @@ def test_emsp_authorize_token_missing_info_v_2_2_1():
     Crud.do = do
 
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.emsp], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
     )
 
     client = TestClient(app)

@@ -10,10 +10,7 @@ from starlette.middleware.base import (
 )
 from py_ocpi.core.endpoints import ENDPOINTS
 
-from py_ocpi.modules.versions.api import (
-    router as versions_router,
-    versions_v_2_2_1_router,
-)
+from py_ocpi.modules.versions import router as versions_router
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.versions.schemas import Version
 from py_ocpi.core.dependencies import (
@@ -32,7 +29,7 @@ from py_ocpi.core.push import (
     http_router as http_push_router,
     websocket_router as websocket_push_router,
 )
-from py_ocpi.routers import v_2_2_1_cpo_router, v_2_2_1_emsp_router
+from py_ocpi.core.routers import ROUTERS
 
 
 class ExceptionHandlerMiddleware(BaseHTTPMiddleware):
@@ -98,45 +95,46 @@ def get_application(
     versions = []
     version_endpoints: dict[str, list] = {}
 
-    if VersionNumber.v_2_2_1 in version_numbers:
+    if not version_numbers or len(version_numbers) > 1:
+        raise ValueError("Should be exactly one version.")
+
+    version = version_numbers[0]
+    mapped_version = ROUTERS.get(version)
+    if not mapped_version:
+        raise ValueError("Version isn't supported yet.")
+
+    _app.include_router(
+        mapped_version["version_router"],
+        prefix=f"/{settings.OCPI_PREFIX}",
+    )
+
+    versions.append(
+        Version(
+            version=version,
+            url=URL(
+                f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
+                f"{version.value}/details"
+            ),
+        ).dict(),
+    )
+
+    version_endpoints[version] = []
+
+    if RoleEnum.cpo in roles:
         _app.include_router(
-            versions_v_2_2_1_router,
-            prefix=f"/{settings.OCPI_PREFIX}",
+            mapped_version["cpo_router"],
+            prefix=f"/{settings.OCPI_PREFIX}/cpo/{version.value}",
+            tags=["CPO"],
         )
+        version_endpoints[version] += ENDPOINTS[version][RoleEnum.cpo]
 
-        versions.append(
-            Version(
-                version=VersionNumber.v_2_2_1,
-                url=URL(
-                    f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
-                    f"{VersionNumber.v_2_2_1.value}/details"
-                ),
-            ).dict(),
+    if RoleEnum.emsp in roles:
+        _app.include_router(
+            mapped_version["emsp_router"],
+            prefix=f"/{settings.OCPI_PREFIX}/emsp/{version.value}",
+            tags=["EMSP"],
         )
-
-        version_endpoints[VersionNumber.v_2_2_1] = []
-
-        if RoleEnum.cpo in roles:
-            _app.include_router(
-                v_2_2_1_cpo_router,
-                prefix=f"/{settings.OCPI_PREFIX}/cpo/"
-                f"{VersionNumber.v_2_2_1.value}",
-                tags=["CPO"],
-            )
-            version_endpoints[VersionNumber.v_2_2_1] += ENDPOINTS[
-                VersionNumber.v_2_2_1
-            ][RoleEnum.cpo]
-
-        if RoleEnum.emsp in roles:
-            _app.include_router(
-                v_2_2_1_emsp_router,
-                prefix=f"/{settings.OCPI_PREFIX}/emsp/"
-                f"{VersionNumber.v_2_2_1.value}",
-                tags=["EMSP"],
-            )
-            version_endpoints[VersionNumber.v_2_2_1] += ENDPOINTS[
-                VersionNumber.v_2_2_1
-            ][RoleEnum.emsp]
+        version_endpoints[version] += ENDPOINTS[version][RoleEnum.emsp]
 
     def override_get_crud():
         return crud

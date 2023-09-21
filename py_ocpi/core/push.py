@@ -10,7 +10,7 @@ from py_ocpi.core.utils import encode_string_base64, get_auth_token
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.config import settings
-from py_ocpi.modules.versions.enums import InterfaceRole, VersionNumber
+from py_ocpi.modules.versions.v_2_2_1.enums import InterfaceRole, VersionNumber
 
 
 def client_url(module_id: ModuleID, object_id: str, base_url: str) -> str:
