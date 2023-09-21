@@ -7,10 +7,6 @@ from py_ocpi.core import enums
 from py_ocpi.core.config import settings
 from py_ocpi.modules.cdrs.v_2_2_1.schemas import TokenType
 from py_ocpi.modules.cdrs.v_2_2_1.enums import AuthMethod, CdrDimensionType
-from py_ocpi.modules.sessions.v_2_2_1.schemas import (
-    Session,
-    ChargingPreferences,
-)
 from py_ocpi.modules.sessions.v_2_2_1.enums import SessionStatus, ProfileType
 from py_ocpi.modules.versions.enums import VersionNumber
 
@@ -95,23 +91,12 @@ class Crud:
         return SESSIONS, 1, True
 
 
-class Adapter:
-    @classmethod
-    def session_adapter(
-        cls, data, version: VersionNumber = VersionNumber.latest
-    ) -> Session:
-        return Session(**data)
-
-    @classmethod
-    def charging_preference_adapter(
-        cls, data, version: VersionNumber = VersionNumber.latest
-    ) -> Session:
-        return ChargingPreferences(**data)
-
-
 def test_cpo_get_sessions_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.sessions],
     )
 
     client = TestClient(app)
@@ -124,7 +109,10 @@ def test_cpo_get_sessions_v_2_2_1():
 
 def test_cpo_set_charging_preference_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.sessions],
     )
 
     client = TestClient(app)
@@ -143,7 +131,10 @@ def test_cpo_set_charging_preference_v_2_2_1():
 
 def test_emsp_get_session_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.sessions],
     )
 
     client = TestClient(app)
@@ -158,7 +149,10 @@ def test_emsp_get_session_v_2_2_1():
 
 def test_emsp_add_session_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.sessions],
     )
 
     client = TestClient(app)
@@ -174,7 +168,10 @@ def test_emsp_add_session_v_2_2_1():
 
 def test_emsp_patch_session_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.sessions],
     )
 
     patch_data = {"id": str(uuid4())}

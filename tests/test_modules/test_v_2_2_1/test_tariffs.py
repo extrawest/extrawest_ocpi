@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 from py_ocpi.main import get_application
 from py_ocpi.core import enums
 from py_ocpi.core.config import settings
-from py_ocpi.modules.tariffs.v_2_2_1.schemas import Tariff
 from py_ocpi.modules.versions.enums import VersionNumber
 
 TARIFFS = [
@@ -75,17 +74,12 @@ class Crud:
         return TARIFFS, 1, True
 
 
-class Adapter:
-    @classmethod
-    def tariff_adapter(
-        cls, data, version: VersionNumber = VersionNumber.latest
-    ) -> Tariff:
-        return Tariff(**data)
-
-
 def test_cpo_get_tariffs_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.tariffs],
     )
 
     client = TestClient(app)
@@ -98,7 +92,10 @@ def test_cpo_get_tariffs_v_2_2_1():
 
 def test_emsp_get_tariff_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.tariffs],
     )
 
     client = TestClient(app)
@@ -113,7 +110,10 @@ def test_emsp_get_tariff_v_2_2_1():
 
 def test_emsp_add_tariff_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.tariffs],
     )
 
     client = TestClient(app)
@@ -129,7 +129,10 @@ def test_emsp_add_tariff_v_2_2_1():
 
 def test_emsp_delete_tariff_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.tariffs],
     )
 
     client = TestClient(app)

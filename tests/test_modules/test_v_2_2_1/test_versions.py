@@ -5,14 +5,16 @@ from fastapi.testclient import TestClient
 from py_ocpi.main import get_application
 from py_ocpi.core import enums
 from py_ocpi.core.crud import Crud
-from py_ocpi.core.adapter import Adapter
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 
 
 def test_get_versions():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[],
     )
 
     client = TestClient(app)
@@ -42,7 +44,10 @@ def test_get_versions_v_2_2_1():
             return {}
 
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], MockCrud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=MockCrud,
+        modules=[],
     )
 
     client = TestClient(app)
@@ -71,7 +76,10 @@ def test_get_versions_v_2_2_1_requires_auth():
             return None
 
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], MockCrud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=MockCrud,
+        modules=[],
     )
 
     client = TestClient(app)

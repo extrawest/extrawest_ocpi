@@ -195,7 +195,7 @@ class BaseAdapter(Adapter):
     ):
         """Adapt the data to OCPI ChargingPreference schema"""
         return get_module_model(
-            class_name="ChargingPreference",
+            class_name="ChargingPreferences",
             module_name="sessions",
             version_name=version.name,
         )(**data)
