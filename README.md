@@ -97,15 +97,16 @@ class Crud:
 main.py
 ```python
 from py_ocpi import get_application
-from py_ocpi.core.enums import RoleEnum
+from py_ocpi.core.enums import RoleEnum, ModuleID
 from py_ocpi.modules.versions.enums import VersionNumber
 
 from crud import Crud
 
 
 app = get_application(
-    version_numbers=[VersionNumber.v_2_2_1],
+    version_numbers=[VersionNumber.v_2_1_1, VersionNumber.v_2_2_1],
     roles=[RoleEnum.cpo],
+    modules=[ModuleID.locations],
     crud=Crud,
 )
 
