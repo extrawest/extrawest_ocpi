@@ -209,14 +209,6 @@ class Crud:
         return LOCATIONS, 1, True
 
 
-class Adapter:
-    @classmethod
-    def location_adapter(
-        cls, data, version: VersionNumber = VersionNumber.v_2_1_1
-    ) -> Location:
-        return Location(**data)
-
-
 def test_cpo_get_locations_v_2_1_1():
     app = get_application(
         version_numbers=[VersionNumber.v_2_1_1],

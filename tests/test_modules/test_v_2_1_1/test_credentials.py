@@ -73,14 +73,6 @@ class Crud:
         return None
 
 
-class Adapter:
-    @classmethod
-    def credentials_adapter(
-        cls, data, version: VersionNumber = VersionNumber.v_2_1_1
-    ) -> Credentials:
-        return Credentials(**data)
-
-
 def test_cpo_get_credentials_v_2_1_1():
     app = get_application(
         version_numbers=[VersionNumber.v_2_1_1],
