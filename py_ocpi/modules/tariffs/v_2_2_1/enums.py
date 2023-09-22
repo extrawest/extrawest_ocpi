@@ -1,21 +1,7 @@
-from enum import Enum
+from py_ocpi.modules.tariffs.enums import *  # noqa
 
 
-class DayOfWeek(str, Enum):
-    """
-    https://github.com/ocpi/ocpi/blob/2.2.1/mod_tariffs.asciidoc#141-dayofweek-enum
-    """
-
-    monday = "MONDAY"
-    tuesday = "TUESDAY"
-    wednesday = "WEDNESDAY"
-    thursday = "THURSDAY"
-    friday = "FRIDAY"
-    saturday = "SATURDAY"
-    sunday = "SUNDAY"
-
-
-class ReservationRestrictionType(str, Enum):
+class ReservationRestrictionType(str, Enum):  # noqa
     """
     https://github.com/ocpi/ocpi/blob/2.2.1/mod_tariffs.asciidoc#143-reservationrestrictiontype-enum
     """
@@ -28,7 +14,7 @@ class ReservationRestrictionType(str, Enum):
     reservation_expires = "RESERVATION_EXPIRES"
 
 
-class TariffDimensionType(str, Enum):
+class TariffDimensionType(str, Enum):  # noqa
     """
     https://github.com/ocpi/ocpi/blob/2.2.1/mod_tariffs.asciidoc#145-tariffdimensiontype-enum
     """
@@ -45,7 +31,7 @@ class TariffDimensionType(str, Enum):
     time = "TIME"
 
 
-class TariffType(str, Enum):
+class TariffType(str, Enum):  # noqa
     """
     https://github.com/ocpi/ocpi/blob/2.2.1/mod_tariffs.asciidoc#147-tarifftype-enum
     """
