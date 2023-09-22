@@ -16,7 +16,7 @@ Make sure to run after installation:
   pyenv update
 ```
 
-python >= 3.11.1
+python >= 3.10
 ```bash
   pyenv install 3.11.1
 ```

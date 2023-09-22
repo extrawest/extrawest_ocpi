@@ -34,6 +34,10 @@ def get_endpoints():
     return {}
 
 
+def get_modules():
+    return []
+
+
 def pagination_filters(
     date_from: datetime = Query(default=None),
     date_to: datetime = Query(default=None),

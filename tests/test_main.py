@@ -11,7 +11,11 @@ def test_get_application():
         ...
 
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[],
+        adapter=Adapter,
     )
 
     assert app.url_path_for("get_versions") == "/ocpi/versions"

@@ -51,7 +51,7 @@ async def get_location(
         version=VersionNumber.v_2_1_1,
     )
     return OCPIResponse(
-        data=[adapter.location_adapter(data).dict()],
+        data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
     )
 
@@ -80,7 +80,7 @@ async def get_evse(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data)
+    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
     for evse in location.evses:
         if evse.uid == evse_uid:
             return OCPIResponse(
@@ -114,7 +114,7 @@ async def get_connector(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data)
+    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
     for evse in location.evses:
         if evse.uid == evse_uid:
             for connector in evse.connectors:
@@ -171,7 +171,7 @@ async def add_or_update_location(
         )
 
     return OCPIResponse(
-        data=[adapter.location_adapter(data).dict()],
+        data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
     )
 
@@ -201,7 +201,7 @@ async def add_or_update_evse(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data)
+    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
     new_location = copy.deepcopy(old_location)
 
     for old_evse in old_location.evses:
@@ -254,7 +254,7 @@ async def add_or_update_connector(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data)
+    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
     new_location = copy.deepcopy(old_location)
 
     response_data = []
@@ -312,7 +312,7 @@ async def partial_update_location(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data)
+    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
     new_location = copy.deepcopy(old_location)
 
     partially_update_attributes(
@@ -331,7 +331,7 @@ async def partial_update_location(
     )
 
     return OCPIResponse(
-        data=[adapter.location_adapter(data).dict()],
+        data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
     )
 
@@ -361,7 +361,7 @@ async def partial_update_evse(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data)
+    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
     new_location = copy.deepcopy(old_location)
 
     response_data = []
@@ -420,7 +420,7 @@ async def partial_update_connector(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data)
+    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
 
     for old_evse in old_location.evses:
         if old_evse.uid == evse_uid:

@@ -1,6 +1,7 @@
+import importlib
 import urllib
 import base64
-from typing import Union
+from typing import Union, Any
 
 from fastapi import Response, Request
 from pydantic import BaseModel
@@ -79,3 +80,14 @@ def encode_string_base64(input: str) -> str:
 def decode_string_base64(input: str) -> str:
     input_bytes = base64.b64decode(bytes(input, "utf-8"))
     return input_bytes.decode("utf-8")
+
+
+def get_module_model(class_name, module_name: str, version_name: str) -> Any:
+    module_dir = f"py_ocpi.modules.{module_name}.{version_name}.schemas"
+    try:
+        module = importlib.import_module(module_dir)
+        return getattr(module, class_name)
+    except ImportError:
+        raise NotImplementedError(
+            f"{class_name} schema for version {version_name} not found.",
+        )

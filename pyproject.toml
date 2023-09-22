@@ -30,7 +30,7 @@ exclude = '''
 [project]
 name = "extrawest_ocpi"
 description = "Python implementation of Open Charge Point Interface (OCPI) protocol based on fastapi."
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
 dynamic = ["version"]
@@ -60,7 +60,7 @@ count = true
 exclude = "tests/*"
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.10"
 ignore_missing_imports = "True"
 plugins = ["pydantic.mypy", ]
 exclude = ["venv", "tests"]

@@ -13,9 +13,6 @@ from py_ocpi.core.data_types import URL
 from py_ocpi.core.config import settings
 from py_ocpi.core.dependencies import get_versions
 from py_ocpi.core.utils import encode_string_base64
-from py_ocpi.modules.credentials.v_2_2_1.schemas import Credentials
-from py_ocpi.modules.tokens.v_2_2_1.enums import AllowedType
-from py_ocpi.modules.tokens.v_2_2_1.schemas import AuthorizationInfo, Token
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.versions.schemas import Version
 
@@ -86,17 +83,12 @@ class Crud:
         return None
 
 
-class Adapter:
-    @classmethod
-    def credentials_adapter(
-        cls, data, version: VersionNumber = VersionNumber.latest
-    ) -> Credentials:
-        return Credentials(**data)
-
-
 def test_cpo_get_credentials_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.credentials_and_registration],
     )
     token = str(uuid4())
     header = {"Authorization": f"Token {encode_string_base64(token)}"}
@@ -126,7 +118,10 @@ async def test_cpo_post_credentials_v_2_2_1(async_client):
             return {}
 
     app_1 = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], MockCrud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=MockCrud,
+        modules=[enums.ModuleID.credentials_and_registration],
     )
 
     def override_get_versions():
@@ -144,7 +139,10 @@ async def test_cpo_post_credentials_v_2_2_1(async_client):
     async_client.return_value = AsyncClient(app=app_1, base_url="http://test")
 
     app_2 = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], MockCrud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=MockCrud,
+        modules=[enums.ModuleID.credentials_and_registration],
     )
 
     async with AsyncClient(app=app_2, base_url="http://test") as client:

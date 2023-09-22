@@ -100,23 +100,12 @@ class Crud:
         return TOKENS[0]
 
 
-class Adapter:
-    @classmethod
-    def token_adapter(
-        cls, data, version: VersionNumber = VersionNumber.latest
-    ) -> Token:
-        return Token(**dict(data))
-
-    @classmethod
-    def authorization_adapter(
-        cls, data: dict, version: VersionNumber = VersionNumber.latest
-    ):
-        return AuthorizationInfo(**data)
-
-
 def test_cpo_get_token_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.tokens],
     )
 
     client = TestClient(app)
@@ -132,7 +121,10 @@ def test_cpo_get_token_v_2_2_1():
 
 def test_cpo_add_token_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.tokens],
     )
 
     client = TestClient(app)
@@ -149,7 +141,10 @@ def test_cpo_add_token_v_2_2_1():
 
 def test_cpo_update_token_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.tokens],
     )
 
     client = TestClient(app)
@@ -169,7 +164,10 @@ def test_cpo_update_token_v_2_2_1():
 
 def test_emsp_get_tokens_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.tokens],
     )
 
     client = TestClient(app)
@@ -182,7 +180,10 @@ def test_emsp_get_tokens_v_2_2_1():
 
 def test_emsp_authorize_token_success_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.tokens],
     )
 
     client = TestClient(app)
@@ -211,7 +212,10 @@ def test_emsp_authorize_token_unknown_v_2_2_1():
     Crud.get = get
 
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.tokens],
     )
 
     client = TestClient(app)
@@ -243,7 +247,10 @@ def test_emsp_authorize_token_missing_info_v_2_2_1():
     Crud.do = do
 
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.tokens],
     )
 
     client = TestClient(app)
