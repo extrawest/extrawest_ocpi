@@ -12,7 +12,7 @@ from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 
 def test_get_versions():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_1_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     client = TestClient(app)
@@ -22,7 +22,7 @@ def test_get_versions():
     assert len(response.json()["data"]) == 1
 
 
-def test_get_versions_v_2_2_1():
+def test_get_versions_v_2_1_1():
     token = None
 
     class MockCrud(Crud):
@@ -42,20 +42,20 @@ def test_get_versions_v_2_2_1():
             return {}
 
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], MockCrud, Adapter
+        [VersionNumber.v_2_1_1], [enums.RoleEnum.cpo], MockCrud, Adapter
     )
 
     client = TestClient(app)
     response = client.get(
-        "/ocpi/2.2.1/details", headers={"authorization": "Token Zm9v"}
+        "/ocpi/2.1.1/details", headers={"authorization": "Token Zm9v"}
     )
 
     assert response.status_code == 200
-    assert response.json()["data"]["version"] == "2.2.1"
-    assert token == "foo"
+    assert response.json()["data"]["version"] == "2.1.1"
+    assert token == "Zm9v"
 
 
-def test_get_versions_v_2_2_1_requires_auth():
+def test_get_versions_v_2_1_1_requires_auth():
     class MockCrud(Crud):
         @classmethod
         async def do(
@@ -71,10 +71,10 @@ def test_get_versions_v_2_2_1_requires_auth():
             return None
 
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], MockCrud, Adapter
+        [VersionNumber.v_2_1_1], [enums.RoleEnum.cpo], MockCrud, Adapter
     )
 
     client = TestClient(app)
-    response = client.get("/ocpi/2.2.1/details")
+    response = client.get("/ocpi/2.1.1/details")
 
     assert response.status_code == 401

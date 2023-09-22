@@ -76,7 +76,7 @@ class Adapter:
 
 def test_cpo_receive_command_start_session_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     data = {
@@ -107,7 +107,7 @@ def test_cpo_receive_command_start_session_v_2_2_1():
 
 def test_cpo_receive_command_stop_session_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     data = {
@@ -127,7 +127,7 @@ def test_cpo_receive_command_stop_session_v_2_2_1():
 
 def test_cpo_receive_command_reserve_now_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     data = {
@@ -174,7 +174,7 @@ def test_cpo_receive_command_reserve_now_unknown_location_v_2_2_1():
     Crud.get = get
 
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.cpo], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
     )
 
     data = {
@@ -211,7 +211,7 @@ def test_cpo_receive_command_reserve_now_unknown_location_v_2_2_1():
 
 def test_emsp_receive_command_result_v_2_2_1():
     app = get_application(
-        VersionNumber.v_2_2_1, [enums.RoleEnum.emsp], Crud, Adapter
+        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
     )
 
     client = TestClient(app)
