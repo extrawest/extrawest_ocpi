@@ -109,7 +109,7 @@ def test_emsp_get_cdr_v_2_1_1():
     assert response.json()["data"][0]["id"] == CDRS[0]["id"]
 
 
-def test_emsp_add_cdr_v_1_1():
+def test_emsp_add_cdr_v_2_1_1():
     app = get_application(
         version_numbers=[VersionNumber.v_2_1_1],
         roles=[enums.RoleEnum.emsp],
