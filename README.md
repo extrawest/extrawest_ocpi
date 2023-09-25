@@ -137,6 +137,7 @@ Example: `http://127.0.0.1:8000/ocpi/docs/`
     - Add support for initializing v2.1.1;
     - It's now possible to initialize a few versions of ocpi for one project;
     - Minimal required python version is 3.10;
+    - Add cdrs module;
 
 
 ## Related
