@@ -27,8 +27,14 @@ CDRS = Endpoint(
     url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}"),
 )
 
+TARIFFS = Endpoint(
+    identifier=ModuleID.tariffs,
+    url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}"),
+)
+
 ENDPOINTS_LIST = [
     CREDENTIALS_AND_REGISTRATION,
     LOCATIONS,
     CDRS,
+    TARIFFS,
 ]
