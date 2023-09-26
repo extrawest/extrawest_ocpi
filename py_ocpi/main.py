@@ -129,9 +129,8 @@ def get_application(
                         prefix=f"/{settings.OCPI_PREFIX}/cpo/{version.value}",
                         tags=[f"CPO {version}"],
                     )
-                    version_endpoints[version] += ENDPOINTS[version][
-                        RoleEnum.cpo
-                    ]
+                    endpoint = ENDPOINTS[version][RoleEnum.cpo][module]
+                    version_endpoints[version].append(endpoint)
 
         if RoleEnum.emsp in roles:
             for module in modules:
@@ -142,9 +141,8 @@ def get_application(
                         prefix=f"/{settings.OCPI_PREFIX}/emsp/{version.value}",
                         tags=[f"EMSP {version}"],
                     )
-                    version_endpoints[version] += ENDPOINTS[version][
-                        RoleEnum.emsp
-                    ]
+                    endpoint = ENDPOINTS[version][RoleEnum.emsp][module]
+                    version_endpoints[version].append(endpoint)
 
     def override_get_crud():
         return crud
