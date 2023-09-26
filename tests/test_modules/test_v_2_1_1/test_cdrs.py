@@ -1,3 +1,5 @@
+import logging
+
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
@@ -89,6 +91,8 @@ def test_cpo_get_cdrs_v_2_1_1():
     client = TestClient(app)
     response = client.get("/ocpi/cpo/2.1.1/cdrs")
 
+    logging.info(f"{response.status_code} - {response.json()}")
+
     assert response.status_code == 200
     assert len(response.json()["data"]) == 1
     assert response.json()["data"][0]["id"] == CDRS[0]["id"]
@@ -104,6 +108,8 @@ def test_emsp_get_cdr_v_2_1_1():
 
     client = TestClient(app)
     response = client.get(f'/ocpi/emsp/2.1.1/cdrs/{CDRS[0]["id"]}')
+
+    logging.info(f"{response.status_code} - {response.json()}")
 
     assert response.status_code == 200
     assert response.json()["data"][0]["id"] == CDRS[0]["id"]
@@ -121,6 +127,8 @@ def test_emsp_add_cdr_v_2_1_1():
 
     client = TestClient(app)
     response = client.post("/ocpi/emsp/2.1.1/cdrs/", json=data)
+
+    logging.info(f"{response.status_code} - {response.json()}")
 
     assert response.status_code == 200
     assert response.json()["data"][0]["id"] == CDRS[0]["id"]
