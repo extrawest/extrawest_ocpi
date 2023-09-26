@@ -29,7 +29,7 @@ CDRS = [
                         ]
                     }
                 ],
-                "last_updated": "2015-02-02T14:15:01Z",
+                "last_updated": "2022-01-02 00:00:00+00:00",
             }
         ],
         "charging_periods": [
