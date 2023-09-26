@@ -39,11 +39,14 @@ async def get_cdrs(
     logging.info(f"DATA - list - {data_list}")
 
     cdrs = []
-    for data in data_list:
-        logging.info(
-            f"Adapter - {adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict()}"
-        )
-        cdrs.append(adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict())
+    try:
+        for data in data_list:
+            ad = adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict()
+            logging.info(f"Adapter - {ad}")
+            cdrs.append(adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict())
+    except Exception as ex:
+        logging.info(f"{str(ex)}")
+
     logging.info(f"CDRS - {cdrs}")
     return OCPIResponse(
         data=cdrs,
