@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import APIRouter, Depends, Request, Response
 
 from py_ocpi.modules.cdrs.v_2_1_1.schemas import Cdr
@@ -27,7 +25,6 @@ async def get_cdr(
     adapter: Adapter = Depends(get_adapter),
 ):
     auth_token = get_auth_token_from_header(request)
-    logging.info(f"AUTH TOKEN - {auth_token}")
 
     data = await crud.get(
         ModuleID.cdrs,
@@ -35,11 +32,6 @@ async def get_cdr(
         cdr_id,
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
-    )
-    logging.info(f"DATA - {data}")
-
-    logging.info(
-        f"Adapter - {adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict()}"
     )
     return OCPIResponse(
         data=[adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict()],
@@ -56,7 +48,6 @@ async def add_cdr(
     adapter: Adapter = Depends(get_adapter),
 ):
     auth_token = get_auth_token_from_header(request)
-    logging.info(f"AUTH TOKEN - {auth_token}")
 
     data = await crud.create(
         ModuleID.cdrs,
@@ -65,18 +56,13 @@ async def add_cdr(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    logging.info(f"Data - {data}")
 
     cdr_data = adapter.cdr_adapter(data, VersionNumber.v_2_1_1)
-    logging.info(f"CDR data - {cdr_data}")
     cdr_url = (
         f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/emsp"
         f"/{VersionNumber.v_2_1_1}/{ModuleID.cdrs}/{cdr_data.id}"
     )
-    logging.info(f"CDR url - {cdr_url}")
     response.headers.append("Location", cdr_url)
-
-    logging.info(f"CDR dict - {cdr_data.dict()}")
 
     return OCPIResponse(
         data=[cdr_data.dict()],

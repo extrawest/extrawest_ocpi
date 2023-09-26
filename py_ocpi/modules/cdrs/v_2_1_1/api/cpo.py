@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import APIRouter, Depends, Response, Request
 
 from py_ocpi.modules.versions.enums import VersionNumber
@@ -25,7 +23,6 @@ async def get_cdrs(
     filters: dict = Depends(pagination_filters),
 ):
     auth_token = get_auth_token_from_header(request)
-    logging.info(f"AUTH TOKEN - {auth_token}")
 
     data_list = await get_list(
         response,
@@ -36,15 +33,10 @@ async def get_cdrs(
         crud,
         auth_token=auth_token,
     )
-    logging.info(f"DATA - list - {data_list}")
 
     cdrs = []
     for data in data_list:
-        logging.info(
-            f"Adapter - {adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict()}"
-        )
         cdrs.append(adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict())
-    logging.info(f"CDRS - {cdrs}")
     return OCPIResponse(
         data=cdrs,
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
