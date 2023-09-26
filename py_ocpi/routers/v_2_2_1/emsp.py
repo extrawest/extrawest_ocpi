@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from py_ocpi.core.enums import ModuleID
 
 from py_ocpi.modules.credentials.v_2_2_1.api import (
     emsp_router as credentials_emsp_2_2_1_router,
@@ -23,11 +23,12 @@ from py_ocpi.modules.tokens.v_2_2_1.api import (
 )
 
 
-router = APIRouter()
-router.include_router(locations_emsp_2_2_1_router)
-router.include_router(credentials_emsp_2_2_1_router)
-router.include_router(sessions_emsp_2_2_1_router)
-router.include_router(cdrs_emsp_2_2_1_router)
-router.include_router(tariffs_emsp_2_2_1_router)
-router.include_router(commands_emsp_2_2_1_router)
-router.include_router(tokens_emsp_2_2_1_router)
+router = {
+    ModuleID.locations: locations_emsp_2_2_1_router,
+    ModuleID.credentials_and_registration: credentials_emsp_2_2_1_router,
+    ModuleID.sessions: sessions_emsp_2_2_1_router,
+    ModuleID.commands: commands_emsp_2_2_1_router,
+    ModuleID.tariffs: tariffs_emsp_2_2_1_router,
+    ModuleID.tokens: tokens_emsp_2_2_1_router,
+    ModuleID.cdrs: cdrs_emsp_2_2_1_router,
+}

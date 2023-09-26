@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 from py_ocpi.main import get_application
 from py_ocpi.core import enums
 from py_ocpi.core.config import settings
-from py_ocpi.modules.locations.v_2_2_1.schemas import Location
 from py_ocpi.modules.versions.enums import VersionNumber
 
 
@@ -225,17 +224,12 @@ class Crud:
         return LOCATIONS, 1, True
 
 
-class Adapter:
-    @classmethod
-    def location_adapter(
-        cls, data, version: VersionNumber = VersionNumber.latest
-    ) -> Location:
-        return Location(**data)
-
-
 def test_cpo_get_locations_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -248,7 +242,10 @@ def test_cpo_get_locations_v_2_2_1():
 
 def test_cpo_get_location_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -260,7 +257,10 @@ def test_cpo_get_location_v_2_2_1():
 
 def test_cpo_get_evse_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -275,7 +275,10 @@ def test_cpo_get_evse_v_2_2_1():
 
 def test_cpo_get_connector_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -294,7 +297,10 @@ def test_cpo_get_connector_v_2_2_1():
 
 def test_emsp_get_location_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -309,7 +315,10 @@ def test_emsp_get_location_v_2_2_1():
 
 def test_emsp_get_evse_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -325,7 +334,10 @@ def test_emsp_get_evse_v_2_2_1():
 
 def test_emsp_get_connector_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -345,7 +357,10 @@ def test_emsp_get_connector_v_2_2_1():
 
 def test_emsp_add_location_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -361,7 +376,10 @@ def test_emsp_add_location_v_2_2_1():
 
 def test_emsp_add_evse_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -378,7 +396,10 @@ def test_emsp_add_evse_v_2_2_1():
 
 def test_emsp_add_connector_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     client = TestClient(app)
@@ -399,7 +420,10 @@ def test_emsp_add_connector_v_2_2_1():
 
 def test_emsp_patch_location_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     patch_data = {"id": str(uuid4())}
@@ -416,7 +440,10 @@ def test_emsp_patch_location_v_2_2_1():
 
 def test_emsp_patch_evse_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     patch_data = {"uid": str(uuid4())}
@@ -434,7 +461,10 @@ def test_emsp_patch_evse_v_2_2_1():
 
 def test_emsp_patch_connector_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.locations],
     )
 
     patch_data = {"id": str(uuid4())}

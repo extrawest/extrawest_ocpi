@@ -37,7 +37,9 @@ async def get_locations(
 
     locations = []
     for data in data_list:
-        locations.append(adapter.location_adapter(data).dict())
+        locations.append(
+            adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()
+        )
     return OCPIResponse(
         data=locations,
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
@@ -61,7 +63,7 @@ async def get_location(
         version=VersionNumber.v_2_1_1,
     )
     return OCPIResponse(
-        data=[adapter.location_adapter(data).dict()],
+        data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
     )
 
@@ -83,7 +85,7 @@ async def get_evse(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data)
+    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
     for evse in location.evses:
         if evse.uid == evse_uid:
             return OCPIResponse(
@@ -112,7 +114,7 @@ async def get_connector(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data)
+    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
     for evse in location.evses:
         if evse.uid == evse_uid:
             for connector in evse.connectors:

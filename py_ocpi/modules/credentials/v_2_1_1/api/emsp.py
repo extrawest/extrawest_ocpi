@@ -40,7 +40,7 @@ async def get_credentials(
         version=VersionNumber.v_2_1_1,
     )
     return OCPIResponse(
-        data=adapter.credentials_adapter(data).dict(),
+        data=adapter.credentials_adapter(data, VersionNumber.v_2_1_1).dict(),
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
     )
 
@@ -106,7 +106,9 @@ async def post_credentials(
                 )
 
                 return OCPIResponse(
-                    data=adapter.credentials_adapter(new_credentials).dict(),
+                    data=adapter.credentials_adapter(
+                        new_credentials, VersionNumber.v_2_1_1
+                    ).dict(),
                     **status.OCPI_1000_GENERIC_SUCESS_CODE,
                 )
 
@@ -179,7 +181,9 @@ async def update_credentials(
                 )
 
                 return OCPIResponse(
-                    data=adapter.credentials_adapter(new_credentials).dict(),
+                    data=adapter.credentials_adapter(
+                        new_credentials, VersionNumber.v_2_1_1
+                    ).dict(),
                     **status.OCPI_1000_GENERIC_SUCESS_CODE,
                 )
 

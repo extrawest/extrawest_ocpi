@@ -91,17 +91,12 @@ class Crud:
         return data
 
 
-class Adapter:
-    @classmethod
-    def cdr_adapter(
-        cls, data, version: VersionNumber = VersionNumber.latest
-    ) -> Cdr:
-        return Cdr(**data)
-
-
 def test_cpo_get_cdrs_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.cpo], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.cpo],
+        crud=Crud,
+        modules=[enums.ModuleID.cdrs],
     )
 
     client = TestClient(app)
@@ -114,7 +109,10 @@ def test_cpo_get_cdrs_v_2_2_1():
 
 def test_emsp_get_cdr_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.cdrs],
     )
 
     client = TestClient(app)
@@ -126,7 +124,10 @@ def test_emsp_get_cdr_v_2_2_1():
 
 def test_emsp_add_cdr_v_2_2_1():
     app = get_application(
-        [VersionNumber.v_2_2_1], [enums.RoleEnum.emsp], Crud, Adapter
+        version_numbers=[VersionNumber.v_2_2_1],
+        roles=[enums.RoleEnum.emsp],
+        crud=Crud,
+        modules=[enums.ModuleID.cdrs],
     )
 
     data = CDRS[0]

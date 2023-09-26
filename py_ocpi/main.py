@@ -18,9 +18,11 @@ from py_ocpi.core.dependencies import (
     get_adapter,
     get_versions,
     get_endpoints,
+    get_modules,
 )
 from py_ocpi.core import status
-from py_ocpi.core.enums import RoleEnum
+from py_ocpi.core.adapter import BaseAdapter
+from py_ocpi.core.enums import RoleEnum, ModuleID
 from py_ocpi.core.config import settings
 from py_ocpi.core.data_types import URL
 from py_ocpi.core.schemas import OCPIResponse
@@ -56,7 +58,8 @@ def get_application(
     version_numbers: List[VersionNumber],
     roles: List[RoleEnum],
     crud: Any,
-    adapter: Any,
+    modules: List[ModuleID],
+    adapter: Any = BaseAdapter,
     http_push: bool = False,
     websocket_push: bool = False,
 ) -> FastAPI:
@@ -95,46 +98,53 @@ def get_application(
     versions = []
     version_endpoints: dict[str, list] = {}
 
-    if not version_numbers or len(version_numbers) > 1:
-        raise ValueError("Should be exactly one version.")
+    for version in version_numbers:
+        mapped_version = ROUTERS.get(version)
+        if not mapped_version:
+            raise ValueError("Version isn't supported yet.")
 
-    version = version_numbers[0]
-    mapped_version = ROUTERS.get(version)
-    if not mapped_version:
-        raise ValueError("Version isn't supported yet.")
-
-    _app.include_router(
-        mapped_version["version_router"],
-        prefix=f"/{settings.OCPI_PREFIX}",
-    )
-
-    versions.append(
-        Version(
-            version=version,
-            url=URL(
-                f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
-                f"{version.value}/details"
-            ),
-        ).dict(),
-    )
-
-    version_endpoints[version] = []
-
-    if RoleEnum.cpo in roles:
         _app.include_router(
-            mapped_version["cpo_router"],
-            prefix=f"/{settings.OCPI_PREFIX}/cpo/{version.value}",
-            tags=["CPO"],
+            mapped_version["version_router"],
+            prefix=f"/{settings.OCPI_PREFIX}",
         )
-        version_endpoints[version] += ENDPOINTS[version][RoleEnum.cpo]
 
-    if RoleEnum.emsp in roles:
-        _app.include_router(
-            mapped_version["emsp_router"],
-            prefix=f"/{settings.OCPI_PREFIX}/emsp/{version.value}",
-            tags=["EMSP"],
+        versions.append(
+            Version(
+                version=version,
+                url=URL(
+                    f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
+                    f"{version.value}/details"
+                ),
+            ).dict(),
         )
-        version_endpoints[version] += ENDPOINTS[version][RoleEnum.emsp]
+
+        version_endpoints[version] = []
+
+        if RoleEnum.cpo in roles:
+            for module in modules:
+                cpo_router = mapped_version["cpo_router"].get(module)
+                if cpo_router:
+                    _app.include_router(
+                        cpo_router,
+                        prefix=f"/{settings.OCPI_PREFIX}/cpo/{version.value}",
+                        tags=[f"CPO {version}"],
+                    )
+                    version_endpoints[version] += ENDPOINTS[version][
+                        RoleEnum.cpo
+                    ]
+
+        if RoleEnum.emsp in roles:
+            for module in modules:
+                emsp_router = mapped_version["emsp_router"].get(module)
+                if emsp_router:
+                    _app.include_router(
+                        emsp_router,
+                        prefix=f"/{settings.OCPI_PREFIX}/emsp/{version.value}",
+                        tags=[f"EMSP {version}"],
+                    )
+                    version_endpoints[version] += ENDPOINTS[version][
+                        RoleEnum.emsp
+                    ]
 
     def override_get_crud():
         return crud
@@ -155,5 +165,10 @@ def get_application(
         return version_endpoints
 
     _app.dependency_overrides[get_endpoints] = override_get_endpoints
+
+    def override_get_modules():
+        return modules
+
+    _app.dependency_overrides[get_modules] = override_get_modules()
 
     return _app
