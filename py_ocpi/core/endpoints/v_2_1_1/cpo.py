@@ -25,7 +25,7 @@ LOCATIONS = Endpoint(
 )
 
 
-ENDPOINTS_LIST = [
-    CREDENTIALS_AND_REGISTRATION,
-    LOCATIONS,
-]
+ENDPOINTS_LIST = {
+    ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
+    ModuleID.locations: LOCATIONS,
+}

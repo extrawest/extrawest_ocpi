@@ -72,12 +72,12 @@ TOKENS = Endpoint(
     ),
 )
 
-ENDPOINTS_LIST = [
-    CREDENTIALS_AND_REGISTRATION,
-    LOCATIONS,
-    SESSIONS,
-    CDRS,
-    TARIFFS,
-    COMMANDS,
-    TOKENS,
-]
+ENDPOINTS_LIST = {
+    ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
+    ModuleID.locations: LOCATIONS,
+    ModuleID.sessions: SESSIONS,
+    ModuleID.cdrs: CDRS,
+    ModuleID.tariffs: TARIFFS,
+    ModuleID.commands: COMMANDS,
+    ModuleID.tokens: TOKENS,
+}
