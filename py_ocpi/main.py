@@ -127,7 +127,7 @@ def get_application(
                     _app.include_router(
                         cpo_router,
                         prefix=f"/{settings.OCPI_PREFIX}/cpo/{version.value}",
-                        tags=[f"CPO {version}"],
+                        tags=[f"CPO {version.value}"],
                     )
                     endpoint = ENDPOINTS[version][RoleEnum.cpo].get(module)
                     if endpoint:
@@ -140,7 +140,7 @@ def get_application(
                     _app.include_router(
                         emsp_router,
                         prefix=f"/{settings.OCPI_PREFIX}/emsp/{version.value}",
-                        tags=[f"EMSP {version}"],
+                        tags=[f"EMSP {version.value}"],
                     )
                     endpoint = ENDPOINTS[version][RoleEnum.emsp].get(module)
                     if endpoint:
