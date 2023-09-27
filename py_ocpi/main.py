@@ -127,11 +127,11 @@ def get_application(
                     _app.include_router(
                         cpo_router,
                         prefix=f"/{settings.OCPI_PREFIX}/cpo/{version.value}",
-                        tags=[f"CPO {version}"],
+                        tags=[f"CPO {version.value}"],
                     )
-                    version_endpoints[version] += ENDPOINTS[version][
-                        RoleEnum.cpo
-                    ]
+                    endpoint = ENDPOINTS[version][RoleEnum.cpo].get(module)
+                    if endpoint:
+                        version_endpoints[version].append(endpoint)
 
         if RoleEnum.emsp in roles:
             for module in modules:
@@ -140,11 +140,11 @@ def get_application(
                     _app.include_router(
                         emsp_router,
                         prefix=f"/{settings.OCPI_PREFIX}/emsp/{version.value}",
-                        tags=[f"EMSP {version}"],
+                        tags=[f"EMSP {version.value}"],
                     )
-                    version_endpoints[version] += ENDPOINTS[version][
-                        RoleEnum.emsp
-                    ]
+                    endpoint = ENDPOINTS[version][RoleEnum.emsp].get(module)
+                    if endpoint:
+                        version_endpoints[version].append(endpoint)
 
     def override_get_crud():
         return crud

@@ -27,9 +27,8 @@ CDRS = Endpoint(
     url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}"),
 )
 
-
-ENDPOINTS_LIST = [
-    CREDENTIALS_AND_REGISTRATION,
-    LOCATIONS,
-    CDRS,
-]
+ENDPOINTS_LIST = {
+    ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
+    ModuleID.locations: LOCATIONS,
+    ModuleID.cdrs: CDRS,
+}
