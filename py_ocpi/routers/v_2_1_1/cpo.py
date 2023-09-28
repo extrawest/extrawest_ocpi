@@ -12,10 +12,14 @@ from py_ocpi.modules.cdrs.v_2_1_1.api import (
 from py_ocpi.modules.tariffs.v_2_1_1.api import (
     cpo_router as tariffs_cpo_2_1_1_router,
 )
+from py_ocpi.modules.sessions.v_2_1_1.api import (
+    cpo_router as sessions_cpo_2_1_1_router,
+)
 
 router = {
     ModuleID.locations: locations_cpo_2_1_1_router,
     ModuleID.credentials_and_registration: credentials_cpo_2_1_1_router,
     ModuleID.cdrs: cdrs_cpo_2_1_1_router,
     ModuleID.tariffs: tariffs_cpo_2_1_1_router,
+    ModuleID.sessions: sessions_cpo_2_1_1_router,
 }
