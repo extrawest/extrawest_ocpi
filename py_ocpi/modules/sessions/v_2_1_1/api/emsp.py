@@ -7,7 +7,10 @@ from py_ocpi.core.data_types import String
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.schemas import OCPIResponse
-from py_ocpi.core.utils import get_auth_token, partially_update_attributes
+from py_ocpi.core.utils import (
+    get_auth_token_from_header,
+    partially_update_attributes,
+)
 from py_ocpi.modules.sessions.v_2_1_1.schemas import (
     SessionPartialUpdate,
     Session,
@@ -30,7 +33,7 @@ async def get_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token(request)
+    auth_token = get_auth_token_from_header(request)
 
     data = await crud.get(
         ModuleID.sessions,
@@ -59,7 +62,7 @@ async def add_or_update_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token(request)
+    auth_token = get_auth_token_from_header(request)
 
     data = await crud.get(
         ModuleID.sessions,
@@ -110,7 +113,7 @@ async def partial_update_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token(request)
+    auth_token = get_auth_token_from_header(request)
 
     old_data = await crud.get(
         ModuleID.sessions,
