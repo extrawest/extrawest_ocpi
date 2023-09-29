@@ -139,6 +139,7 @@ Example: `http://127.0.0.1:8000/ocpi/docs/`
     - Minimal required python version is 3.10;
     - Add cdrs module;
     - Add tariffs module;
+    - Add sessions module;
 
 
 ## Related

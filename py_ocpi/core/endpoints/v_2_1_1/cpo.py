@@ -32,9 +32,15 @@ TARIFFS = Endpoint(
     url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}"),
 )
 
+SESSIONS = Endpoint(
+    identifier=ModuleID.sessions,
+    url=URL(f"{URL_BASE}/{ModuleID.sessions.value}"),
+)
+
 ENDPOINTS_LIST = {
     ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
     ModuleID.locations: LOCATIONS,
     ModuleID.cdrs: CDRS,
     ModuleID.tariffs: TARIFFS,
+    ModuleID.sessions: SESSIONS,
 }
