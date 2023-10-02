@@ -15,6 +15,9 @@ from py_ocpi.modules.tariffs.v_2_1_1.api import (
 from py_ocpi.modules.sessions.v_2_1_1.api import (
     cpo_router as sessions_cpo_2_1_1_router,
 )
+from py_ocpi.modules.tokens.v_2_1_1.api import (
+    cpo_router as tokens_cpo_2_1_1_router,
+)
 
 router = {
     ModuleID.locations: locations_cpo_2_1_1_router,
@@ -22,4 +25,5 @@ router = {
     ModuleID.cdrs: cdrs_cpo_2_1_1_router,
     ModuleID.tariffs: tariffs_cpo_2_1_1_router,
     ModuleID.sessions: sessions_cpo_2_1_1_router,
+    ModuleID.tokens: tokens_cpo_2_1_1_router,
 }
