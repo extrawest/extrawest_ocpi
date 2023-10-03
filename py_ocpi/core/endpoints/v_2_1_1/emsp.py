@@ -42,6 +42,11 @@ TOKENS = Endpoint(
     url=URL(f"{URL_BASE}/{ModuleID.tokens.value}"),
 )
 
+COMMANDS = Endpoint(
+    identifier=ModuleID.commands,
+    url=URL(f"{URL_BASE}/{ModuleID.commands.value}"),
+)
+
 ENDPOINTS_LIST = {
     ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
     ModuleID.locations: LOCATIONS,
@@ -49,4 +54,5 @@ ENDPOINTS_LIST = {
     ModuleID.tariffs: TARIFFS,
     ModuleID.sessions: SESSIONS,
     ModuleID.tokens: TOKENS,
+    ModuleID.commands: COMMANDS,
 }
