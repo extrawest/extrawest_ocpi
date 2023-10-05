@@ -14,32 +14,32 @@ URL_BASE = (
 
 CREDENTIALS_AND_REGISTRATION = Endpoint(
     identifier=ModuleID.credentials_and_registration,
-    url=URL(f"{URL_BASE}/{ModuleID.credentials_and_registration.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.credentials_and_registration.value}/"),
 )
 
 LOCATIONS = Endpoint(
     identifier=ModuleID.locations,
-    url=URL(f"{URL_BASE}/{ModuleID.locations.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.locations.value}/"),
 )
 
 CDRS = Endpoint(
     identifier=ModuleID.cdrs,
-    url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}/"),
 )
 
 TARIFFS = Endpoint(
     identifier=ModuleID.tariffs,
-    url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}/"),
 )
 
 SESSIONS = Endpoint(
     identifier=ModuleID.sessions,
-    url=URL(f"{URL_BASE}/{ModuleID.sessions.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.sessions.value}/"),
 )
 
 TOKENS = Endpoint(
     identifier=ModuleID.tokens,
-    url=URL(f"{URL_BASE}/{ModuleID.tokens.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.tokens.value}/"),
 )
 
 ENDPOINTS_LIST = {
