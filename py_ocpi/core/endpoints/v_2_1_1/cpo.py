@@ -7,7 +7,7 @@ from py_ocpi.modules.versions.v_2_1_1.schemas import (
 )
 
 URL_BASE = (
-    f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
+    f"{settings.PROTOCOL}://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
     f"cpo/{VersionNumber.v_2_1_1.value}"
 )
 
