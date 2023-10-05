@@ -16,43 +16,43 @@ URL_BASE = (
 CREDENTIALS_AND_REGISTRATION = Endpoint(
     identifier=ModuleID.credentials_and_registration,
     role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.credentials_and_registration.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.credentials_and_registration.value}/"),
 )
 
 LOCATIONS = Endpoint(
     identifier=ModuleID.locations,
     role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.locations.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.locations.value}/"),
 )
 
 SESSIONS = Endpoint(
     identifier=ModuleID.sessions,
     role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.sessions.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.sessions.value}/"),
 )
 
 CDRS = Endpoint(
     identifier=ModuleID.cdrs,
     role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}/"),
 )
 
 TARIFFS = Endpoint(
     identifier=ModuleID.tariffs,
     role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}/"),
 )
 
 COMMANDS = Endpoint(
     identifier=ModuleID.commands,
     role=InterfaceRole.sender,
-    url=URL(f"{URL_BASE}/{ModuleID.commands.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.commands.value}/"),
 )
 
 TOKENS = Endpoint(
     identifier=ModuleID.tokens,
     role=InterfaceRole.sender,
-    url=URL(f"{URL_BASE}/{ModuleID.tokens.value}"),
+    url=URL(f"{URL_BASE}/{ModuleID.tokens.value}/"),
 )
 
 ENDPOINTS_LIST = {
