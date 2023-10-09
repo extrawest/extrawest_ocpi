@@ -59,3 +59,13 @@ class Tariff(BaseModel):
     elements: List[TariffElement]
     energy_mix: Optional[EnergyMix]
     last_updated: DateTime
+
+
+class TariffPartialUpdate(BaseModel):
+    id: Optional[String(36)]  # type: ignore
+    currency: Optional[String(3)]  # type: ignore
+    tariff_alt_text: Optional[List[DisplayText]]
+    tariff_alt_url: Optional[URL]
+    elements: Optional[List[TariffElement]]
+    energy_mix: Optional[EnergyMix]
+    last_updated: Optional[DateTime]

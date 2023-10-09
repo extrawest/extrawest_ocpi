@@ -112,8 +112,8 @@ def get_application(
             Version(
                 version=version,
                 url=URL(
-                    f"https://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
-                    f"{version.value}/details"
+                    f"{settings.PROTOCOL}://{settings.OCPI_HOST}/"
+                    f"{settings.OCPI_PREFIX}/{version.value}/details"
                 ),
             ).dict(),
         )

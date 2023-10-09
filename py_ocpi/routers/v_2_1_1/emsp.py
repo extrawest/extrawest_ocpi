@@ -9,10 +9,21 @@ from py_ocpi.modules.locations.v_2_1_1.api import (
 from py_ocpi.modules.cdrs.v_2_1_1.api import (
     emsp_router as cdrs_emsp_2_1_1_router,
 )
-
+from py_ocpi.modules.tariffs.v_2_1_1.api import (
+    emsp_router as tariffs_emsp_2_1_1_router,
+)
+from py_ocpi.modules.sessions.v_2_1_1.api import (
+    emsp_router as sessions_emsp_2_1_1_router,
+)
+from py_ocpi.modules.tokens.v_2_1_1.api import (
+    emsp_router as tokens_emsp_2_1_1_router,
+)
 
 router = {
     ModuleID.locations: locations_emsp_2_1_1_router,
     ModuleID.credentials_and_registration: credentials_emsp_2_1_1_router,
     ModuleID.cdrs: cdrs_emsp_2_1_1_router,
+    ModuleID.tariffs: tariffs_emsp_2_1_1_router,
+    ModuleID.sessions: sessions_emsp_2_1_1_router,
+    ModuleID.tokens: tokens_emsp_2_1_1_router,
 }
