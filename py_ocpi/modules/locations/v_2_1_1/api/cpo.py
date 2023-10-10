@@ -8,6 +8,7 @@ from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import String
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.dependencies import get_crud, get_adapter, pagination_filters
 
 router = APIRouter(
@@ -62,10 +63,12 @@ async def get_location(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    return OCPIResponse(
-        data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.get("/{location_id}/{evse_uid}", response_model=OCPIResponse)
@@ -92,6 +95,7 @@ async def get_evse(
                 data=[evse.dict()],
                 **status.OCPI_1000_GENERIC_SUCESS_CODE,
             )
+    raise NotFoundOCPIError
 
 
 @router.get(
@@ -123,3 +127,4 @@ async def get_connector(
                         data=[connector.dict()],
                         **status.OCPI_1000_GENERIC_SUCESS_CODE,
                     )
+    raise NotFoundOCPIError
