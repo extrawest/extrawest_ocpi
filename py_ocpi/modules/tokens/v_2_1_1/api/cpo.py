@@ -1,8 +1,11 @@
+from copy import deepcopy
+
 from fastapi import APIRouter, Request, Depends
 
 from py_ocpi.core import status
 from py_ocpi.core.data_types import String
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.crud import Crud
@@ -41,10 +44,12 @@ async def get_token(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    return OCPIResponse(
-        data=[adapter.token_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.token_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.put(
@@ -120,9 +125,11 @@ async def partial_update_token(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
+    if not old_data:
+        raise NotFoundOCPIError
     old_token = adapter.token_adapter(old_data, VersionNumber.v_2_1_1)
 
-    new_token = old_token
+    new_token = deepcopy(old_token)
     partially_update_attributes(
         new_token, token.dict(exclude_defaults=True, exclude_unset=True)
     )
