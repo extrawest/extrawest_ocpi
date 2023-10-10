@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, status as fastapistatus
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
@@ -41,9 +41,15 @@ class ExceptionHandlerMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
         except AuthorizationOCPIError as e:
-            raise HTTPException(403, str(e)) from e
+            response = JSONResponse(
+                content={"detail": str(e)},
+                status_code=fastapistatus.HTTP_403_FORBIDDEN,
+            )
         except NotFoundOCPIError as e:
-            raise HTTPException(404, str(e)) from e
+            response = JSONResponse(
+                content={"detail": str(e)},
+                status_code=fastapistatus.HTTP_404_NOT_FOUND,
+            )
         except ValidationError:
             response = JSONResponse(
                 OCPIResponse(
