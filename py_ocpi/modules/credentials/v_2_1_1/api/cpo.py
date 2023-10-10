@@ -68,6 +68,11 @@ async def post_credentials(
             fastapistatus.HTTP_405_METHOD_NOT_ALLOWED,
             "Client is already registered",
         )
+    if server_cred is None:
+        raise HTTPException(
+            fastapistatus.HTTP_401_UNAUTHORIZED,
+            "Unauthorized",
+        )
 
     # Retrieve the versions and endpoints from the client
     async with httpx.AsyncClient() as client:
