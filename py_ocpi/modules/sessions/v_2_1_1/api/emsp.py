@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from fastapi import APIRouter, Depends, Request
 
 from py_ocpi.core import status
@@ -6,6 +8,7 @@ from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import String
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.utils import (
     get_auth_token_from_header,
@@ -44,10 +47,12 @@ async def get_session(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    return OCPIResponse(
-        data=[adapter.session_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.session_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.put(
@@ -124,25 +129,27 @@ async def partial_update_session(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_session = adapter.session_adapter(old_data, VersionNumber.v_2_1_1)
+    if old_data:
+        old_session = adapter.session_adapter(old_data, VersionNumber.v_2_1_1)
 
-    new_session = old_session
-    partially_update_attributes(
-        new_session, session.dict(exclude_defaults=True, exclude_unset=True)
-    )
+        new_session = deepcopy(old_session)
+        partially_update_attributes(
+            new_session, session.dict(exclude_defaults=True, exclude_unset=True)
+        )
 
-    data = await crud.update(
-        ModuleID.sessions,
-        RoleEnum.emsp,
-        new_session.dict(),
-        session_id,
-        auth_token=auth_token,
-        country_code=country_code,
-        party_id=party_id,
-        version=VersionNumber.v_2_1_1,
-    )
+        data = await crud.update(
+            ModuleID.sessions,
+            RoleEnum.emsp,
+            new_session.dict(),
+            session_id,
+            auth_token=auth_token,
+            country_code=country_code,
+            party_id=party_id,
+            version=VersionNumber.v_2_1_1,
+        )
 
-    return OCPIResponse(
-        data=[adapter.session_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+        return OCPIResponse(
+            data=[adapter.session_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError

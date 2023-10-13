@@ -9,6 +9,7 @@ from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.config import settings
 from py_ocpi.core.dependencies import get_crud, get_adapter
 
@@ -33,10 +34,12 @@ async def get_cdr(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    return OCPIResponse(
-        data=[adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.cdr_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.post("/", response_model=OCPIResponse)

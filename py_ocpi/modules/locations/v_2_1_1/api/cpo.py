@@ -88,13 +88,14 @@ async def get_evse(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
-    for evse in location.evses:
-        if evse.uid == evse_uid:
-            return OCPIResponse(
-                data=[evse.dict()],
-                **status.OCPI_1000_GENERIC_SUCESS_CODE,
-            )
+    if data:
+        location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
+        for evse in location.evses:
+            if evse.uid == evse_uid:
+                return OCPIResponse(
+                    data=[evse.dict()],
+                    **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                )
     raise NotFoundOCPIError
 
 
@@ -118,13 +119,14 @@ async def get_connector(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
-    for evse in location.evses:
-        if evse.uid == evse_uid:
-            for connector in evse.connectors:
-                if connector.id == connector_id:
-                    return OCPIResponse(
-                        data=[connector.dict()],
-                        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-                    )
+    if data:
+        location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
+        for evse in location.evses:
+            if evse.uid == evse_uid:
+                for connector in evse.connectors:
+                    if connector.id == connector_id:
+                        return OCPIResponse(
+                            data=[connector.dict()],
+                            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                        )
     raise NotFoundOCPIError
