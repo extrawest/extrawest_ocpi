@@ -19,6 +19,7 @@ from py_ocpi.core.dependencies import (
     get_versions,
     get_endpoints,
     get_modules,
+    get_authenticator,
 )
 from py_ocpi.core import status
 from py_ocpi.core.adapter import BaseAdapter
@@ -65,6 +66,7 @@ def get_application(
     roles: List[RoleEnum],
     crud: Any,
     modules: List[ModuleID],
+    authenticator: Any,
     adapter: Any = BaseAdapter,
     http_push: bool = False,
     websocket_push: bool = False,
@@ -176,5 +178,10 @@ def get_application(
         return modules
 
     _app.dependency_overrides[get_modules] = override_get_modules()
+
+    def override_get_authenticator():
+        return authenticator
+
+    _app.dependency_overrides[get_authenticator] = override_get_authenticator()
 
     return _app
