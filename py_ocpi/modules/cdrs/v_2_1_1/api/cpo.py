@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Response, Request
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.core import status
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.dependencies import get_crud, get_adapter, pagination_filters
 from py_ocpi.core.enums import ModuleID, RoleEnum
@@ -11,6 +12,7 @@ from py_ocpi.core.utils import get_auth_token_from_header, get_list
 
 router = APIRouter(
     prefix="/cdrs",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 

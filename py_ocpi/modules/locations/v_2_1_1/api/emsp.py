@@ -9,6 +9,7 @@ from py_ocpi.core.utils import (
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import String
 from py_ocpi.core.enums import ModuleID, RoleEnum
@@ -26,6 +27,7 @@ from py_ocpi.modules.locations.v_2_1_1.schemas import (
 
 router = APIRouter(
     prefix="/locations",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 

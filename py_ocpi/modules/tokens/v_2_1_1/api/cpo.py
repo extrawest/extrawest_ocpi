@@ -8,6 +8,7 @@ from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.utils import (
     get_auth_token_from_header,
@@ -19,6 +20,7 @@ from py_ocpi.modules.tokens.v_2_1_1.schemas import Token, TokenPartialUpdate
 
 router = APIRouter(
     prefix="/tokens",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 

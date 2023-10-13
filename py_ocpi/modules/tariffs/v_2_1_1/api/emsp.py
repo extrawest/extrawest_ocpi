@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, Request
 
 from py_ocpi.core import status
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import String
 from py_ocpi.core.dependencies import get_crud, get_adapter
@@ -19,6 +20,7 @@ from py_ocpi.modules.versions.enums import VersionNumber
 
 router = APIRouter(
     prefix="/tariffs",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 
