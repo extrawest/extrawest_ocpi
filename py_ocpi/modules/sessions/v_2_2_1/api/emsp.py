@@ -9,6 +9,7 @@ from py_ocpi.core.utils import get_auth_token, partially_update_attributes
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
@@ -16,6 +17,7 @@ from py_ocpi.core.dependencies import get_crud, get_adapter
 
 router = APIRouter(
     prefix="/sessions",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_2_1))],
 )
 
 
