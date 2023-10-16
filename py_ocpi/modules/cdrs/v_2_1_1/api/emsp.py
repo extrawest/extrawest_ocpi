@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request, Response
 
 from py_ocpi.modules.cdrs.v_2_1_1.schemas import Cdr
 from py_ocpi.modules.versions.enums import VersionNumber
-from py_ocpi.core.utils import get_auth_token_from_header
+from py_ocpi.core.utils import get_auth_token
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
@@ -27,7 +27,7 @@ async def get_cdr(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.cdrs,
@@ -52,7 +52,7 @@ async def add_cdr(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.create(
         ModuleID.cdrs,

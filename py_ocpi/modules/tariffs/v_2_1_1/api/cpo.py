@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Response, Request
 
-from py_ocpi.core.utils import get_list, get_auth_token_from_header
+from py_ocpi.core.utils import get_list, get_auth_token
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
@@ -24,7 +24,7 @@ async def get_tariffs(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data_list = await get_list(
         response,

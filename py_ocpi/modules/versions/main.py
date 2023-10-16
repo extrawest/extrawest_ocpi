@@ -14,7 +14,8 @@ from py_ocpi.core.dependencies import (
 )
 from py_ocpi.core.enums import Action, ModuleID, RoleEnum
 from py_ocpi.core.schemas import OCPIResponse
-from py_ocpi.core.utils import get_auth_token_from_header
+from py_ocpi.core.utils import get_auth_token
+from py_ocpi.modules.versions.v_2_1_1.schemas import VersionNumber
 
 
 router = APIRouter()
@@ -26,7 +27,10 @@ async def get_versions(
     versions=Depends(get_versions_),
     crud: Crud = Depends(get_crud),
 ):
-    auth_token = get_auth_token_from_header(request)
+    try:
+        auth_token = get_auth_token(request)
+    except UnicodeDecodeError:
+        auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     server_cred = await crud.do(
         ModuleID.credentials_and_registration,

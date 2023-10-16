@@ -14,7 +14,7 @@ from py_ocpi.core.crud import Crud
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import Action, ModuleID, RoleEnum
 from py_ocpi.core.schemas import OCPIResponse
-from py_ocpi.core.utils import get_auth_token_from_header
+from py_ocpi.core.utils import get_auth_token
 
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.credentials.v_2_1_1.schemas import Credentials
@@ -30,7 +30,7 @@ async def get_credentials(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.credentials_and_registration,
@@ -52,7 +52,7 @@ async def post_credentials(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     # Check if the client is already registered
     credentials_client_token = credentials.token
@@ -130,7 +130,7 @@ async def update_credentials(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     # Check if the client is already registered
     credentials_client_token = credentials.token
@@ -204,7 +204,7 @@ async def remove_credentials(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.credentials_and_registration,

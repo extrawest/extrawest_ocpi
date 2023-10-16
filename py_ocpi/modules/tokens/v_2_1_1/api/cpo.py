@@ -11,7 +11,7 @@ from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.utils import (
-    get_auth_token_from_header,
+    get_auth_token,
     partially_update_attributes,
 )
 from py_ocpi.core.dependencies import get_crud, get_adapter
@@ -35,7 +35,7 @@ async def get_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.tokens,
@@ -66,7 +66,7 @@ async def add_or_update_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.tokens,
@@ -116,7 +116,7 @@ async def partial_update_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.tokens,

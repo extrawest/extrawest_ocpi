@@ -8,7 +8,7 @@ from py_ocpi.core.crud import Crud
 from py_ocpi.core.dependencies import get_crud, get_adapter, pagination_filters
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.schemas import OCPIResponse
-from py_ocpi.core.utils import get_auth_token_from_header, get_list
+from py_ocpi.core.utils import get_auth_token, get_list
 
 router = APIRouter(
     prefix="/cdrs",
@@ -24,7 +24,7 @@ async def get_cdrs(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data_list = await get_list(
         response,

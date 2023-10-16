@@ -3,7 +3,7 @@ import copy
 from fastapi import APIRouter, Depends, Request
 
 from py_ocpi.core.utils import (
-    get_auth_token_from_header,
+    get_auth_token,
     partially_update_attributes,
 )
 from py_ocpi.core import status
@@ -42,7 +42,7 @@ async def get_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -74,7 +74,7 @@ async def get_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -110,7 +110,7 @@ async def get_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -146,7 +146,7 @@ async def add_or_update_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -199,7 +199,7 @@ async def add_or_update_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -254,7 +254,7 @@ async def add_or_update_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -310,7 +310,7 @@ async def partial_update_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -362,7 +362,7 @@ async def partial_update_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -419,7 +419,7 @@ async def partial_update_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
