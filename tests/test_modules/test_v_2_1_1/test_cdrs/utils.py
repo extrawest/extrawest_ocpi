@@ -1,13 +1,20 @@
 from uuid import uuid4
 
-from fastapi.testclient import TestClient
-
-from py_ocpi import get_application
 from py_ocpi.core import enums
 from py_ocpi.modules.cdrs.v_2_1_1.enums import AuthMethod, CdrDimensionType
-from py_ocpi.modules.versions.enums import VersionNumber
 
-from tests.test_modules.test_v_2_1_1.test_locations import LOCATIONS
+from tests.test_modules.utils import (
+    AUTH_TOKEN,
+    RANDOM_AUTH_TOKEN,
+    ClientAuthenticator,
+)
+from tests.test_modules.test_v_2_1_1.test_locations.utils import LOCATIONS
+
+
+CPO_BASE_URL = "/ocpi/cpo/2.1.1/cdrs/"
+EMSP_BASE_URL = "/ocpi/emsp/2.1.1/cdrs/"
+AUTH_HEADERS = {"Authorization": f"Token {AUTH_TOKEN}"}
+WRONG_AUTH_HEADERS = {"Authorization": f"Token {RANDOM_AUTH_TOKEN}"}
 
 CDRS = [
     {
@@ -76,52 +83,3 @@ class Crud:
         **kwargs,
     ):
         return data
-
-
-def test_cpo_get_cdrs_v_2_1_1():
-    app = get_application(
-        version_numbers=[VersionNumber.v_2_1_1],
-        roles=[enums.RoleEnum.cpo],
-        crud=Crud,
-        modules=[enums.ModuleID.cdrs],
-    )
-
-    client = TestClient(app)
-    response = client.get("/ocpi/cpo/2.1.1/cdrs")
-
-    assert response.status_code == 200
-    assert len(response.json()["data"]) == 1
-    assert response.json()["data"][0]["id"] == CDRS[0]["id"]
-
-
-def test_emsp_get_cdr_v_2_1_1():
-    app = get_application(
-        version_numbers=[VersionNumber.v_2_1_1],
-        roles=[enums.RoleEnum.emsp],
-        crud=Crud,
-        modules=[enums.ModuleID.cdrs],
-    )
-
-    client = TestClient(app)
-    response = client.get(f'/ocpi/emsp/2.1.1/cdrs/{CDRS[0]["id"]}')
-
-    assert response.status_code == 200
-    assert response.json()["data"][0]["id"] == CDRS[0]["id"]
-
-
-def test_emsp_add_cdr_v_2_1_1():
-    app = get_application(
-        version_numbers=[VersionNumber.v_2_1_1],
-        roles=[enums.RoleEnum.emsp],
-        crud=Crud,
-        modules=[enums.ModuleID.cdrs],
-    )
-
-    data = CDRS[0]
-
-    client = TestClient(app)
-    response = client.post("/ocpi/emsp/2.1.1/cdrs/", json=data)
-
-    assert response.status_code == 200
-    assert response.json()["data"][0]["id"] == CDRS[0]["id"]
-    assert response.headers["Location"] is not None

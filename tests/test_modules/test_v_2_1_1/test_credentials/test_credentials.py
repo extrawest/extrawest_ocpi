@@ -1,4 +1,3 @@
-import functools
 from uuid import uuid4
 from unittest.mock import patch
 from typing import Any
@@ -15,61 +14,8 @@ from py_ocpi.core.dependencies import get_versions
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.versions.schemas import Version
 
-CREDENTIALS_TOKEN_GET = {
-    "url": "url",
-    "business_details": {
-        "name": "name",
-    },
-    "party_id": "JOM",
-    "country_code": "MY",
-}
-
-CREDENTIALS_TOKEN_CREATE = {
-    "token": str(uuid4()),
-    "url": "/ocpi/versions",
-    "business_details": {
-        "name": "name",
-    },
-    "party_id": "JOM",
-    "country_code": "MY",
-}
-
-
-def partial_class(cls, *args, **kwds):
-    class NewCls(cls):
-        __init__ = functools.partialmethod(cls.__init__, *args, **kwds)
-
-    return NewCls
-
-
-class Crud:
-    @classmethod
-    async def get(
-        cls, module: enums.ModuleID, role: enums.RoleEnum, id, *args, **kwargs
-    ):
-        if id == CREDENTIALS_TOKEN_CREATE["token"]:
-            return None
-        return dict(CREDENTIALS_TOKEN_GET, **{"token": id})
-
-    @classmethod
-    async def create(
-        cls, module: enums.ModuleID, data, operation, *args, **kwargs
-    ):
-        if operation == "credentials":
-            return None
-        return CREDENTIALS_TOKEN_CREATE
-
-    @classmethod
-    async def do(
-        cls,
-        module: enums.ModuleID,
-        role: enums.RoleEnum,
-        action: enums.Action,
-        *args,
-        data: dict = None,
-        **kwargs,
-    ):
-        return None
+from .utils import Crud, CREDENTIALS_TOKEN_CREATE
+from tests.test_modules.utils import ClientAuthenticator
 
 
 def test_cpo_get_credentials_v_2_1_1():
@@ -77,6 +23,7 @@ def test_cpo_get_credentials_v_2_1_1():
         version_numbers=[VersionNumber.v_2_1_1],
         roles=[enums.RoleEnum.cpo],
         crud=Crud,
+        authenticator=ClientAuthenticator,
         modules=[enums.ModuleID.credentials_and_registration],
     )
     token = str(uuid4())
@@ -110,6 +57,7 @@ async def test_cpo_post_credentials_v_2_1_1(async_client):
         version_numbers=[VersionNumber.v_2_1_1],
         roles=[enums.RoleEnum.emsp],
         crud=MockCrud,
+        authenticator=ClientAuthenticator,
         modules=[enums.ModuleID.credentials_and_registration],
     )
 
@@ -131,6 +79,7 @@ async def test_cpo_post_credentials_v_2_1_1(async_client):
         version_numbers=[VersionNumber.v_2_1_1],
         roles=[enums.RoleEnum.cpo],
         crud=MockCrud,
+        authenticator=ClientAuthenticator,
         modules=[enums.ModuleID.credentials_and_registration],
     )
 
