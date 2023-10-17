@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, Request, status as http_status
+from fastapi import APIRouter, Depends, Response, Request
 
 from py_ocpi.modules.tokens.v_2_2_1.enums import TokenType
 from py_ocpi.modules.tokens.v_2_2_1.schemas import LocationReference
@@ -61,17 +61,17 @@ async def authorize_token(
     adapter: Adapter = Depends(get_adapter),
 ):
     auth_token = get_auth_token(request)
-    try:
-        # check if token exists
-        await crud.get(
-            ModuleID.tokens,
-            RoleEnum.emsp,
-            token_uid,
-            auth_token=auth_token,
-            token_type=token_type,
-            version=VersionNumber.v_2_2_1,
-        )
 
+    # check if token exists
+    token = await crud.get(
+        ModuleID.tokens,
+        RoleEnum.emsp,
+        token_uid,
+        auth_token=auth_token,
+        token_type=token_type,
+        version=VersionNumber.v_2_2_1,
+    )
+    if token:
         location_reference = (
             location_reference.dict()
             if location_reference
@@ -102,10 +102,4 @@ async def authorize_token(
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
 
-    # when the token is not found
-    except NotFoundOCPIError:
-        response.status_code = http_status.HTTP_404_NOT_FOUND
-        return OCPIResponse(
-            data=[],
-            **status.OCPI_2004_UNKNOWN_TOKEN,
-        )
+    raise NotFoundOCPIError

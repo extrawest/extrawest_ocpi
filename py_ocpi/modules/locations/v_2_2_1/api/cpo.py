@@ -9,6 +9,7 @@ from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.dependencies import get_crud, get_adapter, pagination_filters
 
 router = APIRouter(
@@ -62,10 +63,12 @@ async def get_location(
         auth_token=auth_token,
         version=VersionNumber.v_2_2_1,
     )
-    return OCPIResponse(
-        data=[adapter.location_adapter(data).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.location_adapter(data).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.get("/{location_id}/{evse_uid}", response_model=OCPIResponse)
@@ -85,13 +88,15 @@ async def get_evse(
         auth_token=auth_token,
         version=VersionNumber.v_2_2_1,
     )
-    location = adapter.location_adapter(data)
-    for evse in location.evses:
-        if evse.uid == evse_uid:
-            return OCPIResponse(
-                data=[evse.dict()],
-                **status.OCPI_1000_GENERIC_SUCESS_CODE,
-            )
+    if data:
+        location = adapter.location_adapter(data)
+        for evse in location.evses:
+            if evse.uid == evse_uid:
+                return OCPIResponse(
+                    data=[evse.dict()],
+                    **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                )
+    raise NotFoundOCPIError
 
 
 @router.get(
@@ -114,12 +119,14 @@ async def get_connector(
         auth_token=auth_token,
         version=VersionNumber.v_2_2_1,
     )
-    location = adapter.location_adapter(data)
-    for evse in location.evses:
-        if evse.uid == evse_uid:
-            for connector in evse.connectors:
-                if connector.id == connector_id:
-                    return OCPIResponse(
-                        data=[connector.dict()],
-                        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-                    )
+    if data:
+        location = adapter.location_adapter(data)
+        for evse in location.evses:
+            if evse.uid == evse_uid:
+                for connector in evse.connectors:
+                    if connector.id == connector_id:
+                        return OCPIResponse(
+                            data=[connector.dict()],
+                            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                        )
+    raise NotFoundOCPIError
