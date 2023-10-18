@@ -6,13 +6,16 @@ from py_ocpi.core.utils import get_auth_token
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.dependencies import get_crud, get_adapter
 
 router = APIRouter(
     prefix="/tariffs",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_2_1))],
 )
 
 
@@ -38,10 +41,12 @@ async def get_tariff(
         party_id=party_id,
         version=VersionNumber.v_2_2_1,
     )
-    return OCPIResponse(
-        data=[adapter.tariff_adapter(data, VersionNumber.v_2_2_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.tariff_adapter(data, VersionNumber.v_2_2_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.put(
@@ -108,7 +113,7 @@ async def delete_tariff(
 ):
     auth_token = get_auth_token(request)
 
-    await crud.delete(
+    tariff = await crud.get(
         ModuleID.tariffs,
         RoleEnum.emsp,
         tariff_id,
@@ -117,8 +122,19 @@ async def delete_tariff(
         party_id=party_id,
         version=VersionNumber.v_2_2_1,
     )
+    if tariff:
+        await crud.delete(
+            ModuleID.tariffs,
+            RoleEnum.emsp,
+            tariff_id,
+            auth_token=auth_token,
+            country_code=country_code,
+            party_id=party_id,
+            version=VersionNumber.v_2_2_1,
+        )
 
-    return OCPIResponse(
-        data=[],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+        return OCPIResponse(
+            data=[],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError

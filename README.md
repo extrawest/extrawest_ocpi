@@ -89,10 +89,27 @@ class Crud:
     @classmethod
     async def do(cls, module: ModuleID, role: RoleEnum, action: Action, *args, data: dict = None, **kwargs) -> Any:
         ...
-
 ```
 
-2) Initialize fastapi application
+2) Implement `get_valid_token_c` method of Authenticator class which would return 
+list of valid tokens which will be compared with given token in the header 
+while requests.
+
+auth.py
+```python
+from typing import List
+
+from py_ocpi.core.authentication.authenticator import Authenticator
+
+
+class ClientAuthenticator(Authenticator):
+    @classmethod
+    async def get_valid_token_c(cls) -> List[str]:
+        """Return a list of valid tokens."""
+        ...
+```
+
+3) Initialize fastapi application
 
 main.py
 ```python
@@ -100,6 +117,7 @@ from py_ocpi import get_application
 from py_ocpi.core.enums import RoleEnum, ModuleID
 from py_ocpi.modules.versions.enums import VersionNumber
 
+from auth import ClientAuthenticator
 from crud import Crud
 
 
@@ -107,12 +125,12 @@ app = get_application(
     version_numbers=[VersionNumber.v_2_1_1, VersionNumber.v_2_2_1],
     roles=[RoleEnum.cpo],
     modules=[ModuleID.locations],
+    authenticator=ClientAuthenticator,
     crud=Crud,
 )
-
 ```
 
-3) Run
+4) Run
 
 ```bash
   uvicorn main:app --reload
@@ -141,6 +159,8 @@ Example: `http://127.0.0.1:8000/ocpi/docs/`
     - Add tariffs module;
     - Add sessions module;
     - Add tokens module;
+- [in progress] Add authentication support
+    - Add authentication dependency to endpoints of version 2.2.1 and 2.1.1.
 
 
 ## Related

@@ -11,6 +11,8 @@ from tests.test_modules.mocks.async_client import (
     MockAsyncClientGeneratorVersionsAndEndpoints,
 )
 
+from tests.test_modules.utils import ClientAuthenticator
+
 LOCATIONS = [
     {
         "country_code": "us",
@@ -201,6 +203,7 @@ def test_push(async_client):
         roles=[enums.RoleEnum.cpo],
         crud=crud,
         adapter=adapter,
+        authenticator=ClientAuthenticator,
         modules=[],
         http_push=True,
     )

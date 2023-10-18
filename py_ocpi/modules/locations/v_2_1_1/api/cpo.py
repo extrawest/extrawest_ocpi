@@ -1,17 +1,20 @@
 from fastapi import APIRouter, Depends, Response, Request
 
 from py_ocpi.modules.versions.enums import VersionNumber
-from py_ocpi.core.utils import get_list, get_auth_token_from_header
+from py_ocpi.core.utils import get_list, get_auth_token
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import String
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.dependencies import get_crud, get_adapter, pagination_filters
 
 router = APIRouter(
     prefix="/locations",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 
@@ -23,7 +26,7 @@ async def get_locations(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data_list = await get_list(
         response,
@@ -53,7 +56,7 @@ async def get_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -62,10 +65,12 @@ async def get_location(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    return OCPIResponse(
-        data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.get("/{location_id}/{evse_uid}", response_model=OCPIResponse)
@@ -76,7 +81,7 @@ async def get_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -85,13 +90,15 @@ async def get_evse(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
-    for evse in location.evses:
-        if evse.uid == evse_uid:
-            return OCPIResponse(
-                data=[evse.dict()],
-                **status.OCPI_1000_GENERIC_SUCESS_CODE,
-            )
+    if data:
+        location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
+        for evse in location.evses:
+            if evse.uid == evse_uid:
+                return OCPIResponse(
+                    data=[evse.dict()],
+                    **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                )
+    raise NotFoundOCPIError
 
 
 @router.get(
@@ -105,7 +112,7 @@ async def get_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -114,12 +121,14 @@ async def get_connector(
         auth_token=auth_token,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
-    for evse in location.evses:
-        if evse.uid == evse_uid:
-            for connector in evse.connectors:
-                if connector.id == connector_id:
-                    return OCPIResponse(
-                        data=[connector.dict()],
-                        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-                    )
+    if data:
+        location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
+        for evse in location.evses:
+            if evse.uid == evse_uid:
+                for connector in evse.connectors:
+                    if connector.id == connector_id:
+                        return OCPIResponse(
+                            data=[connector.dict()],
+                            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                        )
+    raise NotFoundOCPIError

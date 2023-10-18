@@ -14,6 +14,7 @@ import httpx
 
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import ModuleID, RoleEnum, Action
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
@@ -36,6 +37,7 @@ from py_ocpi.modules.commands.v_2_2_1.schemas import (
 
 router = APIRouter(
     prefix="/commands",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_2_1))],
 )
 
 

@@ -3,6 +3,7 @@ from datetime import datetime
 from fastapi import Query
 
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.authenticator import Authenticator
 from py_ocpi.core.config import settings
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import URL
@@ -16,6 +17,10 @@ def get_crud():
 
 def get_adapter():
     return Adapter
+
+
+def get_authenticator():
+    return Authenticator
 
 
 def get_versions():
