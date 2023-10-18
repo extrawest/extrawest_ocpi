@@ -16,71 +16,9 @@ from py_ocpi.core.utils import encode_string_base64
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.versions.schemas import Version
 
-CREDENTIALS_TOKEN_GET = {
-    "url": "url",
-    "roles": [
-        {
-            "role": enums.RoleEnum.emsp,
-            "business_details": {
-                "name": "name",
-            },
-            "party_id": "JOM",
-            "country_code": "MY",
-        }
-    ],
-}
+from .utils import Crud, CREDENTIALS_TOKEN_CREATE
 
-CREDENTIALS_TOKEN_CREATE = {
-    "token": str(uuid4()),
-    "url": "/ocpi/versions",
-    "roles": [
-        {
-            "role": enums.RoleEnum.emsp,
-            "business_details": {
-                "name": "name",
-            },
-            "party_id": "JOM",
-            "country_code": "MY",
-        }
-    ],
-}
-
-
-def partial_class(cls, *args, **kwds):
-    class NewCls(cls):
-        __init__ = functools.partialmethod(cls.__init__, *args, **kwds)
-
-    return NewCls
-
-
-class Crud:
-    @classmethod
-    async def get(
-        cls, module: enums.ModuleID, role: enums.RoleEnum, id, *args, **kwargs
-    ):
-        if id == CREDENTIALS_TOKEN_CREATE["token"]:
-            return None
-        return dict(CREDENTIALS_TOKEN_GET, **{"token": id})
-
-    @classmethod
-    async def create(
-        cls, module: enums.ModuleID, data, operation, *args, **kwargs
-    ):
-        if operation == "credentials":
-            return None
-        return CREDENTIALS_TOKEN_CREATE
-
-    @classmethod
-    async def do(
-        cls,
-        module: enums.ModuleID,
-        role: enums.RoleEnum,
-        action: enums.Action,
-        *args,
-        data: dict = None,
-        **kwargs,
-    ):
-        return None
+from tests.test_modules.utils import ClientAuthenticator
 
 
 def test_cpo_get_credentials_v_2_2_1():
@@ -88,6 +26,7 @@ def test_cpo_get_credentials_v_2_2_1():
         version_numbers=[VersionNumber.v_2_2_1],
         roles=[enums.RoleEnum.cpo],
         crud=Crud,
+        authenticator=ClientAuthenticator,
         modules=[enums.ModuleID.credentials_and_registration],
     )
     token = str(uuid4())
@@ -121,6 +60,7 @@ async def test_cpo_post_credentials_v_2_2_1(async_client):
         version_numbers=[VersionNumber.v_2_2_1],
         roles=[enums.RoleEnum.emsp],
         crud=MockCrud,
+        authenticator=ClientAuthenticator,
         modules=[enums.ModuleID.credentials_and_registration],
     )
 
@@ -142,6 +82,7 @@ async def test_cpo_post_credentials_v_2_2_1(async_client):
         version_numbers=[VersionNumber.v_2_2_1],
         roles=[enums.RoleEnum.cpo],
         crud=MockCrud,
+        authenticator=ClientAuthenticator,
         modules=[enums.ModuleID.credentials_and_registration],
     )
 

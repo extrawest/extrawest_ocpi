@@ -1,17 +1,17 @@
 from uuid import uuid4
-from unittest.mock import AsyncMock, MagicMock, patch
 
-from fastapi.testclient import TestClient
-
-from py_ocpi import get_application
-from py_ocpi.core import enums, schemas
-from py_ocpi.modules.locations.v_2_2_1.schemas import Location
-from py_ocpi.modules.versions.enums import VersionNumber
-from tests.test_modules.mocks.async_client import (
-    MockAsyncClientGeneratorVersionsAndEndpoints,
+from py_ocpi.core import enums
+from tests.test_modules.utils import (
+    ENCODED_AUTH_TOKEN,
+    ENCODED_RANDOM_AUTH_TOKEN,
+    ClientAuthenticator,
 )
 
-from tests.test_modules.utils import ClientAuthenticator
+CPO_BASE_URL = "/ocpi/cpo/2.2.1/locations/"
+EMSP_BASE_URL = "/ocpi/emsp/2.2.1/locations/"
+AUTH_HEADERS = {"Authorization": f"Token {ENCODED_AUTH_TOKEN}"}
+WRONG_AUTH_HEADERS = {"Authorization": f"Token {ENCODED_RANDOM_AUTH_TOKEN}"}
+
 
 LOCATIONS = [
     {
@@ -187,38 +187,43 @@ LOCATIONS = [
 ]
 
 
-@patch(
-    "py_ocpi.core.push.httpx.AsyncClient",
-    side_effect=MockAsyncClientGeneratorVersionsAndEndpoints,
-)
-def test_push(async_client):
-    crud = AsyncMock()
-    adapter = MagicMock()
+class Crud:
+    @classmethod
+    async def get(
+        cls, module: enums.ModuleID, role: enums.RoleEnum, id, *args, **kwargs
+    ):
+        return LOCATIONS[0]
 
-    crud.get.return_value = LOCATIONS[0]
-    adapter.location_adapter.return_value = Location(**LOCATIONS[0])
+    @classmethod
+    async def update(
+        cls,
+        module: enums.ModuleID,
+        role: enums.RoleEnum,
+        data: dict,
+        id,
+        *args,
+        **kwargs,
+    ):
+        return data
 
-    app = get_application(
-        version_numbers=[VersionNumber.v_2_2_1],
-        roles=[enums.RoleEnum.cpo],
-        crud=crud,
-        adapter=adapter,
-        authenticator=ClientAuthenticator,
-        modules=[],
-        http_push=True,
-    )
+    @classmethod
+    async def create(
+        cls,
+        module: enums.ModuleID,
+        role: enums.RoleEnum,
+        data: dict,
+        *args,
+        **kwargs,
+    ):
+        return data
 
-    client = TestClient(app)
-    data = schemas.Push(
-        module_id=enums.ModuleID.locations,
-        object_id="1",
-        receivers=[
-            schemas.Receiver(
-                endpoints_url="http://example.com", auth_token="token"
-            ),
-        ],
-    ).dict()
-    client.post("/push/2.2.1", json=data)
-
-    crud.get.assert_awaited_once()
-    adapter.location_adapter.assert_called_once()
+    @classmethod
+    async def list(
+        cls,
+        module: enums.ModuleID,
+        role: enums.RoleEnum,
+        filters: dict,
+        *args,
+        **kwargs,
+    ) -> list:
+        return LOCATIONS, 1, True

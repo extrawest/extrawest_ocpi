@@ -135,7 +135,7 @@ async def partial_update_token(
     )
     if not old_data:
         raise NotFoundOCPIError
-    old_token = adapter.token_adapter(old_data, VersionNumber.v_2_1_1)
+    old_token = adapter.token_adapter(old_data)
 
     new_token = copy.deepcopy(old_token)
     partially_update_attributes(
