@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     COUNTRY_CODE: str = "US"
     PARTY_ID: str = "NON"
     PROTOCOL: str = "https"
+    COMMAND_AWAIT_TIME: int = 5
 
     @classmethod
     @validator("BACKEND_CORS_ORIGINS", pre=True)

@@ -39,7 +39,8 @@ Make sure to install any ASGI-server supported by fastapi:
 
 ---
 
-To use this project, you will need to add the following environment variables to your .env file
+To use this project, you will need to add the following environment variables 
+to your .env file, overwise default values would be taken
 
 `API_KEY` 
 `ANOTHER_API_KEY`
@@ -50,6 +51,7 @@ To use this project, you will need to add the following environment variables to
 `PUSH_PREFIX`
 `COUNTRY_CODE`
 `PARTY_ID`
+`COMMAND_AWAIT_TIME`
 
 
 ## Usage/Examples

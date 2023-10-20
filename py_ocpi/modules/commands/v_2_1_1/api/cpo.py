@@ -17,9 +17,11 @@ from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core import status
-from py_ocpi.core.utils import get_auth_token_from_header
+from py_ocpi.core.config import settings
+from py_ocpi.core.utils import get_auth_token
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.commands.v_2_1_1.enums import CommandType
 from py_ocpi.modules.commands.v_2_1_1.schemas import (
@@ -33,6 +35,7 @@ from py_ocpi.modules.commands.v_2_1_1.schemas import (
 
 router = APIRouter(
     prefix="/commands",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 
@@ -51,7 +54,7 @@ async def apply_pydantic_schema(command: str, data: dict):
 
 
 async def send_command_result(
-    response_url: str,
+    command_data: StartSession | StopSession | ReserveNow | UnlockConnector,
     command: CommandType,
     auth_token: str,
     crud: Crud,
@@ -66,13 +69,13 @@ async def send_command_result(
     )
 
     command_result = None
-    for _ in range(150):  # check for 5 mins
+    for _ in range(30 * settings.COMMAND_AWAIT_TIME):
         # since command has no id, 0 is used for id parameter of crud.get
         command_result = await crud.get(
             ModuleID.commands,
             RoleEnum.cpo,
             0,
-            response_url=response_url,
+            command_data=command_data,
             auth_token=auth_token,
             version=VersionNumber.v_2_1_1,
             command=command,
@@ -91,7 +94,7 @@ async def send_command_result(
     async with httpx.AsyncClient() as client:
         authorization_token = f"Token {client_auth_token}"
         await client.post(
-            response_url,
+            command_data.response_url,
             json=command_response.dict(),
             headers={"authorization": authorization_token},
         )
@@ -106,7 +109,7 @@ async def receive_command(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     try:
         command_data = await apply_pydantic_schema(command, data)
@@ -123,13 +126,15 @@ async def receive_command(
 
     try:
         if hasattr(command_data, "location_id"):
-            await crud.get(
+            location = await crud.get(
                 ModuleID.locations,
                 RoleEnum.cpo,
                 command_data.location_id,
                 auth_token=auth_token,
                 version=VersionNumber.v_2_1_1,
             )
+            if not location:
+                raise NotFoundOCPIError
 
         command_response = await crud.do(
             ModuleID.commands,
@@ -140,10 +145,12 @@ async def receive_command(
             auth_token=auth_token,
             version=VersionNumber.v_2_1_1,
         )
+        if not command_response:
+            raise NotFoundOCPIError
 
         background_tasks.add_task(
             send_command_result,
-            response_url=command_data.response_url,
+            command_data=command_data,
             command=command,
             auth_token=auth_token,
             crud=crud,
