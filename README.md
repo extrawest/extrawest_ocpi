@@ -11,6 +11,10 @@
 
 Python implementation of Open Charge Point Interface (OCPI) protocol based on fastapi.
 
+Supported OCPI versions: 2.2.1, 2.1.1
+
+OCPI Documentation: [2.2.1](https://github.com/ocpi/ocpi/tree/release-2.2.1-bugfixes), [2.1.1](https://github.com/ocpi/ocpi/tree/release-2.1.1-bugfixes)
+
 ---
 
 
@@ -42,8 +46,6 @@ Make sure to install any ASGI-server supported by fastapi:
 To use this project, you will need to add the following environment variables 
 to your .env file, overwise default values would be taken
 
-`API_KEY` 
-`ANOTHER_API_KEY`
 `PROJECT_NAME`
 `BACKEND_CORS_ORIGINS`
 `OCPI_HOST`
@@ -58,7 +60,7 @@ to your .env file, overwise default values would be taken
 
 ---
 
-1) Implement and connect your db methods inside this Crud class. 
+1) Implement and connect your business logic and db methods inside this Crud class. 
 
 crud.py
 ```python curd.py
@@ -95,7 +97,9 @@ class Crud:
 
 2) Implement `get_valid_token_c` method of Authenticator class which would return 
 list of valid tokens which will be compared with given token in the header 
-while requests.
+while requests. 
+
+[Reminder: Versions 2.2 and higher sends encoded authorization tokens, so decoded ones will be compared.]
 
 auth.py
 ```python
@@ -129,6 +133,8 @@ app = get_application(
     modules=[ModuleID.locations],
     authenticator=ClientAuthenticator,
     crud=Crud,
+    http_push=False,
+    websocket_push=False,
 )
 ```
 
@@ -144,6 +150,8 @@ app = get_application(
 
 As this project is based on fastapi, use `/docs` or `redoc/` to check the documentation after the project is running.
 
+[API's will appear depending on given `version_numbers`, `roles` and `modules` given to initializer.]
+
 Example: `http://127.0.0.1:8000/ocpi/docs/`
 
 
@@ -151,18 +159,7 @@ Example: `http://127.0.0.1:8000/ocpi/docs/`
 
 ---
 
-- [in progress] Add support for OCPI v2.1.1
-  - What's done so far:
-    - Add version, credentials and locations module;
-    - Add support for initializing v2.1.1;
-    - It's now possible to initialize a few versions of ocpi for one project;
-    - Minimal required python version is 3.10;
-    - Add cdrs module;
-    - Add tariffs module;
-    - Add sessions module;
-    - Add tokens module;
-- [in progress] Add authentication support
-    - Add authentication dependency to endpoints of version 2.2.1 and 2.1.1.
+- [in progress] Add v2.2.1 modules: `Charging Profiles`, `Hub Client Info`
 
 
 ## Related
