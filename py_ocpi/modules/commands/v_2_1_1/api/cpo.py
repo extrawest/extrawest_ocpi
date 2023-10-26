@@ -1,5 +1,4 @@
 from asyncio import sleep
-from typing import Union
 
 from fastapi import (
     APIRouter,
@@ -15,53 +14,47 @@ import httpx
 
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import ModuleID, RoleEnum, Action
-from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core import status
 from py_ocpi.core.config import settings
-from py_ocpi.core.utils import encode_string_base64, get_auth_token
+from py_ocpi.core.utils import get_auth_token
 from py_ocpi.modules.versions.enums import VersionNumber
-from py_ocpi.modules.commands.v_2_2_1.enums import CommandType
-from py_ocpi.modules.commands.v_2_2_1.schemas import (
-    CancelReservation,
+from py_ocpi.modules.commands.v_2_1_1.enums import CommandType
+from py_ocpi.modules.commands.v_2_1_1.schemas import (
     ReserveNow,
     StartSession,
     StopSession,
     UnlockConnector,
-    CommandResult,
-    CommandResultType,
     CommandResponse,
     CommandResponseType,
 )
 
 router = APIRouter(
     prefix="/commands",
-    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_2_1))],
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
-UnionDataType = Union[
-    StartSession, StopSession, ReserveNow, UnlockConnector, CancelReservation
-]
 
 
 async def apply_pydantic_schema(command: str, data: dict):
     if command == CommandType.reserve_now:
         data = ReserveNow(**data)  # type: ignore
-    elif command == CommandType.cancel_reservation:
-        data = CancelReservation(**data)  # type: ignore
     elif command == CommandType.start_session:
         data = StartSession(**data)  # type: ignore
     elif command == CommandType.stop_session:
         data = StopSession(**data)  # type: ignore
-    else:
+    elif command == CommandType.unlock_connector:
         data = UnlockConnector(**data)  # type: ignore
+    else:
+        raise NotImplementedError
     return data
 
 
 async def send_command_result(
-    command_data: UnionDataType,
+    command_data: StartSession | StopSession | ReserveNow | UnlockConnector,
     command: CommandType,
     auth_token: str,
     crud: Crud,
@@ -72,7 +65,7 @@ async def send_command_result(
         RoleEnum.cpo,
         Action.get_client_token,
         auth_token=auth_token,
-        version=VersionNumber.v_2_2_1,
+        version=VersionNumber.v_2_1_1,
     )
 
     command_result = None
@@ -84,7 +77,7 @@ async def send_command_result(
             0,
             command_data=command_data,
             auth_token=auth_token,
-            version=VersionNumber.v_2_2_1,
+            version=VersionNumber.v_2_1_1,
             command=command,
         )
         if command_result:
@@ -92,17 +85,17 @@ async def send_command_result(
         await sleep(2)
 
     if not command_result:
-        command_result = CommandResult(result=CommandResultType.failed)
+        command_response = CommandResponse(result=CommandResponseType.timeout)
     else:
-        command_result = adapter.command_result_adapter(
-            command_result, VersionNumber.v_2_2_1
+        command_response = adapter.command_response_adapter(
+            command_result, VersionNumber.v_2_1_1
         )
 
     async with httpx.AsyncClient() as client:
-        authorization_token = f"Token {encode_string_base64(client_auth_token)}"
+        authorization_token = f"Token {client_auth_token}"
         await client.post(
             command_data.response_url,
-            json=command_result.dict(),
+            json=command_response.dict(),
             headers={"authorization": authorization_token},
         )
 
@@ -116,7 +109,7 @@ async def receive_command(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     try:
         command_data = await apply_pydantic_schema(command, data)
@@ -124,6 +117,11 @@ async def receive_command(
         return JSONResponse(
             status_code=fastapistatus.HTTP_422_UNPROCESSABLE_ENTITY,
             content={"detail": jsonable_encoder(exc.errors())},
+        )
+    except NotImplementedError:
+        return JSONResponse(
+            status_code=fastapistatus.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={"detail": "Not implemented"},
         )
 
     try:
@@ -133,7 +131,7 @@ async def receive_command(
                 RoleEnum.cpo,
                 command_data.location_id,
                 auth_token=auth_token,
-                version=VersionNumber.v_2_2_1,
+                version=VersionNumber.v_2_1_1,
             )
             if not location:
                 raise NotFoundOCPIError
@@ -145,7 +143,7 @@ async def receive_command(
             command_data.dict(),
             command=command,
             auth_token=auth_token,
-            version=VersionNumber.v_2_2_1,
+            version=VersionNumber.v_2_1_1,
         )
         if not command_response:
             raise NotFoundOCPIError
@@ -160,15 +158,17 @@ async def receive_command(
         )
 
         return OCPIResponse(
-            data=[adapter.command_response_adapter(command_response).dict()],
+            data=[
+                adapter.command_response_adapter(
+                    command_response, VersionNumber.v_2_1_1
+                ).dict()
+            ],
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
 
     # when the location is not found
     except NotFoundOCPIError:
-        command_response = CommandResponse(
-            result=CommandResponseType.rejected, timeout=0
-        )
+        command_response = CommandResponse(result=CommandResponseType.rejected)
         return OCPIResponse(
             data=[command_response.dict()],
             **status.OCPI_2003_UNKNOWN_LOCATION,

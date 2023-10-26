@@ -18,6 +18,9 @@ from py_ocpi.modules.sessions.v_2_1_1.api import (
 from py_ocpi.modules.tokens.v_2_1_1.api import (
     emsp_router as tokens_emsp_2_1_1_router,
 )
+from py_ocpi.modules.commands.v_2_1_1.api import (
+    emsp_router as commands_emsp_2_1_1_router,
+)
 
 router = {
     ModuleID.locations: locations_emsp_2_1_1_router,
@@ -26,4 +29,5 @@ router = {
     ModuleID.tariffs: tariffs_emsp_2_1_1_router,
     ModuleID.sessions: sessions_emsp_2_1_1_router,
     ModuleID.tokens: tokens_emsp_2_1_1_router,
+    ModuleID.commands: commands_emsp_2_1_1_router,
 }
