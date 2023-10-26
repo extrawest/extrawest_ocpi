@@ -52,7 +52,7 @@ class CredentialsAuthorizationVerifier:
     :param version (VersionNumber): OCPI version used.
     """
 
-    def __init__(self, version: VersionNumber) -> None:
+    def __init__(self, version: VersionNumber | None) -> None:
         self.version = version
 
     async def __call__(
@@ -74,8 +74,10 @@ class CredentialsAuthorizationVerifier:
         """
         try:
             token = authorization.split()[1]
-            if self.version.startswith("2.2"):
+            try:
                 token = decode_string_base64(token)
+            except UnicodeDecodeError:
+                pass
             return await authenticator.authenticate_credentials(token)
         except IndexError:
             raise AuthorizationOCPIError
