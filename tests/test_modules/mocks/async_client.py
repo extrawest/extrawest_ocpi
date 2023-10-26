@@ -5,16 +5,12 @@ from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.versions.v_2_2_1.schemas import VersionDetail
 
 fake_endpoints_data = {
-    "data": [
-        VersionDetail(
-            version=VersionNumber.v_2_2_1,
-            endpoints=[
-                ENDPOINTS[VersionNumber.v_2_2_1][RoleEnum.cpo][
-                    ModuleID.locations
-                ]
-            ],
-        ).dict(),
-    ],
+    "data": VersionDetail(
+        version=VersionNumber.v_2_2_1,
+        endpoints=[
+            ENDPOINTS[VersionNumber.v_2_2_1][RoleEnum.cpo][ModuleID.locations]
+        ],
+    ).dict(),
 }
 
 fake_versions_data = {"data": get_versions()}
