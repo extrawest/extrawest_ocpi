@@ -20,22 +20,18 @@ def set_pagination_headers(
     return response
 
 
-def get_auth_token(request: Request) -> Union[str, None]:
+def get_auth_token(
+    request: Request,
+    version: VersionNumber = VersionNumber.v_2_2_1,
+) -> Union[str, None]:
     headers = request.headers
     headers_token = headers.get("authorization", "Token Null")
     token = headers_token.split()[1]
     if token == "Null":  # nosec
         return None
+    if version.startswith("2.1"):
+        return token
     return decode_string_base64(token)
-
-
-def get_auth_token_from_header(request: Request) -> str | None:
-    headers = request.headers
-    headers_token = headers.get("authorization", "Token Null")
-    token = headers_token.split()[1]
-    if token == "Null":
-        return None
-    return token
 
 
 async def get_list(

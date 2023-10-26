@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, Response, Request, status as http_status
+from fastapi import APIRouter, Depends, Response, Request
 
 from py_ocpi.modules.tokens.v_2_1_1.enums import TokenType
 from py_ocpi.modules.tokens.v_2_1_1.schemas import LocationReference
 from py_ocpi.modules.versions.enums import VersionNumber
-from py_ocpi.core.utils import get_list, get_auth_token_from_header
+from py_ocpi.core.utils import get_list, get_auth_token
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.data_types import String
@@ -15,6 +16,7 @@ from py_ocpi.core.dependencies import get_crud, get_adapter, pagination_filters
 
 router = APIRouter(
     prefix="/tokens",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 
@@ -26,7 +28,7 @@ async def get_tokens(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data_list = await get_list(
         response,
@@ -51,25 +53,24 @@ async def get_tokens(
 @router.post("/{token_uid}/authorize", response_model=OCPIResponse)
 async def authorize_token(
     request: Request,
-    response: Response,
     token_uid: String(36),  # type: ignore
     token_type: TokenType = TokenType.rfid,
     location_reference: LocationReference = None,  # type: ignore
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
-    try:
-        # check if token exists
-        await crud.get(
-            ModuleID.tokens,
-            RoleEnum.emsp,
-            token_uid,
-            auth_token=auth_token,
-            token_type=token_type,
-            version=VersionNumber.v_2_1_1,
-        )
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
+    # check if token exists
+    token = await crud.get(
+        ModuleID.tokens,
+        RoleEnum.emsp,
+        token_uid,
+        auth_token=auth_token,
+        token_type=token_type,
+        version=VersionNumber.v_2_1_1,
+    )
+    if token:
         location_reference = (
             location_reference.dict()
             if location_reference
@@ -104,10 +105,4 @@ async def authorize_token(
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
 
-    # when the token is not found
-    except NotFoundOCPIError:
-        response.status_code = http_status.HTTP_404_NOT_FOUND
-        return OCPIResponse(
-            data=[],
-            **status.OCPI_2004_UNKNOWN_TOKEN,
-        )
+    raise NotFoundOCPIError

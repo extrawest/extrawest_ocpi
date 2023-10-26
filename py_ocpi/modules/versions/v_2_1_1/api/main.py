@@ -10,7 +10,7 @@ from py_ocpi.core.crud import Crud
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.dependencies import get_endpoints, get_crud
-from py_ocpi.core.utils import get_auth_token_from_header
+from py_ocpi.core.utils import get_auth_token
 from py_ocpi.core.enums import Action, ModuleID
 
 from py_ocpi.modules.versions.v_2_1_1.schemas import (
@@ -27,7 +27,7 @@ async def get_version_details(
     endpoints=Depends(get_endpoints),
     crud: Crud = Depends(get_crud),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     server_cred = await crud.do(
         ModuleID.credentials_and_registration,

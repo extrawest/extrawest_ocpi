@@ -4,13 +4,15 @@ from fastapi import APIRouter, Depends, Request
 
 from py_ocpi.core import status
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import String
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.utils import (
-    get_auth_token_from_header,
+    get_auth_token,
     partially_update_attributes,
 )
 from py_ocpi.modules.tariffs.v_2_1_1.schemas import Tariff, TariffPartialUpdate
@@ -18,6 +20,7 @@ from py_ocpi.modules.versions.enums import VersionNumber
 
 router = APIRouter(
     prefix="/tariffs",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 
@@ -32,7 +35,7 @@ async def get_tariff(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.tariffs,
@@ -43,10 +46,12 @@ async def get_tariff(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    return OCPIResponse(
-        data=[adapter.tariff_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.tariff_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.put(
@@ -61,7 +66,7 @@ async def add_or_update_tariff(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.tariffs,
@@ -112,7 +117,7 @@ async def partial_update_tariff(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.tariffs,
@@ -123,29 +128,30 @@ async def partial_update_tariff(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
+    if old_data:
+        old_tariff = adapter.tariff_adapter(old_data, VersionNumber.v_2_1_1)
+        new_tariff = copy.deepcopy(old_tariff)
 
-    old_tariff = adapter.tariff_adapter(old_data, VersionNumber.v_2_1_1)
-    new_tariff = copy.deepcopy(old_tariff)
+        partially_update_attributes(
+            new_tariff, tariff.dict(exclude_defaults=True, exclude_unset=True)
+        )
 
-    partially_update_attributes(
-        new_tariff, tariff.dict(exclude_defaults=True, exclude_unset=True)
-    )
+        data = await crud.update(
+            ModuleID.tariffs,
+            RoleEnum.emsp,
+            new_tariff.dict(),
+            tariff_id,
+            auth_token=auth_token,
+            country_code=country_code,
+            party_id=party_id,
+            version=VersionNumber.v_2_1_1,
+        )
 
-    data = await crud.update(
-        ModuleID.tariffs,
-        RoleEnum.emsp,
-        new_tariff.dict(),
-        tariff_id,
-        auth_token=auth_token,
-        country_code=country_code,
-        party_id=party_id,
-        version=VersionNumber.v_2_1_1,
-    )
-
-    return OCPIResponse(
-        data=[adapter.tariff_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+        return OCPIResponse(
+            data=[adapter.tariff_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.delete(
@@ -159,9 +165,9 @@ async def delete_tariff(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
-    await crud.delete(
+    tariff = await crud.get(
         ModuleID.tariffs,
         RoleEnum.emsp,
         tariff_id,
@@ -170,8 +176,19 @@ async def delete_tariff(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
+    if tariff:
+        await crud.delete(
+            ModuleID.tariffs,
+            RoleEnum.emsp,
+            tariff_id,
+            auth_token=auth_token,
+            country_code=country_code,
+            party_id=party_id,
+            version=VersionNumber.v_2_1_1,
+        )
 
-    return OCPIResponse(
-        data=[],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+        return OCPIResponse(
+            data=[],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError

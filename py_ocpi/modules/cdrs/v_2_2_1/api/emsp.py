@@ -6,14 +6,17 @@ from py_ocpi.core.utils import get_auth_token
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.config import settings
 from py_ocpi.core.dependencies import get_crud, get_adapter
 
 router = APIRouter(
     prefix="/cdrs",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_2_1))],
 )
 
 
@@ -33,10 +36,12 @@ async def get_cdr(
         auth_token=auth_token,
         version=VersionNumber.v_2_2_1,
     )
-    return OCPIResponse(
-        data=[adapter.cdr_adapter(data, VersionNumber.v_2_2_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.cdr_adapter(data).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.post("/", response_model=OCPIResponse)
