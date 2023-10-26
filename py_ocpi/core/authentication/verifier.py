@@ -38,7 +38,10 @@ class AuthorizationVerifier:
         try:
             token = authorization.split()[1]
             if self.version.startswith("2.2"):
-                token = decode_string_base64(token)
+                try:
+                    token = decode_string_base64(token)
+                except UnicodeDecodeError:
+                    raise AuthorizationOCPIError
             await authenticator.authenticate(token)
         except IndexError:
             raise AuthorizationOCPIError
@@ -74,13 +77,21 @@ class CredentialsAuthorizationVerifier:
         """
         try:
             token = authorization.split()[1]
+        except IndexError:
+            raise AuthorizationOCPIError
+
+        if self.version:
+            if self.version.startswith("2.2"):
+                try:
+                    token = decode_string_base64(token)
+                except UnicodeDecodeError:
+                    raise AuthorizationOCPIError
+        else:
             try:
                 token = decode_string_base64(token)
             except UnicodeDecodeError:
                 pass
-            return await authenticator.authenticate_credentials(token)
-        except IndexError:
-            raise AuthorizationOCPIError
+        return await authenticator.authenticate_credentials(token)
 
 
 class HttpPushVerifier:
@@ -111,7 +122,10 @@ class HttpPushVerifier:
         try:
             token = authorization.split()[1]
             if version.value.startswith("2.2"):
-                token = decode_string_base64(token)
+                try:
+                    token = decode_string_base64(token)
+                except UnicodeDecodeError:
+                    raise AuthorizationOCPIError
             await authenticator.authenticate(token)
         except IndexError:
             raise AuthorizationOCPIError
@@ -146,7 +160,10 @@ class WSPushVerifier:
                 raise AuthorizationOCPIError
 
             if version.value.startswith("2.2"):
-                token = decode_string_base64(token)
+                try:
+                    token = decode_string_base64(token)
+                except UnicodeDecodeError:
+                    raise AuthorizationOCPIError
             await authenticator.authenticate(token)
         except AuthorizationOCPIError:
             raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
