@@ -25,6 +25,7 @@ from py_ocpi.modules.credentials.v_2_2_1.schemas import Credentials
 router = APIRouter(
     prefix="/credentials",
 )
+cred_dependency = CredentialsAuthorizationVerifier(VersionNumber.v_2_1_1)
 
 
 @router.get(
@@ -58,9 +59,7 @@ async def post_credentials(
     credentials: Credentials,
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
-    server_cred: str
-    | dict
-    | None = Depends(CredentialsAuthorizationVerifier(VersionNumber.v_2_2_1)),
+    server_cred: str | dict | None = Depends(cred_dependency),
 ):
     auth_token = get_auth_token(request)
 
@@ -132,9 +131,7 @@ async def update_credentials(
     credentials: Credentials,
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
-    server_cred: str
-    | dict
-    | None = Depends(CredentialsAuthorizationVerifier(VersionNumber.v_2_2_1)),
+    server_cred: str | dict | None = Depends(cred_dependency),
 ):
     auth_token = get_auth_token(request)
 
