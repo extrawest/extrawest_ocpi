@@ -20,7 +20,7 @@ from py_ocpi.modules.versions.v_2_2_1.schemas import (
 )
 
 router = APIRouter()
-cred_dependency = CredentialsAuthorizationVerifier(VersionNumber.v_2_1_1)
+cred_dependency = CredentialsAuthorizationVerifier(VersionNumber.v_2_2_1)
 
 
 @router.get("/2.2.1/details", response_model=OCPIResponse)
