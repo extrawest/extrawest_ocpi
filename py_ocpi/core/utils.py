@@ -29,7 +29,7 @@ def get_auth_token(
     token = headers_token.split()[1]
     if token == "Null":  # nosec
         return None
-    if version.startswith("2.1"):
+    if version.startswith("2.1") or version.startswith("2.0"):
         return token
     return decode_string_base64(token)
 

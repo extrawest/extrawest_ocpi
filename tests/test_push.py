@@ -11,7 +11,10 @@ from tests.test_modules.mocks.async_client import (
     MockAsyncClientGeneratorVersionsAndEndpoints,
 )
 
-from tests.test_modules.utils import ClientAuthenticator
+from tests.test_modules.utils import (
+    ClientAuthenticator,
+    ENCODED_AUTH_TOKEN,
+)
 
 LOCATIONS = [
     {
@@ -218,7 +221,11 @@ def test_push(async_client):
             ),
         ],
     ).dict()
-    client.post("/push/2.2.1", json=data)
+    client.post(
+        "/push/2.2.1",
+        json=data,
+        headers={"Authorization": f"Token {ENCODED_AUTH_TOKEN}"},
+    )
 
     crud.get.assert_awaited_once()
     adapter.location_adapter.assert_called_once()
