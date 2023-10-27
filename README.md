@@ -95,11 +95,12 @@ class Crud:
         ...
 ```
 
-2) Implement `get_valid_token_c` method of Authenticator class which would return 
-list of valid tokens which will be compared with given token in the header 
-while requests. 
+2) Implement `get_valid_token_c` and `get_valid_token_a` method of 
+Authenticator class which would return list of valid tokens. Given 
+authorization token will be compared with this list.
 
-[Reminder: Versions 2.2 and higher sends encoded authorization tokens, so decoded ones will be compared.]
+[Reminder]: OCPI versions 2.2 and higher sends encoded authorization tokens, 
+so it will be decoded before compared.
 
 auth.py
 ```python
@@ -111,11 +112,21 @@ from py_ocpi.core.authentication.authenticator import Authenticator
 class ClientAuthenticator(Authenticator):
     @classmethod
     async def get_valid_token_c(cls) -> List[str]:
-        """Return a list of valid tokens."""
+        """Return a list of valid tokens c."""
         ...
+        return ["..."]
+
+    @classmethod
+    async def get_valid_token_a(cls) -> List[str]:
+        """Return a list of valid tokens a."""
+        return ["..."]
 ```
 
 3) Initialize fastapi application
+
+If you need to have support for pushing the updates you could set 
+`http_push=True` to use push endpoint or `websocket_push=True` to 
+use websocket connection.
 
 main.py
 ```python
@@ -130,7 +141,15 @@ from crud import Crud
 app = get_application(
     version_numbers=[VersionNumber.v_2_1_1, VersionNumber.v_2_2_1],
     roles=[RoleEnum.cpo],
-    modules=[ModuleID.locations],
+    modules=[
+        ModuleID.credentials_and_registration,
+        ModuleID.locations,
+        ModuleID.cdrs,
+        ModuleID.tokens,
+        ModuleID.tariffs,
+        ModuleID.sessions,
+        ModuleID.commands,
+    ],
     authenticator=ClientAuthenticator,
     crud=Crud,
     http_push=False,
@@ -148,7 +167,8 @@ app = get_application(
 
 ---
 
-As this project is based on fastapi, use `/docs` or `redoc/` to check the documentation after the project is running.
+As this project is based on fastapi, use `/docs` or `redoc/` to check 
+.the documentation after the project is running.
 
 [API's will appear depending on given `version_numbers`, `roles` and `modules` given to initializer.]
 
