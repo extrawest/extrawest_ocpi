@@ -146,7 +146,7 @@ async def receive_command(
             version=VersionNumber.v_2_1_1,
         )
         if command_response:
-            if command_response.result == CommandResponseType.accepted:
+            if command_response["result"] == CommandResponseType.accepted:
                 background_tasks.add_task(
                     send_command_result,
                     command_data=command_data,
