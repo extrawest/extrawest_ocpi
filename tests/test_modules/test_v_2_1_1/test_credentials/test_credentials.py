@@ -14,7 +14,7 @@ from py_ocpi.core.dependencies import get_versions
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.versions.schemas import Version
 
-from .utils import Crud, CREDENTIALS_TOKEN_CREATE
+from .utils import Crud, CREDENTIALS_TOKEN_CREATE, AUTH_HEADERS, AUTH_HEADERS_A
 from tests.test_modules.utils import ClientAuthenticator
 
 
@@ -26,14 +26,15 @@ def test_cpo_get_credentials_v_2_1_1():
         authenticator=ClientAuthenticator,
         modules=[enums.ModuleID.credentials_and_registration],
     )
-    token = str(uuid4())
-    header = {"Authorization": f"Token {token}"}
 
     client = TestClient(app)
-    response = client.get("/ocpi/cpo/2.1.1/credentials", headers=header)
+    response = client.get(
+        "/ocpi/cpo/2.1.1/credentials",
+        headers=AUTH_HEADERS,
+    )
 
     assert response.status_code == 200
-    assert response.json()["data"]["token"] == token
+    assert response.json()["data"]["token"] == CREDENTIALS_TOKEN_CREATE["token"]
 
 
 @pytest.mark.asyncio
@@ -85,7 +86,9 @@ async def test_cpo_post_credentials_v_2_1_1(async_client):
 
     async with AsyncClient(app=app_2, base_url="http://test") as client:
         response = await client.post(
-            "/ocpi/cpo/2.1.1/credentials/", json=CREDENTIALS_TOKEN_CREATE
+            "/ocpi/cpo/2.1.1/credentials/",
+            json=CREDENTIALS_TOKEN_CREATE,
+            headers=AUTH_HEADERS_A,
         )
 
     assert response.status_code == 200
