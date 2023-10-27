@@ -25,7 +25,7 @@ from py_ocpi.modules.credentials.v_2_2_1.schemas import Credentials
 router = APIRouter(
     prefix="/credentials",
 )
-cred_dependency = CredentialsAuthorizationVerifier(VersionNumber.v_2_1_1)
+cred_dependency = CredentialsAuthorizationVerifier(VersionNumber.v_2_2_1)
 
 
 @router.get(
