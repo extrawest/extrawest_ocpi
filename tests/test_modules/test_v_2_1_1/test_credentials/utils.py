@@ -3,6 +3,17 @@ from uuid import uuid4
 
 from py_ocpi.core import enums
 
+from tests.test_modules.utils import (
+    AUTH_TOKEN,
+    AUTH_TOKEN_A,
+    RANDOM_AUTH_TOKEN,
+    ClientAuthenticator,
+)
+
+AUTH_HEADERS = {"Authorization": f"Token {AUTH_TOKEN}"}
+AUTH_HEADERS_A = {"Authorization": f"Token {AUTH_TOKEN_A}"}
+WRONG_AUTH_HEADERS = {"Authorization": f"Token {RANDOM_AUTH_TOKEN}"}
+
 
 CREDENTIALS_TOKEN_GET = {
     "url": "url",
@@ -14,7 +25,7 @@ CREDENTIALS_TOKEN_GET = {
 }
 
 CREDENTIALS_TOKEN_CREATE = {
-    "token": str(uuid4()),
+    "token": AUTH_TOKEN_A,
     "url": "/ocpi/versions",
     "business_details": {
         "name": "name",
@@ -36,9 +47,7 @@ class Crud:
     async def get(
         cls, module: enums.ModuleID, role: enums.RoleEnum, id, *args, **kwargs
     ):
-        if id == CREDENTIALS_TOKEN_CREATE["token"]:
-            return None
-        return dict(CREDENTIALS_TOKEN_GET, **{"token": id})
+        return CREDENTIALS_TOKEN_CREATE
 
     @classmethod
     async def create(
