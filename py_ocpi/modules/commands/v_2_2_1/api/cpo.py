@@ -147,21 +147,28 @@ async def receive_command(
             auth_token=auth_token,
             version=VersionNumber.v_2_2_1,
         )
-        if not command_response:
-            raise NotFoundOCPIError
-
-        background_tasks.add_task(
-            send_command_result,
-            command_data=command_data,
-            command=command,
-            auth_token=auth_token,
-            crud=crud,
-            adapter=adapter,
+        if command_response:
+            if command_response.result == CommandResponseType.accepted:
+                background_tasks.add_task(
+                    send_command_result,
+                    command_data=command_data,
+                    command=command,
+                    auth_token=auth_token,
+                    crud=crud,
+                    adapter=adapter,
+                )
+            return OCPIResponse(
+                data=[
+                    adapter.command_response_adapter(command_response).dict()
+                ],
+                **status.OCPI_1000_GENERIC_SUCESS_CODE,
+            )
+        command_response = CommandResponse(
+            result=CommandResponseType.rejected, timeout=0
         )
-
         return OCPIResponse(
-            data=[adapter.command_response_adapter(command_response).dict()],
-            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+            data=[command_response.dict()],
+            **status.OCPI_3000_GENERIC_SERVER_ERROR,
         )
 
     # when the location is not found
