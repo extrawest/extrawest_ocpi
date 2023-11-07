@@ -71,9 +71,29 @@ def get_application(
     http_push: bool = False,
     websocket_push: bool = False,
 ) -> FastAPI:
+    """
+    OCPI application initializer.
+
+    :param version_numbers: List of version numbers which are supported.
+    :param roles: Roles which are supported.
+    :param crud: Class with crud methods which should contain business logic
+      and db methods.
+    :param modules: OCPI modules which should be supported. [Some modules are
+      related, make sure to check OCPI documentation first.]
+    :param authenticator: Authenticator class, which would check validity of
+      authentication tokens.
+    :param adapter: Model to dict data transformer.
+    :param http_push: If True, add endpoint where the command to send to
+      corresponding client data update could be made.
+    :param websocket_push: If True, add websocket endpoint where data updates
+      will be shared.
+
+    :return: FastApi application.
+    """
     _app = FastAPI(
         title=settings.PROJECT_NAME,
         docs_url=f"/{settings.OCPI_PREFIX}/docs",
+        redoc_url=f"/{settings.OCPI_PREFIX}/redoc",
         openapi_url=f"/{settings.OCPI_PREFIX}/openapi.json",
     )
 

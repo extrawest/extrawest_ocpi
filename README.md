@@ -11,6 +11,10 @@
 
 Python implementation of Open Charge Point Interface (OCPI) protocol based on fastapi.
 
+Supported OCPI versions: 2.2.1, 2.1.1
+
+OCPI Documentation: [2.2.1](https://github.com/ocpi/ocpi/tree/release-2.2.1-bugfixes), [2.1.1](https://github.com/ocpi/ocpi/tree/release-2.1.1-bugfixes)
+
 ---
 
 
@@ -42,8 +46,6 @@ Make sure to install any ASGI-server supported by fastapi:
 To use this project, you will need to add the following environment variables 
 to your .env file, overwise default values would be taken
 
-`API_KEY` 
-`ANOTHER_API_KEY`
 `PROJECT_NAME`
 `BACKEND_CORS_ORIGINS`
 `OCPI_HOST`
@@ -58,11 +60,15 @@ to your .env file, overwise default values would be taken
 
 ---
 
-1) Implement and connect your db methods inside this Crud class. 
+1) Implement and connect your business logic and db methods inside this Crud class. 
+
+[NOTE]: Check `example` directory for a mongo implementation example.
+[Click here](examples)
 
 crud.py
-```python curd.py
+```python
 from typing import Any, Tuple
+
 from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 
 
@@ -93,9 +99,12 @@ class Crud:
         ...
 ```
 
-2) Implement `get_valid_token_c` method of Authenticator class which would return 
-list of valid tokens which will be compared with given token in the header 
-while requests.
+2) Implement `get_valid_token_c` and `get_valid_token_a` method of 
+Authenticator class which would return list of valid tokens. Given 
+authorization token will be compared with this list.
+
+[Reminder]: OCPI versions 2.2 and higher sends encoded authorization tokens, 
+so it will be decoded before compared.
 
 auth.py
 ```python
@@ -107,11 +116,22 @@ from py_ocpi.core.authentication.authenticator import Authenticator
 class ClientAuthenticator(Authenticator):
     @classmethod
     async def get_valid_token_c(cls) -> List[str]:
-        """Return a list of valid tokens."""
+        """Return a list of valid tokens c."""
         ...
+        return ["..."]
+
+    @classmethod
+    async def get_valid_token_a(cls) -> List[str]:
+        """Return a list of valid tokens a."""
+        ...
+        return ["..."]
 ```
 
 3) Initialize fastapi application
+
+If you need to have support for pushing the updates you could set 
+`http_push=True` to use push endpoint or `websocket_push=True` to 
+use websocket connection.
 
 main.py
 ```python
@@ -126,9 +146,19 @@ from crud import Crud
 app = get_application(
     version_numbers=[VersionNumber.v_2_1_1, VersionNumber.v_2_2_1],
     roles=[RoleEnum.cpo],
-    modules=[ModuleID.locations],
+    modules=[
+        ModuleID.credentials_and_registration,
+        ModuleID.locations,
+        ModuleID.cdrs,
+        ModuleID.tokens,
+        ModuleID.tariffs,
+        ModuleID.sessions,
+        ModuleID.commands,
+    ],
     authenticator=ClientAuthenticator,
     crud=Crud,
+    http_push=False,
+    websocket_push=False,
 )
 ```
 
@@ -142,7 +172,10 @@ app = get_application(
 
 ---
 
-As this project is based on fastapi, use `/docs` or `redoc/` to check the documentation after the project is running.
+As this project is based on fastapi, use `/docs` or `redoc/` to check 
+.the documentation after the project is running.
+
+[API's will appear depending on given `version_numbers`, `roles` and `modules` given to initializer.]
 
 Example: `http://127.0.0.1:8000/ocpi/docs/`
 
@@ -151,18 +184,7 @@ Example: `http://127.0.0.1:8000/ocpi/docs/`
 
 ---
 
-- [in progress] Add support for OCPI v2.1.1
-  - What's done so far:
-    - Add version, credentials and locations module;
-    - Add support for initializing v2.1.1;
-    - It's now possible to initialize a few versions of ocpi for one project;
-    - Minimal required python version is 3.10;
-    - Add cdrs module;
-    - Add tariffs module;
-    - Add sessions module;
-    - Add tokens module;
-- [in progress] Add authentication support
-    - Add authentication dependency to endpoints of version 2.2.1 and 2.1.1.
+- [in progress] Add v2.2.1 modules: `Charging Profiles`, `Hub Client Info`
 
 
 ## Related
