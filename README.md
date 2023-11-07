@@ -63,6 +63,7 @@ to your .env file, overwise default values would be taken
 1) Implement and connect your business logic and db methods inside this Crud class. 
 
 [NOTE]: Check `example` directory for a mongo implementation example.
+[Click here](examples)
 
 crud.py
 ```python
