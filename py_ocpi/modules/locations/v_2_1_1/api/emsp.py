@@ -3,15 +3,17 @@ import copy
 from fastapi import APIRouter, Depends, Request
 
 from py_ocpi.core.utils import (
-    get_auth_token_from_header,
+    get_auth_token,
     partially_update_attributes,
 )
 from py_ocpi.core import status
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.data_types import String
 from py_ocpi.core.enums import ModuleID, RoleEnum
+from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.locations.v_2_1_1.schemas import (
@@ -25,6 +27,7 @@ from py_ocpi.modules.locations.v_2_1_1.schemas import (
 
 router = APIRouter(
     prefix="/locations",
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
 )
 
 
@@ -39,7 +42,7 @@ async def get_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -50,10 +53,12 @@ async def get_location(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    return OCPIResponse(
-        data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+    if data:
+        return OCPIResponse(
+            data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.get(
@@ -69,7 +74,7 @@ async def get_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -80,13 +85,15 @@ async def get_evse(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
-    for evse in location.evses:
-        if evse.uid == evse_uid:
-            return OCPIResponse(
-                data=[evse.dict()],
-                **status.OCPI_1000_GENERIC_SUCESS_CODE,
-            )
+    if data:
+        location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
+        for evse in location.evses:
+            if evse.uid == evse_uid:
+                return OCPIResponse(
+                    data=[evse.dict()],
+                    **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                )
+    raise NotFoundOCPIError
 
 
 @router.get(
@@ -103,7 +110,7 @@ async def get_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -114,15 +121,17 @@ async def get_connector(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
-    for evse in location.evses:
-        if evse.uid == evse_uid:
-            for connector in evse.connectors:
-                if connector.id == connector_id:
-                    return OCPIResponse(
-                        data=[connector.dict()],
-                        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-                    )
+    if data:
+        location = adapter.location_adapter(data, VersionNumber.v_2_1_1)
+        for evse in location.evses:
+            if evse.uid == evse_uid:
+                for connector in evse.connectors:
+                    if connector.id == connector_id:
+                        return OCPIResponse(
+                            data=[connector.dict()],
+                            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                        )
+    raise NotFoundOCPIError
 
 
 @router.put(
@@ -137,7 +146,7 @@ async def add_or_update_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.locations,
@@ -190,7 +199,7 @@ async def add_or_update_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -201,31 +210,33 @@ async def add_or_update_evse(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
-    new_location = copy.deepcopy(old_location)
+    if old_data:
+        old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
+        new_location = copy.deepcopy(old_location)
 
-    for old_evse in old_location.evses:
-        if old_evse.uid == evse_uid:
-            new_location.evses.remove(old_evse)
-            break
+        for old_evse in old_location.evses:
+            if old_evse.uid == evse_uid:
+                new_location.evses.remove(old_evse)
+                break
 
-    new_location.evses.append(evse)
+        new_location.evses.append(evse)
 
-    await crud.update(
-        ModuleID.locations,
-        RoleEnum.emsp,
-        new_location.dict(),
-        location_id,
-        auth_token=auth_token,
-        country_code=country_code,
-        party_id=party_id,
-        version=VersionNumber.v_2_1_1,
-    )
+        await crud.update(
+            ModuleID.locations,
+            RoleEnum.emsp,
+            new_location.dict(),
+            location_id,
+            auth_token=auth_token,
+            country_code=country_code,
+            party_id=party_id,
+            version=VersionNumber.v_2_1_1,
+        )
 
-    return OCPIResponse(
-        data=[evse.dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+        return OCPIResponse(
+            data=[evse.dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.put(
@@ -243,7 +254,7 @@ async def add_or_update_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -254,39 +265,37 @@ async def add_or_update_connector(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
-    new_location = copy.deepcopy(old_location)
+    if old_data:
+        old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
+        new_location = copy.deepcopy(old_location)
 
-    response_data = []
-    response_status = status.OCPI_2001_INVALID_OR_MISSING_PARAMETERS
+        for old_evse in old_location.evses:
+            if old_evse.uid == evse_uid:
+                new_location.evses.remove(old_evse)
+                new_evse = copy.deepcopy(old_evse)
+                for old_connector in old_evse.connectors:
+                    if old_connector.id == connector_id:
+                        new_evse.connectors.remove(old_connector)
+                        break
+                new_evse.connectors.append(connector)
+                new_location.evses.append(new_evse)
 
-    for old_evse in old_location.evses:
-        if old_evse.uid == evse_uid:
-            new_location.evses.remove(old_evse)
-            new_evse = copy.deepcopy(old_evse)
-            for old_connector in old_evse.connectors:
-                if old_connector.id == connector_id:
-                    new_evse.connectors.remove(old_connector)
-                    break
-            new_evse.connectors.append(connector)
-            new_location.evses.append(new_evse)
+                await crud.update(
+                    ModuleID.locations,
+                    RoleEnum.emsp,
+                    new_location.dict(),
+                    location_id,
+                    auth_token=auth_token,
+                    country_code=country_code,
+                    party_id=party_id,
+                    version=VersionNumber.v_2_1_1,
+                )
 
-            await crud.update(
-                ModuleID.locations,
-                RoleEnum.emsp,
-                new_location.dict(),
-                location_id,
-                auth_token=auth_token,
-                country_code=country_code,
-                party_id=party_id,
-                version=VersionNumber.v_2_1_1,
-            )
-
-            response_data.append(connector.dict())
-            response_status = status.OCPI_1000_GENERIC_SUCESS_CODE
-            break
-
-    return OCPIResponse(data=response_data, **response_status)
+                return OCPIResponse(
+                    data=[connector.dict()],
+                    **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                )
+    raise NotFoundOCPIError
 
 
 @router.patch(
@@ -301,7 +310,7 @@ async def partial_update_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -312,28 +321,31 @@ async def partial_update_location(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
-    new_location = copy.deepcopy(old_location)
+    if old_data:
+        old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
+        new_location = copy.deepcopy(old_location)
 
-    partially_update_attributes(
-        new_location, location.dict(exclude_defaults=True, exclude_unset=True)
-    )
+        partially_update_attributes(
+            new_location,
+            location.dict(exclude_defaults=True, exclude_unset=True),
+        )
 
-    data = await crud.update(
-        ModuleID.locations,
-        RoleEnum.emsp,
-        new_location.dict(),
-        location_id,
-        auth_token=auth_token,
-        country_code=country_code,
-        party_id=party_id,
-        version=VersionNumber.v_2_1_1,
-    )
+        data = await crud.update(
+            ModuleID.locations,
+            RoleEnum.emsp,
+            new_location.dict(),
+            location_id,
+            auth_token=auth_token,
+            country_code=country_code,
+            party_id=party_id,
+            version=VersionNumber.v_2_1_1,
+        )
 
-    return OCPIResponse(
-        data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+        return OCPIResponse(
+            data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
+            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+        )
+    raise NotFoundOCPIError
 
 
 @router.patch(
@@ -350,7 +362,7 @@ async def partial_update_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -361,37 +373,35 @@ async def partial_update_evse(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
-    new_location = copy.deepcopy(old_location)
+    if old_data:
+        old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
+        new_location = copy.deepcopy(old_location)
 
-    response_data = []
-    response_status = status.OCPI_2001_INVALID_OR_MISSING_PARAMETERS
+        for old_evse in old_location.evses:
+            if old_evse.uid == evse_uid:
+                new_location.evses.remove(old_evse)
+                new_evse = copy.deepcopy(old_evse)
+                partially_update_attributes(
+                    new_evse,
+                    evse.dict(exclude_defaults=True, exclude_unset=True),
+                )
+                new_location.evses.append(new_evse)
 
-    for old_evse in old_location.evses:
-        if old_evse.uid == evse_uid:
-            new_location.evses.remove(old_evse)
-            new_evse = copy.deepcopy(old_evse)
-            partially_update_attributes(
-                new_evse, evse.dict(exclude_defaults=True, exclude_unset=True)
-            )
-            new_location.evses.append(new_evse)
-
-            await crud.update(
-                ModuleID.locations,
-                RoleEnum.emsp,
-                new_location.dict(),
-                location_id,
-                auth_token=auth_token,
-                country_code=country_code,
-                party_id=party_id,
-                version=VersionNumber.v_2_1_1,
-            )
-
-            response_data.append(new_evse.dict())
-            response_status = status.OCPI_1000_GENERIC_SUCESS_CODE
-            break
-
-    return OCPIResponse(data=response_data, **response_status)
+                await crud.update(
+                    ModuleID.locations,
+                    RoleEnum.emsp,
+                    new_location.dict(),
+                    location_id,
+                    auth_token=auth_token,
+                    country_code=country_code,
+                    party_id=party_id,
+                    version=VersionNumber.v_2_1_1,
+                )
+                return OCPIResponse(
+                    data=[new_evse.dict()],
+                    **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                )
+    raise NotFoundOCPIError
 
 
 @router.patch(
@@ -409,7 +419,7 @@ async def partial_update_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
         ModuleID.locations,
@@ -420,31 +430,35 @@ async def partial_update_connector(
         party_id=party_id,
         version=VersionNumber.v_2_1_1,
     )
-    old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
+    if old_data:
+        old_location = adapter.location_adapter(old_data, VersionNumber.v_2_1_1)
 
-    for old_evse in old_location.evses:
-        if old_evse.uid == evse_uid:
-            for old_connector in old_evse.connectors:
-                if old_connector.id == connector_id:
-                    break
-    new_connector = old_connector
-    partially_update_attributes(
-        new_connector, connector.dict(exclude_defaults=True, exclude_unset=True)
-    )
-    new_location = old_location
+        for old_evse in old_location.evses:
+            if old_evse.uid == evse_uid:
+                for old_connector in old_evse.connectors:
+                    if old_connector.id == connector_id:
+                        new_connector = old_connector
+                        partially_update_attributes(
+                            new_connector,
+                            connector.dict(
+                                exclude_defaults=True, exclude_unset=True
+                            ),
+                        )
+                        new_location = old_location
 
-    await crud.update(
-        ModuleID.locations,
-        RoleEnum.emsp,
-        new_location.dict(),
-        location_id,
-        auth_token=auth_token,
-        country_code=country_code,
-        party_id=party_id,
-        version=VersionNumber.v_2_1_1,
-    )
+                        await crud.update(
+                            ModuleID.locations,
+                            RoleEnum.emsp,
+                            new_location.dict(),
+                            location_id,
+                            auth_token=auth_token,
+                            country_code=country_code,
+                            party_id=party_id,
+                            version=VersionNumber.v_2_1_1,
+                        )
 
-    return OCPIResponse(
-        data=[new_connector.dict()],
-        **status.OCPI_1000_GENERIC_SUCESS_CODE,
-    )
+                        return OCPIResponse(
+                            data=[new_connector.dict()],
+                            **status.OCPI_1000_GENERIC_SUCESS_CODE,
+                        )
+    raise NotFoundOCPIError

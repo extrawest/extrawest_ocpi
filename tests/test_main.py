@@ -2,6 +2,8 @@ from py_ocpi import get_application
 from py_ocpi.core import enums
 from py_ocpi.modules.versions.enums import VersionNumber
 
+from tests.test_modules.utils import ClientAuthenticator
+
 
 def test_get_application():
     class Crud:
@@ -16,6 +18,7 @@ def test_get_application():
         crud=Crud,
         modules=[],
         adapter=Adapter,
+        authenticator=ClientAuthenticator,
     )
 
     assert app.url_path_for("get_versions") == "/ocpi/versions"

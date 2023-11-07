@@ -23,6 +23,7 @@ class Crud(ABC):
             country_code (CiString(2)): The requested Country code
             token_type (TokenType): The token type
             command (CommandType): The command type of the OCPP command
+            command_data: Request body of command.
 
         Returns:
             Any: The object data

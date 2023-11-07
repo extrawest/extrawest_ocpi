@@ -10,11 +10,15 @@ from fastapi import (
 
 from py_ocpi.core import status
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import (
+    AuthorizationVerifier,
+    CredentialsAuthorizationVerifier,
+)
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.dependencies import get_crud, get_adapter
-from py_ocpi.core.enums import Action, ModuleID, RoleEnum
+from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.schemas import OCPIResponse
-from py_ocpi.core.utils import get_auth_token_from_header
+from py_ocpi.core.utils import get_auth_token
 
 from py_ocpi.modules.versions.enums import VersionNumber
 from py_ocpi.modules.credentials.v_2_1_1.schemas import Credentials
@@ -22,15 +26,20 @@ from py_ocpi.modules.credentials.v_2_1_1.schemas import Credentials
 router = APIRouter(
     prefix="/credentials",
 )
+cred_dependency = CredentialsAuthorizationVerifier(VersionNumber.v_2_1_1)
 
 
-@router.get("/", response_model=OCPIResponse)
+@router.get(
+    "/",
+    response_model=OCPIResponse,
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
+)
 async def get_credentials(
     request: Request,
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.credentials_and_registration,
@@ -51,26 +60,25 @@ async def post_credentials(
     credentials: Credentials,
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
+    server_cred: str | dict | None = Depends(cred_dependency),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     # Check if the client is already registered
-    credentials_client_token = credentials.token
-    server_cred = await crud.do(
-        ModuleID.credentials_and_registration,
-        RoleEnum.emsp,
-        Action.get_client_token,
-        auth_token=auth_token,
-        version=VersionNumber.v_2_1_1,
-    )
     if server_cred:
         raise HTTPException(
             fastapistatus.HTTP_405_METHOD_NOT_ALLOWED,
             "Client is already registered",
         )
+    if server_cred is None:
+        raise HTTPException(
+            fastapistatus.HTTP_401_UNAUTHORIZED,
+            "Unauthorized",
+        )
 
     # Retrieve the versions and endpoints from the client
     async with httpx.AsyncClient() as client:
+        credentials_client_token = credentials.token
         authorization_token = f"Token {credentials_client_token}"
         response_versions = await client.get(
             credentials.url, headers={"authorization": authorization_token}
@@ -124,18 +132,11 @@ async def update_credentials(
     credentials: Credentials,
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
+    server_cred: str | dict | None = Depends(cred_dependency),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     # Check if the client is already registered
-    credentials_client_token = credentials.token
-    server_cred = await crud.do(
-        ModuleID.credentials_and_registration,
-        RoleEnum.emsp,
-        Action.get_client_token,
-        auth_token=auth_token,
-        version=VersionNumber.v_2_1_1,
-    )
     if not server_cred:
         raise HTTPException(
             fastapistatus.HTTP_405_METHOD_NOT_ALLOWED,
@@ -144,6 +145,7 @@ async def update_credentials(
 
     # Retrieve the versions and endpoints from the client
     async with httpx.AsyncClient() as client:
+        credentials_client_token = credentials.token
         authorization_token = f"Token {credentials_client_token}"
         response_versions = await client.get(
             credentials.url, headers={"authorization": authorization_token}
@@ -193,13 +195,17 @@ async def update_credentials(
     )
 
 
-@router.delete("/", response_model=OCPIResponse)
+@router.delete(
+    "/",
+    response_model=OCPIResponse,
+    dependencies=[Depends(AuthorizationVerifier(VersionNumber.v_2_1_1))],
+)
 async def remove_credentials(
     request: Request,
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token_from_header(request)
+    auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
         ModuleID.credentials_and_registration,

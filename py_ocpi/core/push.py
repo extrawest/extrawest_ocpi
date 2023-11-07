@@ -4,19 +4,24 @@ import httpx
 from fastapi import APIRouter, Request, WebSocket, Depends
 
 from py_ocpi.core.adapter import Adapter
+from py_ocpi.core.authentication.verifier import (
+    HttpPushVerifier,
+    WSPushVerifier,
+)
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.schemas import Push, PushResponse, ReceiverResponse
 from py_ocpi.core.utils import encode_string_base64, get_auth_token
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.config import settings
-from py_ocpi.modules.versions.v_2_2_1.enums import InterfaceRole, VersionNumber
+from py_ocpi.modules.versions.enums import VersionNumber
+from py_ocpi.modules.versions.v_2_2_1.enums import InterfaceRole
 
 
 def client_url(module_id: ModuleID, object_id: str, base_url: str) -> str:
     if module_id == ModuleID.cdrs:
         return base_url
-    return f"{base_url}/{settings.COUNTRY_CODE}/{settings.PARTY_ID}/{object_id}"
+    return f"{base_url}{settings.COUNTRY_CODE}/{settings.PARTY_ID}/{object_id}"
 
 
 def client_method(module_id: ModuleID) -> str:
@@ -26,19 +31,22 @@ def client_method(module_id: ModuleID) -> str:
 
 
 def request_data(
-    module_id: ModuleID, object_data: dict, adapter: Adapter
+    module_id: ModuleID,
+    object_data: dict,
+    adapter: Adapter,
+    version: VersionNumber,
 ) -> dict:
     data = {}
     if module_id == ModuleID.locations:
-        data = adapter.location_adapter(object_data).dict()
+        data = adapter.location_adapter(object_data, version).dict()
     elif module_id == ModuleID.sessions:
-        data = adapter.session_adapter(object_data).dict()
+        data = adapter.session_adapter(object_data, version).dict()
     elif module_id == ModuleID.cdrs:
-        data = adapter.cdr_adapter(object_data).dict()
+        data = adapter.cdr_adapter(object_data, version).dict()
     elif module_id == ModuleID.tariffs:
-        data = adapter.tariff_adapter(object_data).dict()
+        data = adapter.tariff_adapter(object_data, version).dict()
     elif module_id == ModuleID.tokens:
-        data = adapter.token_adapter(object_data).dict()
+        data = adapter.token_adapter(object_data, version).dict()
     return data
 
 
@@ -49,14 +57,19 @@ async def send_push_request(
     adapter: Adapter,
     client_auth_token: str,
     endpoints: list,
+    version: VersionNumber,
 ):
-    data = request_data(module_id, object_data, adapter)
+    data = request_data(module_id, object_data, adapter, version)
 
     base_url = ""
     for endpoint in endpoints:
         if (
-            endpoint["identifier"] == module_id
+            version.value.startswith("2.2")
+            and endpoint["identifier"] == module_id
             and endpoint["role"] == InterfaceRole.receiver
+        ) or (
+            version.value.startswith("2.1")
+            and endpoint["identifier"] == module_id
         ):
             base_url = endpoint["url"]
 
@@ -65,7 +78,7 @@ async def send_push_request(
         request = client.build_request(
             client_method(module_id),
             client_url(module_id, object_id, base_url),
-            headers={"authorization": client_auth_token},
+            headers={"Authorization": client_auth_token},
             json=data,
         )
         response = await client.send(request)
@@ -82,13 +95,19 @@ async def push_object(
     receiver_responses = []
     for receiver in push.receivers:
         # get client endpoints
-        client_auth_token = f"Token {encode_string_base64(receiver.auth_token)}"
+        if version.value.startswith("2.1") or version.value.startswith("2.0"):
+            token = receiver.auth_token
+        else:
+            token = encode_string_base64(receiver.auth_token)
+
+        client_auth_token = f"Token {token}"
+
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 receiver.endpoints_url,
                 headers={"authorization": client_auth_token},
             )
-            endpoints = response.json()["data"][0]["endpoints"]
+            endpoints = response.json()["data"]["endpoints"]
 
         # get object data
         if push.module_id == ModuleID.tokens:
@@ -115,6 +134,7 @@ async def push_object(
             adapter,
             client_auth_token,
             endpoints,
+            version,
         )
         if push.module_id == ModuleID.cdrs:
             receiver_responses.append(
@@ -136,7 +156,9 @@ async def push_object(
     return PushResponse(receiver_responses=receiver_responses)
 
 
-http_router = APIRouter()
+http_router = APIRouter(
+    dependencies=[Depends(HttpPushVerifier())],
+)
 
 
 # WARNING it's advised not to expose this endpoint
@@ -153,12 +175,14 @@ async def http_push_to_client(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token(request)
+    auth_token = get_auth_token(request, version)
 
     return await push_object(version, push, crud, adapter, auth_token)
 
 
-websocket_router = APIRouter()
+websocket_router = APIRouter(
+    dependencies=[Depends(WSPushVerifier())],
+)
 
 
 # WARNING it's advised not to expose this endpoint
@@ -169,7 +193,7 @@ async def websocket_push_to_client(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
-    auth_token = get_auth_token(websocket)
+    auth_token = get_auth_token(websocket, version)
     await websocket.accept()
 
     while True:

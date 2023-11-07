@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, status as fastapistatus
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
@@ -19,6 +19,7 @@ from py_ocpi.core.dependencies import (
     get_versions,
     get_endpoints,
     get_modules,
+    get_authenticator,
 )
 from py_ocpi.core import status
 from py_ocpi.core.adapter import BaseAdapter
@@ -41,9 +42,15 @@ class ExceptionHandlerMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
         except AuthorizationOCPIError as e:
-            raise HTTPException(403, str(e)) from e
+            response = JSONResponse(
+                content={"detail": str(e)},
+                status_code=fastapistatus.HTTP_403_FORBIDDEN,
+            )
         except NotFoundOCPIError as e:
-            raise HTTPException(404, str(e)) from e
+            response = JSONResponse(
+                content={"detail": str(e)},
+                status_code=fastapistatus.HTTP_404_NOT_FOUND,
+            )
         except ValidationError:
             response = JSONResponse(
                 OCPIResponse(
@@ -59,13 +66,34 @@ def get_application(
     roles: List[RoleEnum],
     crud: Any,
     modules: List[ModuleID],
+    authenticator: Any,
     adapter: Any = BaseAdapter,
     http_push: bool = False,
     websocket_push: bool = False,
 ) -> FastAPI:
+    """
+    OCPI application initializer.
+
+    :param version_numbers: List of version numbers which are supported.
+    :param roles: Roles which are supported.
+    :param crud: Class with crud methods which should contain business logic
+      and db methods.
+    :param modules: OCPI modules which should be supported. [Some modules are
+      related, make sure to check OCPI documentation first.]
+    :param authenticator: Authenticator class, which would check validity of
+      authentication tokens.
+    :param adapter: Model to dict data transformer.
+    :param http_push: If True, add endpoint where the command to send to
+      corresponding client data update could be made.
+    :param websocket_push: If True, add websocket endpoint where data updates
+      will be shared.
+
+    :return: FastApi application.
+    """
     _app = FastAPI(
         title=settings.PROJECT_NAME,
         docs_url=f"/{settings.OCPI_PREFIX}/docs",
+        redoc_url=f"/{settings.OCPI_PREFIX}/redoc",
         openapi_url=f"/{settings.OCPI_PREFIX}/openapi.json",
     )
 
@@ -170,5 +198,10 @@ def get_application(
         return modules
 
     _app.dependency_overrides[get_modules] = override_get_modules()
+
+    def override_get_authenticator():
+        return authenticator
+
+    _app.dependency_overrides[get_authenticator] = override_get_authenticator()
 
     return _app
