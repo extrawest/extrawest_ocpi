@@ -165,6 +165,22 @@ class Adapter(ABC):
         """
         pass
 
+    @abstractmethod
+    def hubclientinfo_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ClientInfo schema
+
+        Args:
+            data (dict): The object details
+            version (VersionNumber, optional):
+            The version number of the caller OCPI module
+
+        Returns:
+            ClientInfo: The object data in proper OCPI schema
+        """
+        pass
+
 
 class BaseAdapter(Adapter):
     @classmethod
@@ -274,5 +290,16 @@ class BaseAdapter(Adapter):
         return get_module_model(
             class_name="AuthorizationInfo",
             module_name="tokens",
+            version_name=version.name,
+        )(**data)
+
+    @abstractmethod
+    def hubclientinfo_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ClientInfo schema"""
+        return get_module_model(
+            class_name="ClientInfo",
+            module_name="hubclientinfo",
             version_name=version.name,
         )(**data)
