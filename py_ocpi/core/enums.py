@@ -34,6 +34,7 @@ class ModuleID(str, Enum):
     commands = "commands"
     credentials_and_registration = "credentials"
     hub_client_info = "hubclientinfo"
+    client_info = "clientinfo"
     locations = "locations"
     sessions = "sessions"
     tariffs = "tariffs"
