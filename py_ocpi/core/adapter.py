@@ -293,7 +293,7 @@ class BaseAdapter(Adapter):
             version_name=version.name,
         )(**data)
 
-    @abstractmethod
+    @classmethod
     def hubclientinfo_adapter(
         cls, data: dict, version: VersionNumber = VersionNumber.latest
     ):
