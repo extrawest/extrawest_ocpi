@@ -47,3 +47,5 @@ class Action(str, Enum):
     get_client_token = "GetClientToken"  # nosec
     # used for authorizing a token
     authorize_token = "AuthorizeToken"  # nosec
+    # used for requesting to send command to a Chargepoint
+    send_get_chargingprofile = "AuthorizeToken"  # nosec
