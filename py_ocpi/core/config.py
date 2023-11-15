@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     PARTY_ID: str = "NON"
     PROTOCOL: str = "https"
     COMMAND_AWAIT_TIME: int = 5
+    GET_ACTIVE_PROFILE_AWAIT_TIME: int = 5
 
     @classmethod
     @validator("BACKEND_CORS_ORIGINS", pre=True)
