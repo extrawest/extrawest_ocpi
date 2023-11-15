@@ -7,10 +7,8 @@ class ChargingProfileResultType(str, Enum):
     """
 
     accepted = "ACCEPTED"
-    not_supported = "NOT_SUPPORTED"
     rejected = "REJECTED"
-    too_often = "TOO_OFTEN"
-    unknown_session = "UNKNOWN_SESSION"
+    unknown = "UNKNOWN"
 
 
 class ChargingProfileResponseType(str, Enum):
@@ -19,8 +17,10 @@ class ChargingProfileResponseType(str, Enum):
     """
 
     accepted = "ACCEPTED"
+    not_supported = "NOT_SUPPORTED"
     rejected = "REJECTED"
-    unknown = "UNKNOWN"
+    too_often = "TOO_OFTEN"
+    unknown_session = "UNKNOWN_SESSION"
 
 
 class ChargingRateUnit(str, Enum):

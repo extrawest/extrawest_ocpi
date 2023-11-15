@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from py_ocpi.core.data_types import DateTime, Number, URL
-from py_ocpi.modules.chargingprofiles.enums import (
+from py_ocpi.modules.chargingprofiles.v_2_2_1.enums import (
     ChargingProfileResponseType,
     ChargingProfileResultType,
     ChargingRateUnit,
