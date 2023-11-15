@@ -197,6 +197,22 @@ class Adapter(ABC):
         """
         pass
 
+    @abstractmethod
+    def clear_profile_result_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ClearProfileResult schema
+
+        Args:
+            data (dict): The object details
+            version (VersionNumber, optional):
+            The version number of the caller OCPI module
+
+        Returns:
+            ClearProfileResult: The object data in proper OCPI schema
+        """
+        pass
+
 
 class BaseAdapter(Adapter):
     @classmethod
@@ -327,6 +343,17 @@ class BaseAdapter(Adapter):
         """Adapt the data to OCPI ActiveChargingProfileResult schema"""
         return get_module_model(
             class_name="ActiveChargingProfileResult",
+            module_name="chargingprofiles",
+            version_name=version.name,
+        )(**data)
+
+    @classmethod
+    def clear_profile_result_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ClearProfileResult schema"""
+        return get_module_model(
+            class_name="ClearProfileResult",
             module_name="chargingprofiles",
             version_name=version.name,
         )(**data)
