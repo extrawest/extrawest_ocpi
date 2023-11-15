@@ -48,4 +48,6 @@ class Action(str, Enum):
     # used for authorizing a token
     authorize_token = "AuthorizeToken"  # nosec
     # used for requesting to send command to a Chargepoint
-    send_get_chargingprofile = "AuthorizeToken"  # nosec
+    send_get_chargingprofile = "SendGetChargingProfile"  # nosec
+    # used for requesting to send command to a Chargepoint
+    send_delete_chargingprofile = "SendDeleteChargingProfile"  # nosec
