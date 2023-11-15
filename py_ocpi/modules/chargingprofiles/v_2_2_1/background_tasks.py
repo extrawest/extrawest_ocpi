@@ -25,7 +25,7 @@ async def send_get_chargingprofile(
     adapter: Adapter,
 ):
     client_auth_token = await crud.do(
-        ModuleID.commands,
+        ModuleID.charging_profile,
         RoleEnum.cpo,
         Action.get_client_token,
         auth_token=auth_token,
@@ -65,5 +65,54 @@ async def send_get_chargingprofile(
         await client.post(
             response_url,
             json=active_charging_profile_result.dict(),
+            headers={"authorization": authorization_token},
+        )
+
+
+async def send_delete_chargingprofile(
+    session_id: CiString(36),  # type: ignore
+    response_url: URL,
+    auth_token: str,
+    crud: Crud,
+    adapter: Adapter,
+):
+    client_auth_token = await crud.do(
+        ModuleID.charging_profile,
+        RoleEnum.cpo,
+        Action.get_client_token,
+        auth_token=auth_token,
+        version=VersionNumber.v_2_2_1,
+    )
+
+    clear_profile_result = None
+    for _ in range(30 * settings.GET_ACTIVE_PROFILE_AWAIT_TIME):
+        # since charging profile has no id, 0 is used for id parameter of crud.get
+        clear_profile_result = await crud.get(
+            ModuleID.hub_client_info,
+            RoleEnum.cpo,
+            0,
+            session_id=session_id,
+            response_url=response_url,
+            auth_token=auth_token,
+            version=VersionNumber.v_2_2_1,
+        )
+        if not clear_profile_result:
+            break
+        await sleep(2)
+
+    if clear_profile_result:
+        clear_profile_result = ChargingProfileResult(
+            result=ChargingProfileResultType.rejected
+        )
+    else:
+        clear_profile_result = ChargingProfileResult(
+            result=ChargingProfileResultType.accepted
+        )
+
+    async with httpx.AsyncClient() as client:
+        authorization_token = f"Token {encode_string_base64(client_auth_token)}"
+        await client.post(
+            response_url,
+            json=clear_profile_result.dict(),
             headers={"authorization": authorization_token},
         )
