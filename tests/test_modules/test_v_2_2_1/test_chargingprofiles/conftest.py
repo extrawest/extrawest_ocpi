@@ -6,7 +6,8 @@ from py_ocpi.main import get_application
 from py_ocpi.core import enums
 from py_ocpi.modules.versions.enums import VersionNumber
 
-from .utils import Crud, ClientAuthenticator
+from tests.test_modules.utils import ClientAuthenticator
+from .utils import Crud
 
 
 @pytest.fixture
