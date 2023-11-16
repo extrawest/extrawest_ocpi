@@ -55,6 +55,12 @@ TOKENS = Endpoint(
     url=URL(f"{URL_BASE}/{ModuleID.tokens.value}/"),
 )
 
+CHARGING_PROFILE = Endpoint(
+    identifier=ModuleID.charging_profile,
+    role=InterfaceRole.sender,
+    url=URL(f"{URL_BASE}/{ModuleID.charging_profile.value}/"),
+)
+
 ENDPOINTS_LIST = {
     ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
     ModuleID.locations: LOCATIONS,
@@ -63,4 +69,5 @@ ENDPOINTS_LIST = {
     ModuleID.tariffs: TARIFFS,
     ModuleID.commands: COMMANDS,
     ModuleID.tokens: TOKENS,
+    ModuleID.charging_profile: CHARGING_PROFILE,
 }
