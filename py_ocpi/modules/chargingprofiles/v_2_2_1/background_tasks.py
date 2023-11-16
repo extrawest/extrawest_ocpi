@@ -13,6 +13,7 @@ from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 from py_ocpi.modules.chargingprofiles.v_2_2_1.schemas import (
     ChargingProfileResult,
     ChargingProfileResultType,
+    SetChargingProfile,
 )
 
 
@@ -65,6 +66,59 @@ async def send_get_chargingprofile(
         await client.post(
             response_url,
             json=active_charging_profile_result.dict(),
+            headers={"authorization": authorization_token},
+        )
+
+
+async def send_update_chargingprofile(
+    charging_profile: SetChargingProfile,
+    session_id: CiString(36),  # type: ignore
+    response_url: URL,
+    auth_token: str,
+    crud: Crud,
+    adapter: Adapter,
+):
+    client_auth_token = await crud.do(
+        ModuleID.charging_profile,
+        RoleEnum.cpo,
+        Action.get_client_token,
+        auth_token=auth_token,
+        version=VersionNumber.v_2_2_1,
+    )
+
+    charging_profile_result = None
+    for _ in range(30 * settings.GET_ACTIVE_PROFILE_AWAIT_TIME):
+        # since charging profile has no id, 0 is used for id parameter of crud.get
+        charging_profile_result = await crud.get(
+            ModuleID.hub_client_info,
+            RoleEnum.cpo,
+            0,
+            session_id=session_id,
+            response_url=response_url,
+            charging_profile=charging_profile,
+            auth_token=auth_token,
+            version=VersionNumber.v_2_2_1,
+        )
+        if not charging_profile_result:
+            break
+        await sleep(2)
+
+    if not charging_profile_result:
+        charging_profile_result = ChargingProfileResult(
+            result=ChargingProfileResultType.rejected
+        )
+    else:
+        charging_profile_result = (
+            adapter.active_charging_profile_result_adapter(
+                charging_profile_result, VersionNumber.v_2_2_1
+            )
+        )
+
+    async with httpx.AsyncClient() as client:
+        authorization_token = f"Token {encode_string_base64(client_auth_token)}"
+        await client.post(
+            response_url,
+            json=charging_profile_result.dict(),
             headers={"authorization": authorization_token},
         )
 
