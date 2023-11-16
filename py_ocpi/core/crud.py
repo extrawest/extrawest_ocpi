@@ -78,6 +78,7 @@ class Crud(ABC):
             token_type (TokenType): The token type
             operation ('credentials', 'registration'):
             The operation type in credentials and registration process
+            query_params (dict): Charging profile request query params.
 
         Returns:
             Any: The created object data
@@ -110,6 +111,7 @@ class Crud(ABC):
             token_type (TokenType): The token type
             operation ('credentials', 'registration'):
             The operation type in credentials and registration process
+            session_id (str): Charging profile corresponding session id.
 
 
         Returns:
