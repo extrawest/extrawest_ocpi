@@ -24,6 +24,11 @@ class Crud(ABC):
             token_type (TokenType): The token type
             command (CommandType): The command type of the OCPP command
             command_data: Request body of command.
+            session_id (str): Id of the charging profile corresponding session.
+            duration (int): Length of the requested ActiveChargingProfile
+             in seconds.
+            response_url (str): Url where to send result of the action.
+            charging_profile (SetChargingProfile): ChargingProfile body.
 
         Returns:
             Any: The object data
@@ -147,8 +152,15 @@ class Crud(ABC):
             action (Action): The action type
             data (dict): The data required for the action
             command (CommandType): The command type of the OCPP command
+            charging_profile (SetChargingProfile): Charging profile sent to be
+             updated.
 
         Keyword Args:
+            response_url (str): Response url for actions which require sending
+             response.
+            session (Session): Session of charging profile action.
+            duration (int): Length of the requested ActiveChargingProfile
+             in seconds.
             auth_token (str): The authentication token used by third party
             version (VersionNumber): The version number of the caller OCPI module
 
