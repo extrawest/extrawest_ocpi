@@ -53,7 +53,9 @@ to your .env file, overwise default values would be taken
 `PUSH_PREFIX`
 `COUNTRY_CODE`
 `PARTY_ID`
+`PROTOCOL`
 `COMMAND_AWAIT_TIME`
+`GET_ACTIVE_PROFILE_AWAIT_TIME`
 
 
 ## Usage/Examples
@@ -145,15 +147,10 @@ from crud import Crud
 
 app = get_application(
     version_numbers=[VersionNumber.v_2_1_1, VersionNumber.v_2_2_1],
-    roles=[RoleEnum.cpo],
+    roles=[RoleEnum.cpo, RoleEnum.emsp],
     modules=[
         ModuleID.credentials_and_registration,
         ModuleID.locations,
-        ModuleID.cdrs,
-        ModuleID.tokens,
-        ModuleID.tariffs,
-        ModuleID.sessions,
-        ModuleID.commands,
     ],
     authenticator=ClientAuthenticator,
     crud=Crud,
@@ -184,7 +181,7 @@ Example: `http://127.0.0.1:8000/ocpi/docs/`
 
 ---
 
-- [in progress] Add v2.2.1 modules: `Charging Profiles`, `Hub Client Info`
+- Issues fixing
 
 
 ## Related
