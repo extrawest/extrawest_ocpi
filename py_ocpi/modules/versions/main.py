@@ -10,6 +10,7 @@ from py_ocpi.core.authentication.verifier import (
     CredentialsAuthorizationVerifier,
 )
 from py_ocpi.core import status
+from py_ocpi.core.config import logger
 from py_ocpi.core.crud import Crud
 from py_ocpi.core.dependencies import (
     get_versions as get_versions_,
@@ -29,7 +30,9 @@ async def get_versions(
     crud: Crud = Depends(get_crud),
     server_cred: str | dict | None = Depends(cred_dependency),
 ):
+    logger.info("Received request for version details: %s" % request.url)
     if server_cred is None:
+        logger.debug("Unauthorized request.")
         raise HTTPException(
             fastapistatus.HTTP_401_UNAUTHORIZED,
             "Unauthorized",
