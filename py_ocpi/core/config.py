@@ -2,8 +2,11 @@ from typing import List, Union
 
 from pydantic import AnyHttpUrl, BaseSettings, validator
 
+from py_ocpi.core.logs import LoggingConfig, logger
+
 
 class Settings(BaseSettings):
+    ENVIRONMENT: str = "production"
     PROJECT_NAME: str = "OCPI"
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     OCPI_HOST: str = "www.example.com"
@@ -32,3 +35,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+logging_config = LoggingConfig(settings.ENVIRONMENT, logger)
+logging_config.configure_logger()
