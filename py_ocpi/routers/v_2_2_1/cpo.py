@@ -24,6 +24,9 @@ from py_ocpi.modules.cdrs.v_2_2_1.api import (
 from py_ocpi.modules.hubclientinfo.v_2_2_1.api import (
     cpo_router as hubclientinfo_cpo_2_2_1_router,
 )
+from py_ocpi.modules.chargingprofiles.v_2_2_1.api import (
+    cpo_router as chargingprofiles_cpo_2_2_1_router,
+)
 
 
 router = {
@@ -35,4 +38,5 @@ router = {
     ModuleID.tokens: tokens_cpo_2_2_1_router,
     ModuleID.cdrs: cdrs_cpo_2_2_1_router,
     ModuleID.hub_client_info: hubclientinfo_cpo_2_2_1_router,
+    ModuleID.charging_profile: chargingprofiles_cpo_2_2_1_router,
 }

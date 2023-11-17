@@ -61,6 +61,12 @@ HUB_CLIENT_INFO = Endpoint(
     url=URL(f"{URL_BASE}/{ModuleID.client_info.value}/"),
 )
 
+CHARGING_PROFILE = Endpoint(
+    identifier=ModuleID.charging_profile,
+    role=InterfaceRole.sender,
+    url=URL(f"{URL_BASE}/{ModuleID.charging_profile.value}/"),
+)
+
 ENDPOINTS_LIST = {
     ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
     ModuleID.locations: LOCATIONS,
@@ -70,4 +76,5 @@ ENDPOINTS_LIST = {
     ModuleID.commands: COMMANDS,
     ModuleID.tokens: TOKENS,
     ModuleID.hub_client_info: HUB_CLIENT_INFO,
+    ModuleID.charging_profile: CHARGING_PROFILE,
 }
