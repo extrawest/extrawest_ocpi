@@ -21,6 +21,9 @@ from py_ocpi.modules.commands.v_2_2_1.api import (
 from py_ocpi.modules.tokens.v_2_2_1.api import (
     emsp_router as tokens_emsp_2_2_1_router,
 )
+from py_ocpi.modules.hubclientinfo.v_2_2_1.api import (
+    emsp_router as hubclientinfo_emsp_2_2_1_router,
+)
 from py_ocpi.modules.chargingprofiles.v_2_2_1.api import (
     emsp_router as chargingprofiles_emsp_2_2_1_router,
 )
@@ -34,5 +37,6 @@ router = {
     ModuleID.tariffs: tariffs_emsp_2_2_1_router,
     ModuleID.tokens: tokens_emsp_2_2_1_router,
     ModuleID.cdrs: cdrs_emsp_2_2_1_router,
+    ModuleID.hub_client_info: hubclientinfo_emsp_2_2_1_router,
     ModuleID.charging_profile: chargingprofiles_emsp_2_2_1_router,
 }

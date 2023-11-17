@@ -1,10 +1,25 @@
-from fastapi import Header, Depends, Query, Path, WebSocketException, status
+from fastapi import (
+    Depends,
+    Header,
+    Path,
+    Security,
+    status,
+    Query,
+    WebSocketException,
+)
+from fastapi.security import APIKeyHeader
 
 from py_ocpi.core.authentication.authenticator import Authenticator
 from py_ocpi.core.dependencies import get_authenticator
 from py_ocpi.core.exceptions import AuthorizationOCPIError
 from py_ocpi.core.utils import decode_string_base64
 from py_ocpi.modules.versions.enums import VersionNumber
+
+api_key_header = APIKeyHeader(
+    name="authorization",
+    description="API key with `Token ` prefix.",
+    scheme_name="Token",
+)
 
 
 class AuthorizationVerifier:
@@ -20,7 +35,7 @@ class AuthorizationVerifier:
 
     async def __call__(
         self,
-        authorization: str = Header(...),
+        authorization: str = Security(api_key_header),
         authenticator: Authenticator = Depends(get_authenticator),
     ):
         """
@@ -60,7 +75,7 @@ class CredentialsAuthorizationVerifier:
 
     async def __call__(
         self,
-        authorization: str = Header(...),
+        authorization: str = Security(api_key_header),
         authenticator: Authenticator = Depends(get_authenticator),
     ) -> str | dict | None:
         """

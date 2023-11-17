@@ -48,11 +48,18 @@ TOKENS = Endpoint(
     url=URL(f"{URL_BASE}/{ModuleID.tokens.value}/"),
 )
 
+HUB_CLIENT_INFO = Endpoint(
+    identifier=ModuleID.hub_client_info,
+    role=InterfaceRole.receiver,
+    url=URL(f"{URL_BASE}/{ModuleID.client_info.value}/"),
+)
+
 CHARGING_PROFILE = Endpoint(
     identifier=ModuleID.charging_profile,
     role=InterfaceRole.receiver,
     url=URL(f"{URL_BASE}/{ModuleID.charging_profile.value}/"),
 )
+
 
 ENDPOINTS_LIST = {
     ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
@@ -61,5 +68,6 @@ ENDPOINTS_LIST = {
     ModuleID.cdrs: CDRS,
     ModuleID.tariffs: TARIFFS,
     ModuleID.tokens: TOKENS,
+    ModuleID.hub_client_info: HUB_CLIENT_INFO,
     ModuleID.charging_profile: CHARGING_PROFILE,
 }
