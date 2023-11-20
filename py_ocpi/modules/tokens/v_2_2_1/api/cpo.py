@@ -10,6 +10,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.utils import get_auth_token, partially_update_attributes
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.modules.versions.enums import VersionNumber
@@ -34,6 +35,7 @@ async def get_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received request to get token with id - `%s`." % token_uid)
     auth_token = get_auth_token(request)
 
     data = await crud.get(
@@ -51,6 +53,7 @@ async def get_token(
             data=[adapter.token_adapter(data).dict()],
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
+    logger.debug("Token with id `%s` was not found." % token_uid)
     raise NotFoundOCPIError
 
 
@@ -67,6 +70,10 @@ async def add_or_update_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to add or update token with id - `%s`." % token_uid
+    )
+    logger.debug("Token data to update - %s" % token)
     auth_token = get_auth_token(request)
 
     data = await crud.get(
@@ -80,6 +87,7 @@ async def add_or_update_token(
         version=VersionNumber.v_2_2_1,
     )
     if data:
+        logger.debug("Update token with id - `%s`." % token_uid)
         data = await crud.update(
             ModuleID.tokens,
             RoleEnum.cpo,
@@ -92,6 +100,7 @@ async def add_or_update_token(
             version=VersionNumber.v_2_2_1,
         )
     else:
+        logger.debug("Create token with id - `%s`." % token_uid)
         data = await crud.create(
             ModuleID.tokens,
             RoleEnum.cpo,
@@ -121,6 +130,10 @@ async def partial_update_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to partially update token with id - `%s`." % token_uid
+    )
+    logger.debug("Token data to update - %s" % token)
     auth_token = get_auth_token(request)
 
     old_data = await crud.get(
@@ -134,6 +147,8 @@ async def partial_update_token(
         version=VersionNumber.v_2_2_1,
     )
     if not old_data:
+        logger.debug("Token with id `%s` was not found." % token_uid)
+
         raise NotFoundOCPIError
     old_token = adapter.token_adapter(old_data)
 

@@ -9,6 +9,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum, Action
@@ -28,6 +29,7 @@ async def get_tokens(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
+    logger.info("Received request to get tokens")
     auth_token = get_auth_token(request)
 
     data_list = await get_list(
@@ -60,6 +62,9 @@ async def authorize_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received request to authorize token with id `%s`" % token_uid)
+    logger.debug("Token type - `%s`" % token_type)
+    logger.debug("Location reference - `%s`" % location_reference)
     auth_token = get_auth_token(request)
 
     # check if token exists
@@ -92,6 +97,7 @@ async def authorize_token(
 
         # when the token information is not enough
         if not authroization_result:
+            logger.debug("Authorization result is null.")
             return OCPIResponse(
                 data=[],
                 **status.OCPI_2002_NOT_ENOUGH_INFORMATION,
@@ -102,4 +108,5 @@ async def authorize_token(
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
 
+    logger.debug("Token with id `%s` was not found." % token_uid)
     raise NotFoundOCPIError
