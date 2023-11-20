@@ -15,6 +15,7 @@ from py_ocpi.core.authentication.verifier import (
     CredentialsAuthorizationVerifier,
 )
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.dependencies import get_crud, get_adapter
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.schemas import OCPIResponse
@@ -39,6 +40,7 @@ async def get_credentials(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received request to get credentials")
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
@@ -62,15 +64,22 @@ async def post_credentials(
     adapter: Adapter = Depends(get_adapter),
     server_cred: str | dict | None = Depends(cred_dependency),
 ):
+    logger.info("Received request to create credentials.")
+    logger.debug("POST credentials body: %s" % credentials)
+
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     # Check if the client is already registered
     if server_cred:
+        logger.info("Client already registered.")
+
         raise HTTPException(
             fastapistatus.HTTP_405_METHOD_NOT_ALLOWED,
             "Client is already registered",
         )
     if server_cred is None:
+        logger.info("Token is not valid.")
+
         raise HTTPException(
             fastapistatus.HTTP_401_UNAUTHORIZED,
             "Unauthorized",
@@ -80,31 +89,56 @@ async def post_credentials(
     async with httpx.AsyncClient() as client:
         credentials_client_token = credentials.token
         authorization_token = f"Token {credentials_client_token}"
+
+        logger.info("Send request to get versions: %s" % credentials.url)
+
         response_versions = await client.get(
             credentials.url, headers={"authorization": authorization_token}
+        )
+
+        logger.info(
+            "GET versions status_code: %s" % response_versions.status_code
         )
 
         if response_versions.status_code == fastapistatus.HTTP_200_OK:
             version_url = None
             versions = response_versions.json()["data"]
 
+            logger.debug("GET versions response data: %s" % versions)
+
             for version in versions:
                 if version["version"] == VersionNumber.v_2_1_1:
                     version_url = version["url"]
 
             if not version_url:
+                logger.debug(
+                    "Version %s is not supported" % VersionNumber.v_2_1_1
+                )
+
                 return OCPIResponse(
                     data=[],
                     **status.OCPI_3002_UNSUPPORTED_VERSION,
                 )
 
+            logger.info("Send request to get version details: %s" % version_url)
+
             response_endpoints = await client.get(
                 version_url, headers={"authorization": authorization_token}
+            )
+
+            logger.info(
+                "GET version details status_code: %s"
+                % response_endpoints.status_code
             )
 
             if response_endpoints.status_code == fastapistatus.HTTP_200_OK:
                 # Store client credentials and generate new credentials for sender
                 endpoints = response_endpoints.json()["data"]
+
+                logger.debug(
+                    "GET version details response data: %s" % endpoints
+                )
+
                 new_credentials = await crud.create(
                     ModuleID.credentials_and_registration,
                     RoleEnum.emsp,
@@ -134,10 +168,14 @@ async def update_credentials(
     adapter: Adapter = Depends(get_adapter),
     server_cred: str | dict | None = Depends(cred_dependency),
 ):
+    logger.info("Received request to update credentials.")
+    logger.debug("PUT credentials body: %s" % credentials)
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     # Check if the client is already registered
     if not server_cred:
+        logger.info("Client already registered.")
+
         raise HTTPException(
             fastapistatus.HTTP_405_METHOD_NOT_ALLOWED,
             "Client is not registered",
@@ -147,32 +185,57 @@ async def update_credentials(
     async with httpx.AsyncClient() as client:
         credentials_client_token = credentials.token
         authorization_token = f"Token {credentials_client_token}"
+
+        logger.info("Send request to get versions: %s" % credentials.url)
+
         response_versions = await client.get(
             credentials.url, headers={"authorization": authorization_token}
+        )
+
+        logger.info(
+            "GET versions status_code: %s" % response_versions.status_code
         )
 
         if response_versions.status_code == fastapistatus.HTTP_200_OK:
             version_url = None
             versions = response_versions.json()["data"]
 
+            logger.debug("GET versions response data: %s" % versions)
+
             for version in versions:
                 if version["version"] == VersionNumber.v_2_1_1:
                     version_url = version["url"]
 
             if not version_url:
+                logger.debug(
+                    "Version %s is not supported" % VersionNumber.v_2_1_1
+                )
+
                 return OCPIResponse(
                     data=[],
                     **status.OCPI_3002_UNSUPPORTED_VERSION,
                 )
 
+            logger.info("Send request to get version details: %s" % version_url)
+
             response_endpoints = await client.get(
                 version_url, headers={"authorization": authorization_token}
+            )
+
+            logger.info(
+                "GET version details status_code: %s"
+                % response_endpoints.status_code
             )
 
             if response_endpoints.status_code == fastapistatus.HTTP_200_OK:
                 # Update server credentials to access client's
                 # system and generate new credentials token
                 endpoints = response_endpoints.json()["data"]
+
+                logger.debug(
+                    "GET version details response data: %s" % endpoints
+                )
+
                 new_credentials = await crud.update(
                     ModuleID.credentials_and_registration,
                     RoleEnum.emsp,
@@ -205,6 +268,8 @@ async def remove_credentials(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received request to delete credentials")
+
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
@@ -215,6 +280,8 @@ async def remove_credentials(
         version=VersionNumber.v_2_1_1,
     )
     if not data:
+        logger.info("Client is not registered.")
+
         raise HTTPException(
             fastapistatus.HTTP_405_METHOD_NOT_ALLOWED,
             "Client is not registered",
