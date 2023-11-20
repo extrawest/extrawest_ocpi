@@ -7,6 +7,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.data_types import String
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.exceptions import NotFoundOCPIError
@@ -26,6 +27,7 @@ async def get_locations(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
+    logger.info("Received request to get locations.")
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data_list = await get_list(
@@ -56,6 +58,7 @@ async def get_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received request to get location by id - `%s`." % location_id)
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
@@ -70,6 +73,7 @@ async def get_location(
             data=[adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()],
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
+    logger.debug("Location with id `%s` was not found." % location_id)
     raise NotFoundOCPIError
 
 
@@ -81,6 +85,10 @@ async def get_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to get evse by id - `%s` (location id - `%s`)"
+        % (location_id, evse_uid)
+    )
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
@@ -98,6 +106,8 @@ async def get_evse(
                     data=[evse.dict()],
                     **status.OCPI_1000_GENERIC_SUCESS_CODE,
                 )
+        logger.debug("Evse with id `%s` was not found." % evse_uid)
+    logger.debug("Location with id `%s` was not found." % location_id)
     raise NotFoundOCPIError
 
 
@@ -112,6 +122,11 @@ async def get_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to get connector by id - `%s` "
+        "(location id - `%s`, evse id - `%s`)"
+        % (connector_id, location_id, evse_uid)
+    )
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
@@ -131,4 +146,9 @@ async def get_connector(
                             data=[connector.dict()],
                             **status.OCPI_1000_GENERIC_SUCESS_CODE,
                         )
+                logger.debug(
+                    "Connector with id `%s` was not found." % connector_id
+                )
+        logger.debug("Evse with id `%s` was not found." % evse_uid)
+    logger.debug("Location with id `%s` was not found." % location_id)
     raise NotFoundOCPIError
