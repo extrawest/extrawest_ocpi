@@ -24,7 +24,7 @@ from py_ocpi.core.dependencies import (
 from py_ocpi.core import status
 from py_ocpi.core.adapter import BaseAdapter
 from py_ocpi.core.enums import RoleEnum, ModuleID
-from py_ocpi.core.config import settings
+from py_ocpi.core.config import settings, logger
 from py_ocpi.core.data_types import URL
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.exceptions import AuthorizationOCPIError, NotFoundOCPIError
@@ -39,19 +39,25 @@ class ExceptionHandlerMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
     ):
+        logger.debug("%s: %s" % (request.method, request.url))
+        logger.debug("Request headers - %s" % request.headers)
+
         try:
             response = await call_next(request)
         except AuthorizationOCPIError as e:
+            logger.warning("OCPI middleware AuthorizationOCPIError exception.")
             response = JSONResponse(
                 content={"detail": str(e)},
                 status_code=fastapistatus.HTTP_403_FORBIDDEN,
             )
         except NotFoundOCPIError as e:
+            logger.warning("OCPI middleware NotFoundOCPIError exception.")
             response = JSONResponse(
                 content={"detail": str(e)},
                 status_code=fastapistatus.HTTP_404_NOT_FOUND,
             )
         except ValidationError:
+            logger.warning("OCPI middleware ValidationError exception.")
             response = JSONResponse(
                 OCPIResponse(
                     data=[],
