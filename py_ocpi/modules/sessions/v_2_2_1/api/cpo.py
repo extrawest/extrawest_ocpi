@@ -8,6 +8,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.dependencies import get_crud, get_adapter, pagination_filters
@@ -26,6 +27,7 @@ async def get_sessions(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
+    logger.info("Received request to get sessions.")
     auth_token = get_auth_token(request)
 
     data_list = await get_list(

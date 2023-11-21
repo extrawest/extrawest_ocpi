@@ -13,6 +13,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.exceptions import NotFoundOCPIError
@@ -35,6 +36,7 @@ async def get_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received request to get session with id - `%s`." % session_id)
     auth_token = get_auth_token(request)
 
     data = await crud.get(
@@ -51,6 +53,7 @@ async def get_session(
             data=[adapter.session_adapter(data, VersionNumber.v_2_2_1).dict()],
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
+    logger.debug("Session with id `%s` was not found." % session_id)
     raise NotFoundOCPIError
 
 
@@ -66,6 +69,10 @@ async def add_or_update_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to add or update session with id - `%s`." % session_id
+    )
+    logger.debug("Session data to update - %s" % session.dict())
     auth_token = get_auth_token(request)
 
     data = await crud.get(
@@ -78,6 +85,7 @@ async def add_or_update_session(
         version=VersionNumber.v_2_2_1,
     )
     if data:
+        logger.debug("Update session with id - `%s`." % session_id)
         data = await crud.update(
             ModuleID.sessions,
             RoleEnum.emsp,
@@ -89,6 +97,7 @@ async def add_or_update_session(
             version=VersionNumber.v_2_2_1,
         )
     else:
+        logger.debug("Create session with id - `%s`." % session_id)
         data = await crud.create(
             ModuleID.sessions,
             RoleEnum.emsp,
@@ -117,6 +126,11 @@ async def partial_update_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to partially update session with id - `%s`."
+        % session_id
+    )
+    logger.debug("Session data to update - %s" % session.dict())
     auth_token = get_auth_token(request)
 
     old_data = await crud.get(
@@ -151,4 +165,5 @@ async def partial_update_session(
             data=[adapter.session_adapter(data).dict()],
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
+    logger.debug("Session with id `%s` was not found." % session_id)
     raise NotFoundOCPIError
