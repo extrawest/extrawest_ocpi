@@ -6,6 +6,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.exceptions import NotFoundOCPIError
@@ -27,6 +28,10 @@ async def get_hubclientinfo(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to get hub client info with country code - `%s` "
+        "and party id - `%s`." % (country_code, party_id)
+    )
     auth_token = get_auth_token(request)
 
     data = await crud.get(
@@ -43,6 +48,7 @@ async def get_hubclientinfo(
             data=[adapter.hubclientinfo_adapter(data).dict()],
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
+    logger.info("Hub client info was not found.")
     raise NotFoundOCPIError
 
 
@@ -55,6 +61,12 @@ async def add_or_update_clienthubinfo(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to add or update hub client info "
+        "with country code - `%s` and party id - `%s`."
+        % (country_code, party_id)
+    )
+    logger.debug("Client hub info data to update - %s" % client_hub_info.dict())
     auth_token = get_auth_token(request)
 
     data = await crud.get(
@@ -67,6 +79,7 @@ async def add_or_update_clienthubinfo(
         version=VersionNumber.v_2_2_1,
     )
     if data:
+        logger.debug("Update client hub info.")
         data = await crud.update(
             ModuleID.hub_client_info,
             RoleEnum.cpo,
@@ -78,6 +91,7 @@ async def add_or_update_clienthubinfo(
             version=VersionNumber.v_2_2_1,
         )
     else:
+        logger.debug("Create client hub info.")
         data = await crud.create(
             ModuleID.hub_client_info,
             RoleEnum.cpo,
