@@ -8,6 +8,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.data_types import CiString
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.exceptions import NotFoundOCPIError
@@ -27,6 +28,7 @@ async def get_cdr(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received request to get cdr with id - `%s`." % cdr_id)
     auth_token = get_auth_token(request)
 
     data = await crud.get(
@@ -41,6 +43,7 @@ async def get_cdr(
             data=[adapter.cdr_adapter(data).dict()],
             **status.OCPI_1000_GENERIC_SUCESS_CODE,
         )
+    logger.debug("CDR with id `%s` was not found." % cdr_id)
     raise NotFoundOCPIError
 
 
@@ -52,6 +55,8 @@ async def add_cdr(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received request to create cdr.")
+    logger.debug("CDR data to create - %s" % cdr.dict())
     auth_token = get_auth_token(request)
 
     data = await crud.create(
