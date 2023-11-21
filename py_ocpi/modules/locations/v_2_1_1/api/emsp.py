@@ -171,7 +171,7 @@ async def add_or_update_location(
         "Received request to add or update location with id - `%s`."
         % location_id
     )
-    logger.debug("Location data to update - %s" % location)
+    logger.debug("Location data to update - %s" % location.dict())
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     data = await crud.get(
@@ -231,7 +231,7 @@ async def add_or_update_evse(
         "Received request to add or update evse by id - `%s` "
         "(location id - `%s`)" % (location_id, evse_uid)
     )
-    logger.debug("Evse data to update - %s" % evse)
+    logger.debug("Evse data to update - %s" % evse.dict())
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
@@ -294,7 +294,7 @@ async def add_or_update_connector(
         "(location id - `%s`, evse id - `%s`)"
         % (connector_id, location_id, evse_uid)
     )
-    logger.debug("Connector data to update - %s" % connector)
+    logger.debug("Connector data to update - %s" % connector.dict())
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
@@ -360,7 +360,7 @@ async def partial_update_location(
         "Received request to partially update location with id - `%s`."
         % location_id
     )
-    logger.debug("Location data to update - %s" % location)
+    logger.debug("Location data to update - %s" % location.dict())
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
@@ -418,7 +418,7 @@ async def partial_update_evse(
         "Received request to partially update evse by id - `%s` "
         "(location id - `%s`)" % (location_id, evse_uid)
     )
-    logger.debug("Evse data to update - %s" % evse)
+    logger.debug("Evse data to update - %s" % evse.dict())
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(
@@ -483,7 +483,7 @@ async def partial_update_connector(
         "(location id - `%s`, evse id - `%s`)"
         % (connector_id, location_id, evse_uid)
     )
-    logger.debug("Connector data to update - %s" % connector)
+    logger.debug("Connector data to update - %s" % connector.dict())
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
     old_data = await crud.get(

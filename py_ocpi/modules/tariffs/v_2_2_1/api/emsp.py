@@ -67,6 +67,7 @@ async def add_or_update_tariff(
     logger.info(
         "Received request to add or update tariff with id - `%s`." % tariff_id
     )
+    logger.debug("Tariff data to update - %s" % tariff.dict())
     auth_token = get_auth_token(request)
 
     data = await crud.get(

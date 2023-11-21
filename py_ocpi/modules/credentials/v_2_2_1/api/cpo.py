@@ -64,7 +64,7 @@ async def post_credentials(
     server_cred: str | dict | None = Depends(cred_dependency),
 ):
     logger.info("Received request to create credentials.")
-    logger.debug("POST credentials body: %s" % credentials)
+    logger.debug("POST credentials body: %s" % credentials.dict())
 
     auth_token = get_auth_token(request)
 
@@ -168,7 +168,7 @@ async def update_credentials(
     server_cred: str | dict | None = Depends(cred_dependency),
 ):
     logger.info("Received request to update credentials.")
-    logger.debug("PUT credentials body: %s" % credentials)
+    logger.debug("PUT credentials body: %s" % credentials.dict())
     auth_token = get_auth_token(request)
 
     # Check if the client is already registered

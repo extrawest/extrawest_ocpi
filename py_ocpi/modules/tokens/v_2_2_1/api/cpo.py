@@ -73,7 +73,7 @@ async def add_or_update_token(
     logger.info(
         "Received request to add or update token with id - `%s`." % token_uid
     )
-    logger.debug("Token data to update - %s" % token)
+    logger.debug("Token data to update - %s" % token.dict())
     auth_token = get_auth_token(request)
 
     data = await crud.get(
@@ -133,7 +133,7 @@ async def partial_update_token(
     logger.info(
         "Received request to partially update token with id - `%s`." % token_uid
     )
-    logger.debug("Token data to update - %s" % token)
+    logger.debug("Token data to update - %s" % token.dict())
     auth_token = get_auth_token(request)
 
     old_data = await crud.get(
