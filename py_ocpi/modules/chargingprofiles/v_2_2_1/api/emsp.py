@@ -7,6 +7,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.dependencies import get_crud, get_adapter
 
@@ -27,8 +28,11 @@ async def receive_chargingprofile_command(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info("Received charging profile result.")
+    logger.debug("Chargingprofile result data - %s" % data)
     auth_token = get_auth_token(request)
     query_params = request.query_params
+    logger.debug("Request query_params - %s" % query_params)
 
     await crud.create(
         ModuleID.charging_profile,
@@ -53,6 +57,14 @@ async def add_or_update_chargingprofile(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to add or update charging profile "
+        "with session_id - `%s`." % session_id
+    )
+    logger.debug(
+        "Active chargingprofile result data - %s"
+        % active_charging_profile.dict()
+    )
     auth_token = get_auth_token(request)
 
     await crud.update(

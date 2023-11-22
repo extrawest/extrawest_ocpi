@@ -7,6 +7,7 @@ from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.authentication.verifier import AuthorizationVerifier
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.data_types import CiString, URL
 from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 from py_ocpi.core.dependencies import get_crud, get_adapter
@@ -38,6 +39,10 @@ async def get_chargingprofile(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to get charging profile with session_id - `%s`."
+        % session_id
+    )
     auth_token = get_auth_token(request)
 
     session = await crud.get(
@@ -83,6 +88,9 @@ async def get_chargingprofile(
                 **status.OCPI_1000_GENERIC_SUCESS_CODE,
             )
 
+        logger.debug(
+            "Sent get charging profile action returned without result."
+        )
         charging_profile_response = ChargingProfileResponse(
             result=ChargingProfileResponseType.rejected, timeout=0
         )
@@ -91,6 +99,7 @@ async def get_chargingprofile(
             **status.OCPI_3000_GENERIC_SERVER_ERROR,
         )
 
+    logger.info("Session with id `%s` was not found." % session_id)
     charging_profile_response = ChargingProfileResponse(
         result=ChargingProfileResponseType.rejected, timeout=0
     )
@@ -109,6 +118,11 @@ async def add_or_update_chargingprofile(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to get charging profile with session_id - `%s`."
+        % session_id
+    )
+    logger.debug("Set charging profile data - `%s`" % charging_profile.dict())
     auth_token = get_auth_token(request)
 
     session = await crud.get(
@@ -154,6 +168,9 @@ async def add_or_update_chargingprofile(
                 **status.OCPI_1000_GENERIC_SUCESS_CODE,
             )
 
+        logger.debug(
+            "Sent update charging profile action returned without result."
+        )
         charging_profile_response = ChargingProfileResponse(
             result=ChargingProfileResponseType.rejected, timeout=0
         )
@@ -162,6 +179,7 @@ async def add_or_update_chargingprofile(
             **status.OCPI_3000_GENERIC_SERVER_ERROR,
         )
 
+    logger.info("Session with id `%s` was not found." % session_id)
     charging_profile_response = ChargingProfileResponse(
         result=ChargingProfileResponseType.rejected, timeout=0
     )
@@ -180,6 +198,10 @@ async def delete_chargingprofile(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    logger.info(
+        "Received request to get charging profile with session_id - `%s`."
+        % session_id
+    )
     auth_token = get_auth_token(request)
 
     session = await crud.get(
@@ -223,6 +245,9 @@ async def delete_chargingprofile(
                 **status.OCPI_1000_GENERIC_SUCESS_CODE,
             )
 
+        logger.debug(
+            "Sent delete charging profile action returned without result."
+        )
         charging_profile_response = ChargingProfileResponse(
             result=ChargingProfileResponseType.rejected, timeout=0
         )
@@ -231,6 +256,7 @@ async def delete_chargingprofile(
             **status.OCPI_3000_GENERIC_SERVER_ERROR,
         )
 
+    logger.info("Session with id `%s` was not found." % session_id)
     charging_profile_response = ChargingProfileResponse(
         result=ChargingProfileResponseType.rejected, timeout=0
     )
