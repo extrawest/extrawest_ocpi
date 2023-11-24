@@ -36,6 +36,22 @@ async def get_tariff(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get Tariff.
+
+    Retrieves a tariff based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - tariff_id (str): The ID of the tariff (36 characters).
+
+    **Returns:**
+        The OCPIResponse containing the tariff data.
+
+    **Raises:**
+        NotFoundOCPIError: If the tariff is not found.
+    """
     logger.info("Received request to get tariff with id - `%s`." % tariff_id)
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
@@ -69,6 +85,22 @@ async def add_or_update_tariff(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update Tariff.
+
+    Adds or updates a tariff based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - tariff_id (str): The ID of the tariff (36 characters).
+
+    **Request body:**
+        tariff (Tariff): The tariff object.
+
+    **Returns:**
+        The OCPIResponse containing the tariff data.
+    """
     logger.info(
         "Received request to add or update tariff with id - `%s`." % tariff_id
     )
@@ -126,6 +158,25 @@ async def partial_update_tariff(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Partial Update Tariff.
+
+    Partially updates a tariff based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - tariff_id (str): The ID of the tariff (36 characters).
+
+    **Request body:**
+        tariff (TariffPartialUpdate): The partial tariff update object.
+
+    **Returns:**
+        The OCPIResponse containing the partially updated tariff data.
+
+    **Raises:**
+        NotFoundOCPIError: If the tariff is not found.
+    """
     logger.info(
         "Received request to partially update tariff with id - `%s`."
         % tariff_id
@@ -180,6 +231,22 @@ async def delete_tariff(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Delete Tariff.
+
+    Deletes a tariff based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - tariff_id (str): The ID of the tariff to delete (36 characters).
+
+    **Returns:**
+        The OCPIResponse indicating the success of the operation.
+
+    **Raises:**
+        NotFoundOCPIError: If the tariff is not found.
+    """
     logger.info("Received request to delete tariff with id - `%s`." % tariff_id)
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 

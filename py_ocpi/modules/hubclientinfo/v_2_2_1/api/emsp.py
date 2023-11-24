@@ -28,6 +28,22 @@ async def get_hubclientinfo(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get Hub Client Info.
+
+    Gets information about the hub client with the specified
+        country code and party ID.
+
+    **Parameters:**
+        - country_code (str): The country code of the hub client.
+        - party_id (str): The party ID of the hub client.
+
+    **Returns:**
+        The OCPIResponse containing information about the hub client.
+
+    **Raises:**
+        - NotFoundOCPIError: If the hub client info is not found.
+    """
     logger.info(
         "Received request to get hub client info with country code - `%s` "
         "and party id - `%s`." % (country_code, party_id)
@@ -61,6 +77,24 @@ async def add_or_update_clienthubinfo(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update Hub Client Info.
+
+    Adds or updates information about the hub client
+        with the specified country code and party ID.
+
+    **Parameters:**
+        - country_code (str): The country code of the hub client.
+        - party_id (str): The party ID of the hub client.
+
+    **Request body:**
+        - client_hub_info (ClientInfo): The data to update or
+            create for the hub client.
+
+    **Returns:**
+        The OCPIResponse containing the updated or created
+            information about the hub client.
+    """
     logger.info(
         "Received request to add or update hub client info "
         "with country code - `%s` and party id - `%s`."

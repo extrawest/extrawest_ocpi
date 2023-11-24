@@ -39,6 +39,14 @@ async def get_credentials(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get credentials.
+
+    Retrieves credentials based on the specified parameters.
+
+    **Returns:**
+        The OCPIResponse containing the credentials.
+    """
     logger.info("Received request to get credentials")
     auth_token = get_auth_token(request)
 
@@ -63,6 +71,22 @@ async def post_credentials(
     adapter: Adapter = Depends(get_adapter),
     server_cred: str | dict | None = Depends(cred_dependency),
 ):
+    """
+    Create credentials.
+
+    Creates credentials based on the specified parameters.
+
+    **Request body:**
+        credentials (Credentials): The credentials object.
+
+    **Returns:**
+        The OCPIResponse containing the new credentials.
+
+    **Raises:**
+        HTTPException: If the client is already registered
+            (HTTP 405 Method Not Allowed)
+                       or if the token is not valid (HTTP 401 Unauthorized).
+    """
     logger.info("Received request to create credentials.")
     logger.debug("POST credentials body: %s" % credentials.dict())
 
@@ -167,6 +191,21 @@ async def update_credentials(
     adapter: Adapter = Depends(get_adapter),
     server_cred: str | dict | None = Depends(cred_dependency),
 ):
+    """
+    Update credentials.
+
+    Updates credentials based on the specified parameters.
+
+    **Request body:**
+        credentials (Credentials): The credentials object.
+
+    **Returns:**
+        The OCPIResponse containing the updated credentials.
+
+    **Raises:**
+        HTTPException: If the client is not registered
+            (HTTP 405 Method Not Allowed).
+    """
     logger.info("Received request to update credentials.")
     logger.debug("PUT credentials body: %s" % credentials.dict())
     auth_token = get_auth_token(request)
@@ -268,6 +307,18 @@ async def remove_credentials(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Remove credentials.
+
+    Deletes credentials based on the specified parameters.
+
+    **Returns:**
+        The OCPIResponse indicating the successful removal of credentials.
+
+    **Raises:**
+        HTTPException: If the client is not registered
+            (HTTP 405 Method Not Allowed).
+    """
     logger.info("Received request to delete credentials")
 
     auth_token = get_auth_token(request)

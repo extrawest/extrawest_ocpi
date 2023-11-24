@@ -40,6 +40,22 @@ async def get_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get Location.
+
+    Retrieves a location based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str: The three-letter party ID.
+        - location_id (str): The ID of the location to retrieve (36 characters).
+
+    **Returns:**
+        The OCPIResponse containing the location data.
+
+    **Raises:**
+        NotFoundOCPIError: NotFoundOCPIError: If the location is not found.
+    """
     logger.info(
         "Received request to get location with id - `%s`." % location_id
     )
@@ -76,6 +92,25 @@ async def get_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get EVSE.
+
+    Retrieves an EVSE based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - location_id (str): The ID of the location containing
+            the EVSE (36 characters).
+        - evse_uid (str): The UID of the EVSE to retrieve (48 characters).
+
+    **Returns:**
+        The OCPIResponse containing the EVSE data.
+
+    **Raises:**
+        NotFoundOCPIError: If the location with the specified ID
+         or EVSE with the specified UID is not found.
+    """
     logger.info(
         "Received request to get evse by id - `%s` (location id - `%s`)"
         % (location_id, evse_uid)
@@ -118,6 +153,28 @@ async def get_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get Connector.
+
+    Retrieves a connector based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - location_id (str): The ID of the location containing
+            the EVSE (36 characters).
+        - evse_uid (str): The UID of the EVSE containing
+            the connector (48 characters).
+        - connector_id (str): The ID of the connector
+            to retrieve (36 characters).
+
+    **Returns:**
+        The OCPIResponse containing the connector data.
+
+    **Raises:**
+        NotFoundOCPIError: If the location with the specified ID, EVSE with the
+         specified UID, or Connector with the specified ID is not found.
+    """
     logger.info(
         "Received request to get connector by id - `%s` "
         "(location id - `%s`, evse id - `%s`)"
@@ -164,6 +221,26 @@ async def add_or_update_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update Location.
+
+    Adds or updates a location based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - location_id (str): The ID of the location to add
+            or update (36 characters).
+
+    **Request body:**
+        location (Location): The location object.
+
+    **Returns:**
+        The OCPIResponse containing the added or updated location data.
+
+    **Raises:**
+        NotFoundOCPIError: If the location is not found.
+    """
     logger.info(
         "Received request to add or update location with id - `%s`."
         % location_id
@@ -224,6 +301,26 @@ async def add_or_update_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update EVSE.
+
+    Adds or updates an EVSE based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - location_id (str): The ID of the location (36 characters).
+        - evse_uid (str): The ID of the EVSE to add or update (48 characters).
+
+    **Request body:**
+        evse (EVSE): The EVSE object.
+
+    **Returns:**
+        The OCPIResponse containing the added or updated EVSE data.
+
+    **Raises:**
+        NotFoundOCPIError: If the location with the specified ID is not found.
+    """
     logger.info(
         "Received request to add or update evse by id - `%s` "
         "(location id - `%s`)" % (location_id, evse_uid)
@@ -286,6 +383,29 @@ async def add_or_update_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update Connector.
+
+    Adds or updates a connector based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - location_id (str): The ID of the location (36 characters).
+        - evse_uid (str): The ID of the EVSE (48 characters).
+        - connector_id (str): The ID of the connector to add
+            or update (36 characters).
+
+    **Request body:**
+        connector (Connector): The connector object.
+
+    **Returns:**
+        The OCPIResponse containing the added or updated connector data.
+
+    **Raises:**
+        NotFoundOCPIError: If the location with the specified ID
+            or EVSE with the specified UID is not found.
+    """
     logger.info(
         "Received request to add or update connector by id - `%s` "
         "(location id - `%s`, evse id - `%s`)"
@@ -353,6 +473,26 @@ async def partial_update_location(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Partial Update Location.
+
+    Partially updates a location based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - location_id (str): The ID of the location to partially
+            update (36 characters).
+
+    **Request body:**
+        location (LocationPartialUpdate): The partial location update object.
+
+    **Returns:**
+        The OCPIResponse containing the partially updated location data.
+
+    **Raises:**
+        NotFoundOCPIError: If the location is not found.
+    """
     logger.info(
         "Received request to partially update location with id - `%s`."
         % location_id
@@ -411,6 +551,29 @@ async def partial_update_evse(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Partial Update EVSE.
+
+    Partially updates an EVSE based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - location_id (str): The ID of the location to partially
+            update (36 characters).
+        - evse_uid (str): The UID of the EVSE
+            to partially update (48 characters).
+
+    **Request body:**
+        evse (EVSEPartialUpdate): The partial EVSE update object.
+
+    **Returns:**
+        The OCPIResponse containing the partially updated EVSE data.
+
+    **Raises:**
+        NotFoundOCPIError: If the location with the specified ID
+         or EVSE with the specified UID is not found.
+    """
     logger.info(
         "Received request to partially update evse by id - `%s` "
         "(location id - `%s`)" % (location_id, evse_uid)
@@ -475,6 +638,31 @@ async def partial_update_connector(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Partial Update Connector.
+
+    Partially updates a connector based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - location_id (str): The ID of the location
+            to partially update (36 characters).
+        - evse_uid (str): The UID of the EVSE
+            to partially update (48 characters).
+        - connector_id (str): The ID of the connector
+            to partially update (36 characters).
+
+    **Request body:**
+        connector (ConnectorPartialUpdate): The partial connector update object.
+
+    **Returns:**
+        The OCPIResponse containing the partially updated connector data.
+
+    **Raises:**
+        NotFoundOCPIError:If the location with the specified ID, EVSE with
+         the specified UID, or Connector with the specified ID is not found.
+    """
     logger.info(
         "Received request to partially update connector by id - `%s` "
         "(location id - `%s`, evse id - `%s`)"

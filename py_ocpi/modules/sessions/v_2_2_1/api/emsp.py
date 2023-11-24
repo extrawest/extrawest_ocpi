@@ -36,6 +36,22 @@ async def get_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get Session.
+
+    Retrieves a session based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - session_id (str): The ID of the session (36 characters).
+
+    **Returns:**
+        The OCPIResponse containing the session data.
+
+    **Raises:**
+        NotFoundOCPIError: If the session is not found.
+    """
     logger.info("Received request to get session with id - `%s`." % session_id)
     auth_token = get_auth_token(request)
 
@@ -69,6 +85,22 @@ async def add_or_update_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update Session.
+
+    Adds or updates a session based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - session_id (str): The ID of the session (36 characters).
+
+    **Request body:**
+        session (Session): The session object.
+
+    **Returns:**
+        The OCPIResponse containing the added or updated session data.
+    """
     logger.info(
         "Received request to add or update session with id - `%s`." % session_id
     )
@@ -126,6 +158,25 @@ async def partial_update_session(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Partial Update Session.
+
+    Partially updates a session based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - session_id (str): The ID of the session (36 characters).
+
+    **Request body:**
+        session (SessionPartialUpdate): The partial session update object.
+
+    **Returns:**
+        The OCPIResponse containing the partially updated session data.
+
+    **Raises:**
+        NotFoundOCPIError: If the session is not found.
+    """
     logger.info(
         "Received request to partially update session with id - `%s`."
         % session_id

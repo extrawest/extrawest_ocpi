@@ -25,6 +25,22 @@ async def get_tariffs(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
+    """
+    Get Tariffs.
+
+    Retrieves a list of tariffs based on the specified filters.
+
+    **Query parameters:**
+        - limit (int): Maximum number of objects to GET (default=50).
+        - offset (int): The offset of the first object returned (default=0).
+        - date_from (datetime): Only return tariffs that have last_updated
+            after this Date/Time (default=None).
+        - date_to (datetime): Only return tariffs that have last_updated
+            before this Date/Time (default=None).
+
+    **Returns:**
+        The OCPIResponse containing the list of tariffs.
+    """
     logger.info("Received request to get tariffs")
     auth_token = get_auth_token(request)
 

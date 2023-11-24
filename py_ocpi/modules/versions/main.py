@@ -30,6 +30,14 @@ async def get_versions(
     crud: Crud = Depends(get_crud),
     server_cred: str | dict | None = Depends(cred_dependency),
 ):
+    """
+    Get OCPI Versions.
+
+    Retrieves a list of available OCPI versions.
+
+    **Returns:**
+        The OCPIResponse containing a list of available OCPI versions.
+    """
     logger.info("Received request for version details: %s" % request.url)
     if server_cred is None:
         logger.debug("Unauthorized request.")

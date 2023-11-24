@@ -36,6 +36,22 @@ async def get_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get Token.
+
+    Retrieves a token based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - token_uid (str): The ID of the token (36 characters).
+
+    **Returns:**
+        The OCPIResponse containing the token data.
+
+    **Raises:**
+        NotFoundOCPIError: If the token is not found.
+    """
     logger.info("Received request to get token with id - `%s`." % token_uid)
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 
@@ -69,6 +85,22 @@ async def add_or_update_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update Token.
+
+    Adds or updates a token based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - token_uid (str): The ID of the token (36 characters).
+
+    **Request body:**
+        token (Token): The token object.
+
+    **Returns:**
+        The OCPIResponse containing the token data.
+    """
     logger.info(
         "Received request to add or update token with id - `%s`." % token_uid
     )
@@ -125,6 +157,25 @@ async def partial_update_token(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Partial Update Token.
+
+    Partially updates a token based on the specified parameters.
+
+    **Path parameters:**
+        - country_code (str): The two-letter country code.
+        - party_id (str): The three-letter party ID.
+        - token_uid (str): The ID of the token (36 characters).
+
+    **Request body:**
+        token (TokenPartialUpdate): The partial token update object.
+
+    **Returns:**
+        The OCPIResponse containing the partially updated token data.
+
+    **Raises:**
+        NotFoundOCPIError: If the token is not found.
+    """
     logger.info(
         "Received request to partially update token with id - `%s`." % token_uid
     )

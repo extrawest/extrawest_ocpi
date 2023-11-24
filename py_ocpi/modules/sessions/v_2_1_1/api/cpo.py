@@ -25,6 +25,22 @@ async def get_sessions(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
+    """
+    Get sessions.
+
+    Retrieves a list of sessions based on the specified filters.
+
+    **Query parameters:**
+        - limit (int): Maximum number of objects to GET (default=50).
+        - offset (int): The offset of the first object returned (default=0).
+        - date_from (datetime): Only return Sessions that have last_updated
+            after this Date/Time (default=None).
+        - date_to (datetime): Only return Sessions that have last_updated
+            before this Date/Time (default=None).
+
+    **Returns:**
+        The OCPIResponse containing the list of CDRs.
+    """
     logger.info("Received request to get sessions.")
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 

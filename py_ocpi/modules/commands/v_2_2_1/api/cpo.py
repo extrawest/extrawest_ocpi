@@ -128,6 +128,25 @@ async def receive_command(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Receive Command.
+
+    Processes and handles incoming commands.
+
+    **Path parameters:**
+        - command (CommandType): The type of the command.
+
+    **Request body:**
+        data (dict): The data associated with the command.
+
+    **Returns:**
+        The OCPIResponse indicating the success or failure of the command.
+
+    **Raises:**
+        - HTTPException: If there is a validation error or if
+            the command action returns without a result.
+        - NotFoundOCPIError: If the associated location is not found.
+    """
     logger.info("Received command - `%s`." % command)
     logger.debug("Command data - %s" % data)
     auth_token = get_auth_token(request)

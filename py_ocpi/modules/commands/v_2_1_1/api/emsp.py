@@ -26,6 +26,22 @@ async def receive_command_result(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Receive Command Result.
+
+    Processes and handles incoming command results.
+
+    **Path parameters:**
+        - uid (str): The unique identifier associated with the command.
+
+    **Request body:**
+        command_response (CommandResponse): The response data associated
+            with the command.
+
+    **Returns:**
+        The OCPIResponse indicating the success or failure of processing
+            the command result.
+    """
     logger.info("Received command result with uid - `%s`." % uid)
     logger.debug("Command response data - %s" % command_response.dict())
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)

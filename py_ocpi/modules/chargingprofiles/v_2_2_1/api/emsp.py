@@ -28,6 +28,17 @@ async def receive_chargingprofile_command(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Receive Charging Profile Command.
+
+    Receives and processes the charging profile command.
+
+    **Parameters:**
+        - data (dict): The charging profile command data.
+
+    **Returns:**
+        The OCPIResponse indicating the success of the operation.
+    """
     logger.info("Received charging profile result.")
     logger.debug("Chargingprofile result data - %s" % data)
     auth_token = get_auth_token(request)
@@ -57,6 +68,21 @@ async def add_or_update_chargingprofile(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update Charging Profile.
+
+    Adds or updates the active charging profile for a specific session.
+
+    **Parameters:**
+        - session_id (str): The ID of the charging session.
+
+    **Request body:**
+        - active_charging_profile (ActiveChargingProfile): The data
+            of the active charging profile.
+
+    **Returns:**
+        The OCPIResponse indicating the success of the operation.
+    """
     logger.info(
         "Received request to add or update charging profile "
         "with session_id - `%s`." % session_id

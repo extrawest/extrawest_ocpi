@@ -28,6 +28,20 @@ async def get_cdr(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get CDR by ID.
+
+    Retrieves a Charge Detail Record (CDR) based on the specified ID.
+
+    **Path parameters:**
+        - cdr_id (str): The ID of the CDR to retrieve (36 characters).
+
+    **Returns:**
+        The OCPIResponse containing the CDR data.
+
+    **Raises:**
+        NotFoundOCPIError: If the CDR is not found.
+    """
     logger.info("Received request to get cdr with id - `%s`." % cdr_id)
     auth_token = get_auth_token(request)
 
@@ -55,6 +69,17 @@ async def add_cdr(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add CDR.
+
+    Creates a new Charge Detail Record (CDR) based on the specified parameters.
+
+    **Request body:**
+        cdr (Cdr): The CDR object.
+
+    **Returns:**
+        The OCPIResponse containing the created CDR data.
+    """
     logger.info("Received request to create cdr.")
     logger.debug("CDR data to create - %s" % cdr.dict())
     auth_token = get_auth_token(request)

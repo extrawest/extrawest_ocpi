@@ -27,6 +27,22 @@ async def get_sessions(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
+    """
+    Get sessions.
+
+    Retrieves a list of sessions based on the specified filters.
+
+    **Query parameters:**
+       - limit (int): Maximum number of objects to GET (default=50).
+       - offset (int): The offset of the first object returned (default=0).
+       - date_from (datetime): Only return Sessions that have last_updated
+        after this Date/Time (default=None).
+       - date_to (datetime): Only return Sessions that have last_updated
+        before this Date/Time (default=None).
+
+    **Returns:**
+       The OCPIResponse containing the list of CDRs.
+    """
     logger.info("Received request to get sessions.")
     auth_token = get_auth_token(request)
 
@@ -57,6 +73,21 @@ async def set_charging_preference(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Set Charging Preference.
+
+    Updates the charging preference for a specific charging session.
+
+    **Path parameters:**
+        - session_id (str): The ID of the charging session (36 characters).
+
+    **Request body:**
+        charging_preferences (ChargingPreferences): The charging preferences
+            object.
+
+    **Returns:**
+        The OCPIResponse containing the updated charging preferences.
+    """
     auth_token = get_auth_token(request)
     data = await crud.update(
         ModuleID.sessions,

@@ -25,6 +25,23 @@ async def get_cdrs(
     adapter: Adapter = Depends(get_adapter),
     filters: dict = Depends(pagination_filters),
 ):
+    """
+    Get CDRs.
+
+    Retrieves a list of Charge Detail Records (CDRs) based on the specified
+     filters.
+
+    **Query parameters:**
+        - limit (int): Maximum number of objects to GET (default=50).
+        - offset (int): The offset of the first object returned (default=0).
+        - date_from (datetime): Only return CDRs that have last_updated
+            after this Date/Time (default=None).
+        - date_to (datetime): Only return CDRs that have last_updated
+            before this Date/Time (default=None).
+
+    **Returns:**
+        The OCPIResponse containing the list of CDRs.
+    """
     logger.info("Received request to get cdrs.")
     auth_token = get_auth_token(request, VersionNumber.v_2_1_1)
 

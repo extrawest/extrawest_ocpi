@@ -39,6 +39,24 @@ async def get_chargingprofile(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Get Charging Profile.
+
+    Retrieves the charging profile for a specific session.
+
+    **Path parameters:**
+        - session_id (str): The ID of the charging session.
+
+    **Query parameters:**
+        - duration (int): The requested duration for the charging profile.
+        - response_url (URL): The URL to send the charging profile response.
+
+    **Returns:**
+        The OCPIResponse containing the charging profile response.
+
+    **Raises:**
+        - NotFoundOCPIError: If the specified charging session is not found.
+    """
     logger.info(
         "Received request to get charging profile with session_id - `%s`."
         % session_id
@@ -118,6 +136,23 @@ async def add_or_update_chargingprofile(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Add or Update Charging Profile.
+
+    Adds or updates the charging profile for a specific session.
+
+    **Path parameters:**
+        - session_id (str): The ID of the charging session.
+
+    **Request body:**
+        - charging_profile (SetChargingProfile): The charging profile data.
+
+    **Returns:**
+        The OCPIResponse containing the charging profile response.
+
+    **Raises:**
+        - NotFoundOCPIError: If the specified charging session is not found.
+    """
     logger.info(
         "Received request to get charging profile with session_id - `%s`."
         % session_id
@@ -198,6 +233,23 @@ async def delete_chargingprofile(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Delete Charging Profile.
+
+    Deletes the charging profile for a specific session.
+
+    **Path parameters:**
+        - session_id (str): The ID of the charging session.
+
+    **Query parameters:**
+        - response_url (URL): The URL to send the response to.
+
+    **Returns:**
+        The OCPIResponse containing the charging profile response.
+
+    **Raises:**
+        - NotFoundOCPIError: If the specified charging session is not found.
+    """
     logger.info(
         "Received request to get charging profile with session_id - `%s`."
         % session_id
