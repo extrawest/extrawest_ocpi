@@ -36,9 +36,9 @@ async def get_sessions(
        - limit (int): Maximum number of objects to GET (default=50).
        - offset (int): The offset of the first object returned (default=0).
        - date_from (datetime): Only return Sessions that have last_updated
-        after this Date/Time (default=None).
+            after this Date/Time (default=None).
        - date_to (datetime): Only return Sessions that have last_updated
-        before this Date/Time (default=None).
+            before this Date/Time (default=None).
 
     **Returns:**
        The OCPIResponse containing the list of CDRs.
