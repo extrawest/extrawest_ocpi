@@ -26,9 +26,9 @@ release = "2023.11.07"
 
 extensions = [
     "sphinxcontrib.httpdomain",
-    # 'autoapi.extension',
     "sphinx.ext.autodoc",
     "sphinxcontrib.autohttp.flask",
+    "sphinxcontrib.autodoc_pydantic",
 ]
 
 autodoc_typehints = "description"
@@ -41,7 +41,11 @@ exclude_patterns = []  # type: ignore
 
 html_theme = "nature"
 html_static_path = ["_static"]
-html_css_files = ["theme.css"]
+html_css_files = []  # type: ignore
+html_theme_options = {
+    "nosidebar": "false",
+    "sidebarwidth": 380,
+}
 
 source_suffix = ".rst"
 pygments_style = "sphinx"

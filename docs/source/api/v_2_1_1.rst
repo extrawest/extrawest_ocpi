@@ -241,3 +241,130 @@ Commands module
 .. http:post:: emsp/2.1.1/commands/{uid}
 
     .. automodule:: py_ocpi.modules.commands.v_2_1_1.api.emsp.receive_command_result
+
+
+
+
+Schemas
+-------
+
+
+Credentials module
+^^^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.schemas
+       :members:
+
+
+Locations module
+^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.schemas
+       :members:
+
+    .. automodule:: py_ocpi.modules.locations.schemas
+       :members:
+
+
+CDRs module
+^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_1_1.schemas
+       :members:
+
+
+Sessions module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_1_1.schemas
+       :members:
+
+
+Tokens module
+^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.schemas
+       :members:
+
+
+Tariffs module
+^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.schemas
+       :members:
+
+
+Commands module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.commands.v_2_1_1.schemas
+       :members:
+
+
+
+
+Enums
+-------
+
+
+Credentials module
+^^^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+
+Locations module
+^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+    .. automodule:: py_ocpi.modules.locations.enums
+       :members:
+       :undoc-members:
+
+
+CDRs module
+^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+
+Sessions module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+
+Tokens module
+^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+
+Tariffs module
+^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+    .. automodule:: py_ocpi.modules.tariffs.enums
+       :members:
+       :undoc-members:
+
+Commands module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.commands.v_2_1_1.enums
+       :members:
+       :undoc-members:

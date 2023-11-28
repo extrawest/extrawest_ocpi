@@ -8,7 +8,7 @@ Version enspoints
 .. http:get:: versions
 
     .. automodule:: py_ocpi.modules.versions.main.get_versions
-       :no-index:
+       :noindex:
 
 .. http:get:: 2.2.1/details
 
@@ -290,3 +290,146 @@ Hub client info module
 .. http:put:: emsp/2.2.1/clientinfo/{country_code}/{party_id}
 
     .. automodule:: py_ocpi.modules.hubclientinfo.v_2_2_1.api.emsp.add_or_update_clienthubinfo
+
+
+
+
+Schemas
+-------
+
+
+Credentials module
+^^^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_2_1.schemas
+       :members:
+
+
+Locations module
+^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.locations.v_2_2_1.schemas
+       :members:
+
+    .. automodule:: py_ocpi.modules.locations.schemas
+       :members:
+
+
+CDRs module
+^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_2_1.schemas
+       :members:
+
+
+Sessions module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_2_1.schemas
+       :members:
+
+
+Tokens module
+^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_2_1.schemas
+       :members:
+
+
+Tariffs module
+^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_2_1.schemas
+       :members:
+
+
+Commands module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.commands.v_2_2_1.schemas
+       :members:
+
+
+
+
+Enums
+-------
+
+
+Credentials module
+^^^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_2_1.enums
+       :members:
+       :undoc-members:
+
+
+Locations module
+^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.locations.v_2_2_1.enums
+       :members:
+       :undoc-members:
+
+    .. automodule:: py_ocpi.modules.locations.enums
+       :members:
+       :undoc-members:
+       :noindex:
+
+
+CDRs module
+^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_2_1.enums
+       :members:
+       :undoc-members:
+
+
+Sessions module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_2_1.enums
+       :members:
+       :undoc-members:
+
+
+Tokens module
+^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_2_1.enums
+       :members:
+       :undoc-members:
+
+
+Tariffs module
+^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_2_1.enums
+       :members:
+       :undoc-members:
+
+    .. automodule:: py_ocpi.modules.tariffs.enums
+       :members:
+       :undoc-members:
+       :noindex:
+
+Commands module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.commands.v_2_2_1.enums
+       :members:
+       :undoc-members:
+
+Hub client info module
+^^^^^^^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.hubclientinfo.v_2_2_1.enums
+       :members:
+       :undoc-members:
+
+Charging profile module
+^^^^^^^^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.chargingprofiles.v_2_2_1.enums
+       :members:
+       :undoc-members:

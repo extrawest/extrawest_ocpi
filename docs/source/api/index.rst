@@ -6,7 +6,7 @@ Table of contents:
 ^^^^^^^^^^^^^^^^^^
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 3
 
    v_2_2_1
    v_2_1_1

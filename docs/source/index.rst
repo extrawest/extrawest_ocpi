@@ -23,7 +23,7 @@ Table of contents:
 ^^^^^^^^^^^^^^^^^^
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 4
 
    installation
    tutorial/index
