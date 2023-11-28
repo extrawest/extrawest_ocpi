@@ -19,18 +19,12 @@ OCPI Documentation:
    for a comprehensive understanding of the protocol
    specifications and guidelines.
 
-Table of contents:
-^^^^^^^^^^^^^^^^^^
-
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 3
 
    installation
    tutorial/index
    api/index
-
-Indices and tables:
-^^^^^^^^^^^^^^^^^^^
 
 * :ref:`genindex`
 * :ref:`modindex`

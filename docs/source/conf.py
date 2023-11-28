@@ -29,6 +29,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinxcontrib.autohttp.flask",
     "sphinxcontrib.autodoc_pydantic",
+    "sphinx_copybutton",
 ]
 
 autodoc_typehints = "description"
