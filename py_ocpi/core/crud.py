@@ -11,27 +11,30 @@ class Crud(ABC):
     ) -> Any:
         """Get an object
 
-        Args:
-            module (ModuleID): The OCPI module
-            role (RoleEnum): The role of the caller
-            id (Any): The ID of the object
+        :param module: The OCPI module
+        :param role: The role of the caller
+        :param id: The ID of the object
 
-        Keyword Args:
-            auth_token (str): The authentication token used by third party
-            version (VersionNumber): The version number of the caller OCPI module
-            party_id (CiString(3)):  The requested party ID
-            country_code (CiString(2)): The requested Country code
-            token_type (TokenType): The token type
-            command (CommandType): The command type of the OCPP command
-            command_data: Request body of command.
-            session_id (str): Id of the charging profile corresponding session.
-            duration (int): Length of the requested ActiveChargingProfile
-             in seconds.
-            response_url (str): Url where to send result of the action.
-            charging_profile (SetChargingProfile): ChargingProfile body.
+        :keyword auth_token: (str) The authentication token used by a third
+            party
+        :keyword version: (VersionNumber) The version number of the caller
+            OCPI module
+        :keyword party_id: (CiString(3))  The requested party ID
+        :keyword country_code: (CiString(2)) The requested Country code
+        :keyword token_type: (TokenType) The token type
+        :keyword command: (CommandType) The command type of the OCPP command
+        :keyword command_data: Request body of command.
+        :keyword session_id: (str) Id of the charging profile corresponding
+            session.
+        :keyword duration: (int) Length of the requested ActiveChargingProfile
+            in seconds.
+        :keyword response_url: (str) Url where to send result of the action.
+        :keyword charging_profile: (SetChargingProfile) ChargingProfile body.
+        :keyword session_id: (str) Id of the charging profile corresponding
+            session.
 
-        Returns:
-            Any: The object data
+        :return: The object data
+        :rtype: Any
         """
         pass
 
@@ -41,20 +44,20 @@ class Crud(ABC):
     ) -> Tuple[list, int, bool]:
         """Get the list of objects
 
-        Args:
-            module (ModuleID): The OCPI module
-            role (RoleEnum): The role of the caller
-            filters (dict): OCPI pagination filters
+        :param module: The OCPI module
+        :param role: The role of the caller
+        :param filters: OCPI pagination filters
 
-        Keyword Args:
-            auth_token (str): The authentication token used by third party
-            version (VersionNumber): The version number of the caller OCPI module
-            party_id (CiString(3)): The requested party ID
-            country_code (CiString(2)): The requested Country code
+        :keyword auth_token: (str) The authentication token used by a third
+            party
+        :keyword version: (VersionNumber) The version number of the caller
+            OCPI module
+        :keyword party_id: (CiString(3))  The requested party ID
+        :keyword country_code: (CiString(2)) The requested Country code
 
-        Returns:
-            Tuple[list, int, bool]: Objects list, Total number of objects,
-            if it's the last page or not(for pagination)
+        :return:  Objects list, Total number of objects, if
+            it's the last page or not(for pagination)
+        :rtype: Tuple[list, int, bool]
         """
         pass
 
@@ -64,24 +67,22 @@ class Crud(ABC):
     ) -> Any:
         """Create an object
 
-        Args:
-            module (ModuleID): The OCPI module
-            role (RoleEnum): The role of the caller
-            data (dict): The object details
+        :param module: The OCPI module
+        :param role: The role of the caller
+        :param data: The object details
 
-        Keyword Args:
-            auth_token (str): The authentication token used by third party
-            version (VersionNumber): The version number of the caller OCPI module
-            command (CommandType): The command type (used in Commands module)
-            party_id (CiString(3)):  The requested party ID
-            country_code (CiString(2)): The requested Country code
-            token_type (TokenType): The token type
-            operation ('credentials', 'registration'):
-            The operation type in credentials and registration process
-            query_params (dict): Charging profile request query params.
+        :keyword auth_token: (str) The authentication token used by
+            a third party
+        :keyword version: (VersionNumber) The version number of the caller
+            OCPI module
+        :keyword party_id: (CiString(3))  The requested party ID
+        :keyword country_code: (CiString(2)) The requested Country code
+        :keyword token_type: (TokenType) The token type
+        :keyword command: (CommandType) The command type of the OCPP command
+        :keyword query_params: (dict) Charging profile request query params.
 
-        Returns:
-            Any: The created object data
+        :return: The created object data
+        :rtype: Any
         """
         pass
 
@@ -97,25 +98,22 @@ class Crud(ABC):
     ) -> Any:
         """Update an object
 
-        Args:
-            module (ModuleID): The OCPI module
-            role (RoleEnum): The role of the caller
-            data (dict): The object details
-            id (Any): The ID of the object
+        :param module: The OCPI module
+        :param role: The role of the caller
+        :param data: The object details
+        :param id: The ID of the object
 
-        Keyword Args:
-            auth_token (str): The authentication token used by third party
-            version (VersionNumber): The version number of the caller OCPI module
-            party_id (CiString(3)):  The requested party ID
-            country_code (CiString(2)): The requested Country code
-            token_type (TokenType): The token type
-            operation ('credentials', 'registration'):
-            The operation type in credentials and registration process
-            session_id (str): Charging profile corresponding session id.
+        :keyword auth_token: (str) The authentication token used by a third
+            party
+        :keyword version: (VersionNumber) The version number of the caller
+            OCPI module
+        :keyword party_id: (CiString(3))  The requested party ID
+        :keyword country_code: (CiString(2)) The requested Country code
+        :keyword token_type: (TokenType) The token type
+        :keyword session_id: (str) Charging profile corresponding session id.
 
-
-        Returns:
-            Any: The updated object data
+        :return: The updated object data
+        :rtype: Any
         """
         pass
 
@@ -125,14 +123,14 @@ class Crud(ABC):
     ):
         """Delete an object
 
-        Args:
-            module (ModuleID): The OCPI module
-            role (RoleEnum): The role of the caller
-            id (Any): The ID of the object
+        :param module: The OCPI module
+        :param role: The role of the caller
+        :param id: The ID of the object
 
-        Keyword Args:
-            auth_token (str): The authentication token used by third party
-            version (VersionNumber): The version number of the caller OCPI module
+        :keyword auth_token: (str) The authentication token used by a third
+            party
+        :keyword version: (VersionNumber) The version number of the caller
+            OCPI module
         """
         pass
 
@@ -148,25 +146,25 @@ class Crud(ABC):
     ) -> Any:
         """Do an action (non-CRUD)
 
-        Args:
-            module (ModuleID): The OCPI module
-            role (RoleEnum): The role of the caller
-            action (Action): The action type
-            data (dict): The data required for the action
-            command (CommandType): The command type of the OCPP command
-            charging_profile (SetChargingProfile): Charging profile sent to be
-             updated.
+        :param module: The OCPI module
+        :param role: The role of the caller
+        :param action: The action type
+        :param data: The data required for the action
 
-        Keyword Args:
-            response_url (str): Response url for actions which require sending
-             response.
-            session (Session): Session of charging profile action.
-            duration (int): Length of the requested ActiveChargingProfile
-             in seconds.
-            auth_token (str): The authentication token used by third party
-            version (VersionNumber): The version number of the caller OCPI module
+        :keyword auth_token: (str) The authentication token used by a third
+            party
+        :keyword version: (VersionNumber) The version number of the caller
+            OCPI module
+        :keyword response_url: (str) Response url for actions which require
+            sending response.
+        :keyword session: (Session) Session of charging profile action.
+        :keyword duration: (int) Length of the requested ActiveChargingProfile
+            in seconds.
+        :keyword command: (CommandType) The command type of the OCPP command
+        :keyword charging_profile (SetChargingProfile): Charging profile sent
+            to be updated.
 
-        Returns:
-            Any: The action result
+        :return: The action result
+        :rtype: Any
         """
         pass

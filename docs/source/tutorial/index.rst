@@ -11,3 +11,4 @@ your clients will be able to retrieve data about stored locations.
 
    quickstart
    crud
+   push
