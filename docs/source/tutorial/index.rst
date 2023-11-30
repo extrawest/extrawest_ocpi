@@ -10,5 +10,7 @@ your clients will be able to retrieve data about stored locations.
    :maxdepth: 2
 
    quickstart
-   crud
    push
+   crud
+   crud_example
+   db_interface_example
