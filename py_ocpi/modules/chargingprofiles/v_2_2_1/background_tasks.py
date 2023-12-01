@@ -7,6 +7,7 @@ from py_ocpi.core.utils import encode_string_base64
 from py_ocpi.core.config import settings
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core.data_types import CiString, URL
 from py_ocpi.core.enums import ModuleID, RoleEnum, Action
 
@@ -25,6 +26,7 @@ async def send_get_chargingprofile(
     crud: Crud,
     adapter: Adapter,
 ):
+    logger.info("Received command to send get chargingprofile request.")
     client_auth_token = await crud.do(
         ModuleID.charging_profile,
         RoleEnum.cpo,
@@ -47,10 +49,18 @@ async def send_get_chargingprofile(
             version=VersionNumber.v_2_2_1,
         )
         if active_charging_profile_result:
+            logger.debug(
+                "Active charging profile result from Charge Point - %s"
+                % active_charging_profile_result
+            )
             break
         await sleep(2)
 
     if not active_charging_profile_result:
+        logger.debug(
+            "Active charging profile result from Charge Point "
+            "didn't arrive in time."
+        )
         active_charging_profile_result = ChargingProfileResult(
             result=ChargingProfileResultType.rejected
         )
@@ -63,10 +73,18 @@ async def send_get_chargingprofile(
 
     async with httpx.AsyncClient() as client:
         authorization_token = f"Token {encode_string_base64(client_auth_token)}"
-        await client.post(
+        logger.info(
+            "Send request with active charging profile result: %s"
+            % response_url
+        )
+        res = await client.post(
             response_url,
             json=active_charging_profile_result.dict(),
             headers={"authorization": authorization_token},
+        )
+        logger.info(
+            "POST active chargingprofile result data after receiving result "
+            "from Charge Point status_code: %s" % res.status_code
         )
 
 
@@ -78,6 +96,7 @@ async def send_update_chargingprofile(
     crud: Crud,
     adapter: Adapter,
 ):
+    logger.info("Received command to send update chargingprofile request.")
     client_auth_token = await crud.do(
         ModuleID.charging_profile,
         RoleEnum.cpo,
@@ -100,10 +119,18 @@ async def send_update_chargingprofile(
             version=VersionNumber.v_2_2_1,
         )
         if not charging_profile_result:
+            logger.debug(
+                "Charging profile result from Charge Point - %s"
+                % charging_profile_result
+            )
             break
         await sleep(2)
 
     if not charging_profile_result:
+        logger.debug(
+            "Charging profile result from Charge Point "
+            "didn't arrive in time."
+        )
         charging_profile_result = ChargingProfileResult(
             result=ChargingProfileResultType.rejected
         )
@@ -116,10 +143,17 @@ async def send_update_chargingprofile(
 
     async with httpx.AsyncClient() as client:
         authorization_token = f"Token {encode_string_base64(client_auth_token)}"
-        await client.post(
+        logger.info(
+            "Send request with charging profile result: %s" % response_url
+        )
+        res = await client.post(
             response_url,
             json=charging_profile_result.dict(),
             headers={"authorization": authorization_token},
+        )
+        logger.info(
+            "POST charging profile result data after receiving result "
+            "from Charge Point status_code: %s" % res.status_code
         )
 
 
@@ -130,6 +164,7 @@ async def send_delete_chargingprofile(
     crud: Crud,
     adapter: Adapter,
 ):
+    logger.info("Received command to send delete chargingprofile request.")
     client_auth_token = await crud.do(
         ModuleID.charging_profile,
         RoleEnum.cpo,
@@ -151,10 +186,17 @@ async def send_delete_chargingprofile(
             version=VersionNumber.v_2_2_1,
         )
         if not clear_profile_result:
+            logger.debug(
+                "Clear profile result from Charge Point - %s"
+                % clear_profile_result
+            )
             break
         await sleep(2)
 
     if clear_profile_result:
+        logger.debug(
+            "Clear profile result from Charge Point " "didn't arrive in time."
+        )
         clear_profile_result = ChargingProfileResult(
             result=ChargingProfileResultType.rejected
         )
@@ -165,8 +207,13 @@ async def send_delete_chargingprofile(
 
     async with httpx.AsyncClient() as client:
         authorization_token = f"Token {encode_string_base64(client_auth_token)}"
-        await client.post(
+        logger.info("Send request with clear profile result: %s" % response_url)
+        res = await client.post(
             response_url,
             json=clear_profile_result.dict(),
             headers={"authorization": authorization_token},
+        )
+        logger.info(
+            "POST clear profile result data after receiving result "
+            "from Charge Point status_code: %s" % res.status_code
         )

@@ -10,6 +10,7 @@ from fastapi import (
 from fastapi.security import APIKeyHeader
 
 from py_ocpi.core.authentication.authenticator import Authenticator
+from py_ocpi.core.config import logger
 from py_ocpi.core.dependencies import get_authenticator
 from py_ocpi.core.exceptions import AuthorizationOCPIError
 from py_ocpi.core.utils import decode_string_base64
@@ -56,9 +57,17 @@ class AuthorizationVerifier:
                 try:
                     token = decode_string_base64(token)
                 except UnicodeDecodeError:
+                    logger.debug(
+                        "Token `%s` cannot be decoded. "
+                        "Check if the token is already encoded." % token
+                    )
                     raise AuthorizationOCPIError
             await authenticator.authenticate(token)
         except IndexError:
+            logger.debug(
+                "Token `%s` cannot be split in parts. "
+                "Check if it starts with `Token `"
+            )
             raise AuthorizationOCPIError
 
 
@@ -93,6 +102,10 @@ class CredentialsAuthorizationVerifier:
         try:
             token = authorization.split()[1]
         except IndexError:
+            logger.debug(
+                "Token `%s` cannot be split in parts. "
+                "Check if it starts with `Token `"
+            )
             raise AuthorizationOCPIError
 
         if self.version:
@@ -100,6 +113,10 @@ class CredentialsAuthorizationVerifier:
                 try:
                     token = decode_string_base64(token)
                 except UnicodeDecodeError:
+                    logger.debug(
+                        "Token `%s` cannot be decoded. "
+                        "Check if the token is already encoded." % token
+                    )
                     raise AuthorizationOCPIError
         else:
             try:
@@ -140,9 +157,17 @@ class HttpPushVerifier:
                 try:
                     token = decode_string_base64(token)
                 except UnicodeDecodeError:
+                    logger.debug(
+                        "Token `%s` cannot be decoded. "
+                        "Check if the token is already encoded." % token
+                    )
                     raise AuthorizationOCPIError
             await authenticator.authenticate(token)
         except IndexError:
+            logger.debug(
+                "Token `%s` cannot be split in parts. "
+                "Check if it starts with `Token `"
+            )
             raise AuthorizationOCPIError
 
 
@@ -172,12 +197,17 @@ class WSPushVerifier:
         """
         try:
             if not token:
+                logger.debug("Token wasn't given.")
                 raise AuthorizationOCPIError
 
             if version.value.startswith("2.2"):
                 try:
                     token = decode_string_base64(token)
                 except UnicodeDecodeError:
+                    logger.debug(
+                        "Token `%s` cannot be decoded. "
+                        "Check if the token is already encoded." % token
+                    )
                     raise AuthorizationOCPIError
             await authenticator.authenticate(token)
         except AuthorizationOCPIError:

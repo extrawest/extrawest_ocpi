@@ -54,3 +54,9 @@ class Action(str, Enum):
     send_delete_chargingprofile = "SendDeleteChargingProfile"  # nosec
     # used for requesting to send command to a Chargepoint
     send_update_charging_profile = "SendUpdateChargingProfile"  # nosec
+
+
+class EnvironmentType(str, Enum):
+    production = "production"
+    development = "development"
+    testing = "testing"
