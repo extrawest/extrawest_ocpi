@@ -1,51 +1,22 @@
 from py_ocpi.core.enums import ModuleID
-from py_ocpi.core.data_types import URL
-from py_ocpi.core.config import settings
-from py_ocpi.modules.versions.v_2_1_1.schemas import (
-    Endpoint,
-    VersionNumber,
-)
-
-URL_BASE = (
-    f"{settings.PROTOCOL}://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
-    f"emsp/{VersionNumber.v_2_1_1.value}"
-)
+from py_ocpi.core.endpoints.v_2_1_1.utils import emsp_generator
 
 
-CREDENTIALS_AND_REGISTRATION = Endpoint(
-    identifier=ModuleID.credentials_and_registration,
-    url=URL(f"{URL_BASE}/{ModuleID.credentials_and_registration.value}/"),
+CREDENTIALS_AND_REGISTRATION = emsp_generator.generate_endpoint(
+    ModuleID.credentials_and_registration,
 )
 
-LOCATIONS = Endpoint(
-    identifier=ModuleID.locations,
-    url=URL(f"{URL_BASE}/{ModuleID.locations.value}/"),
-)
+LOCATIONS = emsp_generator.generate_endpoint(ModuleID.locations)
 
-CDRS = Endpoint(
-    identifier=ModuleID.cdrs,
-    url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}/"),
-)
+CDRS = emsp_generator.generate_endpoint(ModuleID.cdrs)
 
-TARIFFS = Endpoint(
-    identifier=ModuleID.tariffs,
-    url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}/"),
-)
+TARIFFS = emsp_generator.generate_endpoint(ModuleID.tariffs)
 
-SESSIONS = Endpoint(
-    identifier=ModuleID.sessions,
-    url=URL(f"{URL_BASE}/{ModuleID.sessions.value}/"),
-)
+SESSIONS = emsp_generator.generate_endpoint(ModuleID.sessions)
 
-TOKENS = Endpoint(
-    identifier=ModuleID.tokens,
-    url=URL(f"{URL_BASE}/{ModuleID.tokens.value}/"),
-)
+TOKENS = emsp_generator.generate_endpoint(ModuleID.tokens)
 
-COMMANDS = Endpoint(
-    identifier=ModuleID.commands,
-    url=URL(f"{URL_BASE}/{ModuleID.commands.value}"),
-)
+COMMANDS = emsp_generator.generate_endpoint(ModuleID.commands)
 
 ENDPOINTS_LIST = {
     ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,

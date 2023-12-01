@@ -10,7 +10,7 @@ from fastapi import (
 from fastapi.security import APIKeyHeader
 
 from py_ocpi.core.authentication.authenticator import Authenticator
-from py_ocpi.core.config import logger
+from py_ocpi.core.config import logger, settings
 from py_ocpi.core.dependencies import get_authenticator
 from py_ocpi.core.exceptions import AuthorizationOCPIError
 from py_ocpi.core.utils import decode_string_base64
@@ -21,6 +21,7 @@ api_key_header = APIKeyHeader(
     description="API key with `Token ` prefix.",
     scheme_name="Token",
 )
+auth_verifier = Security(api_key_header) if not settings.NO_AUTH else ""
 
 
 class AuthorizationVerifier:
@@ -36,7 +37,7 @@ class AuthorizationVerifier:
 
     async def __call__(
         self,
-        authorization: str = Security(api_key_header),
+        authorization: str = auth_verifier,
         authenticator: Authenticator = Depends(get_authenticator),
     ):
         """
@@ -51,6 +52,10 @@ class AuthorizationVerifier:
         :raises AuthorizationOCPIError: If there is an issue with
           the authorization token.
         """
+        if settings.NO_AUTH and authorization == "":
+            logger.debug("Authentication skipped due to NO_AUTH setting.")
+            return True
+
         try:
             token = authorization.split()[1]
             if self.version.startswith("2.2"):
@@ -133,7 +138,7 @@ class HttpPushVerifier:
 
     async def __call__(
         self,
-        authorization: str = Header(...),
+        authorization: str = Header(...) if not settings.NO_AUTH else "",
         version: VersionNumber = Path(...),
         authenticator: Authenticator = Depends(get_authenticator),
     ):
@@ -151,6 +156,10 @@ class HttpPushVerifier:
         :raises AuthorizationOCPIError: If there is an issue with
           the authorization token.
         """
+        if settings.NO_AUTH and authorization == "":
+            logger.debug("Authentication skipped due to NO_AUTH setting.")
+            return True
+
         try:
             token = authorization.split()[1]
             if version.value.startswith("2.2"):
@@ -178,7 +187,7 @@ class WSPushVerifier:
 
     async def __call__(
         self,
-        token: str = Query(...),
+        token: str = Query(...) if not settings.NO_AUTH else "",
         version: VersionNumber = Path(...),
         authenticator: Authenticator = Depends(get_authenticator),
     ):
@@ -195,6 +204,10 @@ class WSPushVerifier:
         :raises AuthorizationOCPIError: If there is an issue with
           the authorization token.
         """
+        if settings.NO_AUTH and token == "":
+            logger.debug("Authentication skipped due to NO_AUTH setting.")
+            return True
+
         try:
             if not token:
                 logger.debug("Token wasn't given.")

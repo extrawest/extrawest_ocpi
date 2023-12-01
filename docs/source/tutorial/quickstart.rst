@@ -50,6 +50,9 @@ The next step is to create `.env` file with otherwise the default values will be
    * - ENVIRONMENT
      - production
      - The environment setting for the project (e.g., development, testing).
+   * - NO_AUTH
+     - False
+     - When set to `True`, enables a mode where authentication is skipped.
    * - PROJECT_NAME
      - OCPI
      - The name of the project.
@@ -80,6 +83,16 @@ The next step is to create `.env` file with otherwise the default values will be
    * - GET_ACTIVE_PROFILE_AWAIT_TIME
      - 5
      - The time, in seconds, to await a response for the charging profile module's commands.
+   * - TRAILING_SLASH
+     - True
+     - If set `True` urls in `{version}/details` will be returned with `/` in the end
+
+.. warning::
+   It's strongly recommend to secure your endpoints with authentication. (`NO_AUTH = False`)
+
+.. note::
+   As credentials module is built on top of credentials exchange,
+   `NO_AUTH` flag doesn't influence credentials module.
 
 Add business logic and db operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

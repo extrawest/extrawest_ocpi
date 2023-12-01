@@ -7,6 +7,7 @@ from py_ocpi.core.logs import LoggingConfig, logger
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = "production"
+    NO_AUTH: bool = False
     PROJECT_NAME: str = "OCPI"
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     OCPI_HOST: str = "www.example.com"
@@ -17,6 +18,7 @@ class Settings(BaseSettings):
     PROTOCOL: str = "https"
     COMMAND_AWAIT_TIME: int = 5
     GET_ACTIVE_PROFILE_AWAIT_TIME: int = 5
+    TRAILING_SLASH: bool = True
 
     @classmethod
     @validator("BACKEND_CORS_ORIGINS", pre=True)
