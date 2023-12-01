@@ -7,6 +7,7 @@ from py_ocpi.core.logs import LoggingConfig, logger
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = "production"
+    NO_AUTH: bool = False
     PROJECT_NAME: str = "OCPI"
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     OCPI_HOST: str = "www.example.com"
