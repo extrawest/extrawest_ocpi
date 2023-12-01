@@ -131,6 +131,35 @@ class CredentialsAuthorizationVerifier:
         return await authenticator.authenticate_credentials(token)
 
 
+class VersionsAuthorizationVerifier(CredentialsAuthorizationVerifier):
+    """
+    A class responsible for verifying authorization tokens
+    based on the specified version number.
+    """
+
+    async def __call__(
+        self,
+        authorization: str = auth_verifier,
+        authenticator: Authenticator = Depends(get_authenticator),
+    ) -> str | dict | None:
+        """
+        Verifies the authorization token using the specified version
+        and an Authenticator for version endpoints.
+
+        :param authorization (str): The authorization header containing
+          the token.
+        :param authenticator (Authenticator): An Authenticator instance used
+          for authentication.
+
+        :raises AuthorizationOCPIError: If there is an issue with
+          the authorization token.
+        """
+        if settings.NO_AUTH and authorization == "":
+            logger.debug("Authentication skipped due to NO_AUTH setting.")
+            return ""
+        return await super().__call__(authorization, authenticator)
+
+
 class HttpPushVerifier:
     """
     A class responsible for verifying authorization tokens if using push.
