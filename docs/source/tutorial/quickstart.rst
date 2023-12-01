@@ -88,9 +88,11 @@ The next step is to create `.env` file with otherwise the default values will be
      - If set `True` urls in `{version}/details` will be returned with `/` in the end
 
 .. warning::
+
    It's strongly recommend to secure your endpoints with authentication. (`NO_AUTH = False`)
 
 .. note::
+
    As credentials module is built on top of credentials exchange,
    `NO_AUTH` flag doesn't influence credentials module.
 

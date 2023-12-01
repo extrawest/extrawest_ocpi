@@ -12,6 +12,9 @@ current_dir = os.path.abspath(
 project_dir = os.path.join(current_dir, "py_ocpi/")
 # autoapi_dirs = [os.path.join(project_dir, 'modules/')]
 sys.path.insert(0, os.path.abspath(current_dir))
+sys.path.insert(0, os.path.abspath(project_dir))
+
+from py_ocpi import __version__  # noqa
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -19,7 +22,7 @@ sys.path.insert(0, os.path.abspath(current_dir))
 project = "Extrawest OCPI"
 copyright = "2023, Extrawest"
 author = "Extrawest"
-release = "2023.11.07"
+release = f"{__version__}"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
