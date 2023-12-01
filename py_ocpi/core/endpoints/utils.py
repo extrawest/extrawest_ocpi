@@ -31,7 +31,8 @@ class URLBuilder:
             module = ModuleID.client_info
         return (
             f"{self.protocol}://{self.ocpi_host}/{self.ocpi_prefix}/"
-            f"{role.value}/{version.value}/{module.value}{self.trailing_slash}"
+            f"{role.value.lower()}/{version.value}/{module.value}"
+            f"{self.trailing_slash}"
         )
 
 
