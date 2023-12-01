@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     PROTOCOL: str = "https"
     COMMAND_AWAIT_TIME: int = 5
     GET_ACTIVE_PROFILE_AWAIT_TIME: int = 5
-    TRAILING_SLASH: str = "/"
+    TRAILING_SLASH: bool = True
 
     @classmethod
     @validator("BACKEND_CORS_ORIGINS", pre=True)

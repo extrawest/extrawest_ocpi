@@ -12,7 +12,7 @@ class URLBuilder:
         self.protocol = settings.PROTOCOL
         self.ocpi_host = settings.OCPI_HOST
         self.ocpi_prefix = settings.OCPI_PREFIX
-        self.trailing_slash = settings.TRAILING_SLASH
+        self.trailing_slash = "/" if settings.TRAILING_SLASH else ""
 
     def format_url(
         self,
