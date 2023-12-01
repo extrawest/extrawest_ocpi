@@ -7,7 +7,7 @@ from fastapi import (
 )
 
 from py_ocpi.core.authentication.verifier import (
-    CredentialsAuthorizationVerifier,
+    VersionsAuthorizationVerifier,
 )
 from py_ocpi.core.crud import Crud
 from py_ocpi.core import status
@@ -21,7 +21,7 @@ from py_ocpi.modules.versions.v_2_2_1.schemas import (
 )
 
 router = APIRouter()
-cred_dependency = CredentialsAuthorizationVerifier(VersionNumber.v_2_2_1)
+cred_dependency = VersionsAuthorizationVerifier(VersionNumber.v_2_2_1)
 
 
 @router.get("/2.2.1/details", response_model=OCPIResponse)
