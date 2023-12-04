@@ -20,6 +20,7 @@ from py_ocpi.core.exceptions import NotFoundOCPIError
 from py_ocpi.core.schemas import OCPIResponse
 from py_ocpi.core.adapter import Adapter
 from py_ocpi.core.crud import Crud
+from py_ocpi.core.config import logger
 from py_ocpi.core import status
 from py_ocpi.core.config import settings
 from py_ocpi.core.utils import encode_string_base64, get_auth_token
@@ -88,10 +89,14 @@ async def send_command_result(
             command=command,
         )
         if command_result:
+            logger.info(
+                "Command result from Charge Point - %s" % command_result
+            )
             break
         await sleep(2)
 
     if not command_result:
+        logger.info("Command result from Charge Point didn't arrive in time.")
         command_result = CommandResult(result=CommandResultType.failed)
     else:
         command_result = adapter.command_result_adapter(
@@ -100,10 +105,17 @@ async def send_command_result(
 
     async with httpx.AsyncClient() as client:
         authorization_token = f"Token {encode_string_base64(client_auth_token)}"
-        await client.post(
+        logger.info(
+            "Send request with command result: %s" % command_data.response_url
+        )
+        res = await client.post(
             command_data.response_url,
             json=command_result.dict(),
             headers={"authorization": authorization_token},
+        )
+        logger.info(
+            "POST command data after receiving result from Charge Point"
+            " status_code: %s" % res.status_code
         )
 
 
@@ -116,11 +128,33 @@ async def receive_command(
     crud: Crud = Depends(get_crud),
     adapter: Adapter = Depends(get_adapter),
 ):
+    """
+    Receive Command.
+
+    Processes and handles incoming commands.
+
+    **Path parameters:**
+        - command (CommandType): The type of the command.
+
+    **Request body:**
+        data (dict): The data associated with the command.
+
+    **Returns:**
+        The OCPIResponse indicating the success or failure of the command.
+
+    **Raises:**
+        - HTTPException: If there is a validation error or if
+            the command action returns without a result.
+        - NotFoundOCPIError: If the associated location is not found.
+    """
+    logger.info("Received command - `%s`." % command)
+    logger.debug("Command data - %s" % data)
     auth_token = get_auth_token(request)
 
     try:
         command_data = await apply_pydantic_schema(command, data)
     except ValidationError as exc:
+        logger.debug("ValidationError on applying pydantic schema to command")
         return JSONResponse(
             status_code=fastapistatus.HTTP_422_UNPROCESSABLE_ENTITY,
             content={"detail": jsonable_encoder(exc.errors())},
@@ -163,6 +197,7 @@ async def receive_command(
                 ],
                 **status.OCPI_1000_GENERIC_SUCESS_CODE,
             )
+        logger.debug("Send command action returned without result.")
         command_response = CommandResponse(
             result=CommandResponseType.rejected, timeout=0
         )
@@ -173,6 +208,9 @@ async def receive_command(
 
     # when the location is not found
     except NotFoundOCPIError:
+        logger.info(
+            "Location with id `%s` was not found." % command_data.location_id
+        )
         command_response = CommandResponse(
             result=CommandResponseType.rejected, timeout=0
         )

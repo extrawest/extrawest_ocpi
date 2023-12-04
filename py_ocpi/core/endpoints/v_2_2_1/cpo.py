@@ -1,52 +1,48 @@
 from py_ocpi.core.enums import ModuleID
-from py_ocpi.core.data_types import URL
-from py_ocpi.core.config import settings
-from py_ocpi.modules.versions.v_2_2_1.schemas import (
-    Endpoint,
-    InterfaceRole,
-    VersionNumber,
+from py_ocpi.core.endpoints.v_2_2_1.utils import cpo_generator
+from py_ocpi.modules.versions.v_2_2_1.schemas import InterfaceRole
+
+
+CREDENTIALS_AND_REGISTRATION = cpo_generator.generate_endpoint(
+    ModuleID.credentials_and_registration,
+    InterfaceRole.receiver,
 )
 
-URL_BASE = (
-    f"{settings.PROTOCOL}://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
-    f"cpo/{VersionNumber.v_2_2_1.value}"
+LOCATIONS = cpo_generator.generate_endpoint(
+    ModuleID.locations,
+    InterfaceRole.sender,
 )
 
-CREDENTIALS_AND_REGISTRATION = Endpoint(
-    identifier=ModuleID.credentials_and_registration,
-    role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.credentials_and_registration.value}/"),
+SESSIONS = cpo_generator.generate_endpoint(
+    ModuleID.sessions,
+    InterfaceRole.sender,
 )
 
-LOCATIONS = Endpoint(
-    identifier=ModuleID.locations,
-    role=InterfaceRole.sender,
-    url=URL(f"{URL_BASE}/{ModuleID.locations.value}/"),
+CDRS = cpo_generator.generate_endpoint(
+    ModuleID.cdrs,
+    InterfaceRole.sender,
 )
 
-SESSIONS = Endpoint(
-    identifier=ModuleID.sessions,
-    role=InterfaceRole.sender,
-    url=URL(f"{URL_BASE}/{ModuleID.sessions.value}/"),
+TARIFFS = cpo_generator.generate_endpoint(
+    ModuleID.tariffs,
+    InterfaceRole.sender,
 )
 
-CDRS = Endpoint(
-    identifier=ModuleID.cdrs,
-    role=InterfaceRole.sender,
-    url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}/"),
+TOKENS = cpo_generator.generate_endpoint(
+    ModuleID.tokens,
+    InterfaceRole.receiver,
 )
 
-TARIFFS = Endpoint(
-    identifier=ModuleID.tariffs,
-    role=InterfaceRole.sender,
-    url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}/"),
+HUB_CLIENT_INFO = cpo_generator.generate_endpoint(
+    ModuleID.hub_client_info,
+    InterfaceRole.receiver,
 )
 
-TOKENS = Endpoint(
-    identifier=ModuleID.tokens,
-    role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.tokens.value}/"),
+CHARGING_PROFILE = cpo_generator.generate_endpoint(
+    ModuleID.charging_profile,
+    InterfaceRole.receiver,
 )
+
 
 ENDPOINTS_LIST = {
     ModuleID.credentials_and_registration: CREDENTIALS_AND_REGISTRATION,
@@ -55,4 +51,6 @@ ENDPOINTS_LIST = {
     ModuleID.cdrs: CDRS,
     ModuleID.tariffs: TARIFFS,
     ModuleID.tokens: TOKENS,
+    ModuleID.hub_client_info: HUB_CLIENT_INFO,
+    ModuleID.charging_profile: CHARGING_PROFILE,
 }

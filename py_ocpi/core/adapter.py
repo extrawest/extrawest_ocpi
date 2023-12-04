@@ -165,6 +165,70 @@ class Adapter(ABC):
         """
         pass
 
+    @abstractmethod
+    def hubclientinfo_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ClientInfo schema
+
+        Args:
+            data (dict): The object details
+            version (VersionNumber, optional):
+            The version number of the caller OCPI module
+
+        Returns:
+            ClientInfo: The object data in proper OCPI schema
+        """
+        pass
+
+    @abstractmethod
+    def charging_profile_response_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ChargingProfileResponse schema
+
+        Args:
+            data (dict): The object details
+            version (VersionNumber, optional):
+            The version number of the caller OCPI module
+
+        Returns:
+            ChargingProfileResponse: The object data in proper OCPI schema
+        """
+        pass
+
+    @abstractmethod
+    def active_charging_profile_result_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ActiveChargingProfileResult schema
+
+        Args:
+            data (dict): The object details
+            version (VersionNumber, optional):
+            The version number of the caller OCPI module
+
+
+            ActiveChargingProfileResult: The object data in proper OCPI schema
+        """
+        pass
+
+    @abstractmethod
+    def clear_profile_result_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ClearProfileResult schema
+
+        Args:
+            data (dict): The object details
+            version (VersionNumber, optional):
+            The version number of the caller OCPI module
+
+        Returns:
+            ClearProfileResult: The object data in proper OCPI schema
+        """
+        pass
+
 
 class BaseAdapter(Adapter):
     @classmethod
@@ -274,5 +338,49 @@ class BaseAdapter(Adapter):
         return get_module_model(
             class_name="AuthorizationInfo",
             module_name="tokens",
+            version_name=version.name,
+        )(**data)
+
+    @classmethod
+    def hubclientinfo_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ClientInfo schema"""
+        return get_module_model(
+            class_name="ClientInfo",
+            module_name="hubclientinfo",
+            version_name=version.name,
+        )(**data)
+
+    @classmethod
+    def charging_profile_response_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ChargingProfileResponse schema"""
+        return get_module_model(
+            class_name="ChargingProfileResponse",
+            module_name="chargingprofiles",
+            version_name=version.name,
+        )(**data)
+
+    @classmethod
+    def active_charging_profile_result_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ActiveChargingProfileResult schema"""
+        return get_module_model(
+            class_name="ActiveChargingProfileResult",
+            module_name="chargingprofiles",
+            version_name=version.name,
+        )(**data)
+
+    @classmethod
+    def clear_profile_result_adapter(
+        cls, data: dict, version: VersionNumber = VersionNumber.latest
+    ):
+        """Adapt the data to OCPI ClearProfileResult schema"""
+        return get_module_model(
+            class_name="ClearProfileResult",
+            module_name="chargingprofiles",
             version_name=version.name,
         )(**data)

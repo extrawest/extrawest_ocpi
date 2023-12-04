@@ -1,0 +1,370 @@
+v2.1.1
+======
+
+
+Version enspoints
+-----------------
+
+.. http:get:: versions
+
+    .. automodule:: py_ocpi.modules.versions.main.get_versions
+
+.. http:get:: 2.1.1/details
+
+    .. automodule:: py_ocpi.modules.versions.v_2_1_1.api.main.get_version_details
+
+
+API's for CPO role
+------------------
+
+
+Credentials module
+^^^^^^^^^^^^^^^^^^
+
+.. http:get:: cpo/2.1.1/credentials/
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.api.cpo.get_credentials
+
+.. http:post:: cpo/2.1.1/credentials/
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.api.cpo.post_credentials
+
+.. http:put:: cpo/2.1.1/credentials/
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.api.cpo.update_credentials
+
+.. http:delete:: cpo/2.1.1/credentials/
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.api.cpo.remove_credentials
+
+
+Locations module
+^^^^^^^^^^^^^^^^
+
+.. http:get:: cpo/2.1.1/locations/
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.cpo.get_locations
+
+.. http:get:: cpo/2.1.1/locations/{location_id}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.cpo.get_location
+
+.. http:get:: cpo/2.1.1/locations/{location_id}/{evse_uid}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.cpo.get_evse
+
+.. http:get:: cpo/2.1.1/locations/{location_id}/{evse_uid}/{connector_id}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.cpo.get_connector
+
+
+CDRs module
+^^^^^^^^^^^
+
+.. http:get:: cpo/2.1.1/cdrs/
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_1_1.api.cpo.get_cdrs
+
+
+Sessions module
+^^^^^^^^^^^^^^^
+
+.. http:get:: cpo/2.1.1/sessions/
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_1_1.api.cpo.get_sessions
+
+
+Tokens module
+^^^^^^^^^^^^^
+
+.. http:get:: cpo/2.1.1/tokens/{country_code}/{party_id}/{token_uid}
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.api.cpo.get_token
+
+.. http:put:: cpo/2.1.1/tokens/{country_code}/{party_id}/{token_uid}
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.api.cpo.add_or_update_token
+
+.. http:patch:: cpo/2.1.1/tokens/{country_code}/{party_id}/{token_uid}
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.api.cpo.partial_update_token
+
+
+Tariffs module
+^^^^^^^^^^^^^^
+
+.. http:get:: cpo/2.1.1/tariffs/
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.api.cpo.get_tariffs
+
+
+Commands module
+^^^^^^^^^^^^^^^
+
+.. http:post:: cpo/2.1.1/commands/{command}
+
+    .. automodule:: py_ocpi.modules.commands.v_2_1_1.api.cpo.receive_command
+
+
+
+
+API's for eMSP role
+-------------------
+
+
+Credentials module
+^^^^^^^^^^^^^^^^^^
+
+.. http:get:: emsp/2.1.1/credentials/
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.api.emsp.get_credentials
+
+.. http:post:: emsp/2.1.1/credentials/
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.api.emsp.post_credentials
+
+.. http:put:: emsp/2.1.1/credentials/
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.api.emsp.update_credentials
+
+.. http:delete:: emsp/2.1.1/credentials/
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.api.emsp.remove_credentials
+
+
+Locations module
+^^^^^^^^^^^^^^^^
+
+.. http:get:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.get_location
+
+.. http:get:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}/{evse_uid}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.get_evse
+
+.. http:get:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}/{evse_uid}/{connector_id}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.get_connector
+
+
+
+.. http:put:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.add_or_update_location
+
+.. http:put:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}/{evse_uid}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.add_or_update_evse
+
+.. http:put:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}/{evse_uid}/{connector_id}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.add_or_update_connector
+
+
+.. http:patch:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.partial_update_location
+
+.. http:patch:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}/{evse_uid}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.partial_update_evse
+
+.. http:patch:: emsp/2.1.1/locations/{country_code}/{party_id}/{location_id}/{evse_uid}/{connector_id}
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.api.emsp.partial_update_connector
+
+
+CDRs module
+^^^^^^^^^^^
+
+.. http:get:: emsp/2.1.1/cdrs/{cdr_id}
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_1_1.api.emsp.get_cdr
+
+.. http:post:: emsp/2.1.1/cdrs/
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_1_1.api.emsp.add_cdr
+
+
+Sessions module
+^^^^^^^^^^^^^^^
+
+.. http:get:: emsp/2.1.1/sessions/{country_code}/{party_id}/{session_id}
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_1_1.api.emsp.get_session
+
+.. http:put:: emsp/2.1.1/sessions/{country_code}/{party_id}/{session_id}
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_1_1.api.emsp.add_or_update_session
+
+.. http:patch:: emsp/2.1.1/sessions/{country_code}/{party_id}/{session_id}
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_1_1.api.emsp.partial_update_session
+
+
+Tokens module
+^^^^^^^^^^^^^
+
+.. http:get:: emsp/2.1.1/tokens/
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.api.emsp.get_tokens
+
+.. http:post:: emsp/2.1.1/tokens/{token_uid}/authorize
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.api.emsp.authorize_token
+
+
+Tariffs module
+^^^^^^^^^^^^^^
+
+.. http:get:: emsp/2.1.1/tariffs/{country_code}/{party_id}/{tariff_id}
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.api.emsp.get_tariff
+
+.. http:put:: emsp/2.1.1/tariffs/{country_code}/{party_id}/{tariff_id}
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.api.emsp.add_or_update_tariff
+
+.. http:patch:: emsp/2.1.1/tariffs/{country_code}/{party_id}/{tariff_id}
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.api.emsp.partial_update_tariff
+
+.. http:delete:: emsp/2.1.1/tariffs/{country_code}/{party_id}/{tariff_id}
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.api.emsp.delete_tariff
+
+
+Commands module
+^^^^^^^^^^^^^^^
+
+.. http:post:: emsp/2.1.1/commands/{uid}
+
+    .. automodule:: py_ocpi.modules.commands.v_2_1_1.api.emsp.receive_command_result
+
+
+
+
+Schemas
+-------
+
+
+Credentials module
+^^^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.schemas
+       :members:
+
+
+Locations module
+^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.schemas
+       :members:
+
+    .. automodule:: py_ocpi.modules.locations.schemas
+       :members:
+
+
+CDRs module
+^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_1_1.schemas
+       :members:
+
+
+Sessions module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_1_1.schemas
+       :members:
+
+
+Tokens module
+^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.schemas
+       :members:
+
+
+Tariffs module
+^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.schemas
+       :members:
+
+
+Commands module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.commands.v_2_1_1.schemas
+       :members:
+
+
+
+
+Enums
+-------
+
+
+Credentials module
+^^^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.credentials.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+
+Locations module
+^^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.locations.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+    .. automodule:: py_ocpi.modules.locations.enums
+       :members:
+       :undoc-members:
+
+
+CDRs module
+^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.cdrs.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+
+Sessions module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.sessions.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+
+Tokens module
+^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tokens.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+
+Tariffs module
+^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.tariffs.v_2_1_1.enums
+       :members:
+       :undoc-members:
+
+    .. automodule:: py_ocpi.modules.tariffs.enums
+       :members:
+       :undoc-members:
+
+Commands module
+^^^^^^^^^^^^^^^
+
+    .. automodule:: py_ocpi.modules.commands.v_2_1_1.enums
+       :members:
+       :undoc-members:

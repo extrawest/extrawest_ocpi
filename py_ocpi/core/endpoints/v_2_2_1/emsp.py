@@ -1,58 +1,51 @@
 from py_ocpi.core.enums import ModuleID
-from py_ocpi.core.data_types import URL
-from py_ocpi.core.config import settings
-from py_ocpi.modules.versions.v_2_2_1.schemas import (
-    Endpoint,
-    InterfaceRole,
-    VersionNumber,
+from py_ocpi.core.endpoints.v_2_2_1.utils import emsp_generator
+from py_ocpi.modules.versions.v_2_2_1.schemas import InterfaceRole
+
+
+CREDENTIALS_AND_REGISTRATION = emsp_generator.generate_endpoint(
+    ModuleID.credentials_and_registration,
+    InterfaceRole.receiver,
 )
 
-URL_BASE = (
-    f"{settings.PROTOCOL}://{settings.OCPI_HOST}/{settings.OCPI_PREFIX}/"
-    f"emsp/{VersionNumber.v_2_2_1.value}"
+LOCATIONS = emsp_generator.generate_endpoint(
+    ModuleID.locations,
+    InterfaceRole.receiver,
 )
 
-
-CREDENTIALS_AND_REGISTRATION = Endpoint(
-    identifier=ModuleID.credentials_and_registration,
-    role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.credentials_and_registration.value}/"),
+SESSIONS = emsp_generator.generate_endpoint(
+    ModuleID.sessions,
+    InterfaceRole.receiver,
 )
 
-LOCATIONS = Endpoint(
-    identifier=ModuleID.locations,
-    role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.locations.value}/"),
+CDRS = emsp_generator.generate_endpoint(
+    ModuleID.cdrs,
+    InterfaceRole.receiver,
 )
 
-SESSIONS = Endpoint(
-    identifier=ModuleID.sessions,
-    role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.sessions.value}/"),
+TARIFFS = emsp_generator.generate_endpoint(
+    ModuleID.tariffs,
+    InterfaceRole.receiver,
 )
 
-CDRS = Endpoint(
-    identifier=ModuleID.cdrs,
-    role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.cdrs.value}/"),
+COMMANDS = emsp_generator.generate_endpoint(
+    ModuleID.commands,
+    InterfaceRole.sender,
 )
 
-TARIFFS = Endpoint(
-    identifier=ModuleID.tariffs,
-    role=InterfaceRole.receiver,
-    url=URL(f"{URL_BASE}/{ModuleID.tariffs.value}/"),
+TOKENS = emsp_generator.generate_endpoint(
+    ModuleID.tokens,
+    InterfaceRole.sender,
 )
 
-COMMANDS = Endpoint(
-    identifier=ModuleID.commands,
-    role=InterfaceRole.sender,
-    url=URL(f"{URL_BASE}/{ModuleID.commands.value}/"),
+HUB_CLIENT_INFO = emsp_generator.generate_endpoint(
+    ModuleID.hub_client_info,
+    InterfaceRole.receiver,
 )
 
-TOKENS = Endpoint(
-    identifier=ModuleID.tokens,
-    role=InterfaceRole.sender,
-    url=URL(f"{URL_BASE}/{ModuleID.tokens.value}/"),
+CHARGING_PROFILE = emsp_generator.generate_endpoint(
+    ModuleID.charging_profile,
+    InterfaceRole.sender,
 )
 
 ENDPOINTS_LIST = {
@@ -63,4 +56,6 @@ ENDPOINTS_LIST = {
     ModuleID.tariffs: TARIFFS,
     ModuleID.commands: COMMANDS,
     ModuleID.tokens: TOKENS,
+    ModuleID.hub_client_info: HUB_CLIENT_INFO,
+    ModuleID.charging_profile: CHARGING_PROFILE,
 }

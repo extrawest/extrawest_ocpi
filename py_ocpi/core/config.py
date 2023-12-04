@@ -2,8 +2,12 @@ from typing import List, Union
 
 from pydantic import AnyHttpUrl, BaseSettings, validator
 
+from py_ocpi.core.logs import LoggingConfig, logger
+
 
 class Settings(BaseSettings):
+    ENVIRONMENT: str = "production"
+    NO_AUTH: bool = False
     PROJECT_NAME: str = "OCPI"
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     OCPI_HOST: str = "www.example.com"
@@ -13,6 +17,8 @@ class Settings(BaseSettings):
     PARTY_ID: str = "NON"
     PROTOCOL: str = "https"
     COMMAND_AWAIT_TIME: int = 5
+    GET_ACTIVE_PROFILE_AWAIT_TIME: int = 5
+    TRAILING_SLASH: bool = True
 
     @classmethod
     @validator("BACKEND_CORS_ORIGINS", pre=True)
@@ -31,3 +37,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+logging_config = LoggingConfig(settings.ENVIRONMENT, logger)
+logging_config.configure_logger()

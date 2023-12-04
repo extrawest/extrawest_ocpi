@@ -34,6 +34,7 @@ class ModuleID(str, Enum):
     commands = "commands"
     credentials_and_registration = "credentials"
     hub_client_info = "hubclientinfo"
+    client_info = "clientinfo"
     locations = "locations"
     sessions = "sessions"
     tariffs = "tariffs"
@@ -47,3 +48,15 @@ class Action(str, Enum):
     get_client_token = "GetClientToken"  # nosec
     # used for authorizing a token
     authorize_token = "AuthorizeToken"  # nosec
+    # used for requesting to send command to a Chargepoint
+    send_get_chargingprofile = "SendGetChargingProfile"  # nosec
+    # used for requesting to send command to a Chargepoint
+    send_delete_chargingprofile = "SendDeleteChargingProfile"  # nosec
+    # used for requesting to send command to a Chargepoint
+    send_update_charging_profile = "SendUpdateChargingProfile"  # nosec
+
+
+class EnvironmentType(str, Enum):
+    production = "production"
+    development = "development"
+    testing = "testing"
