@@ -61,6 +61,7 @@ async def get_locations(
         locations.append(
             adapter.location_adapter(data, VersionNumber.v_2_1_1).dict()
         )
+    logger.debug(f"Amount of locations in response: {len(locations)}")
     return OCPIResponse(
         data=locations,
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
