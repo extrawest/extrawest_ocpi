@@ -6,6 +6,7 @@ from typing import Union, Any
 from fastapi import Response, Request
 from pydantic import BaseModel
 
+from py_ocpi.core.config import logger
 from py_ocpi.core.enums import ModuleID, RoleEnum
 from py_ocpi.core.config import settings
 from py_ocpi.modules.versions.enums import VersionNumber
@@ -59,7 +60,10 @@ async def get_list(
         )
 
     set_pagination_headers(response, link, total, filters["limit"])
-
+    logger.debug(
+        f"List / total / is_last_page -> "
+        f"{len(data_list)} / {total} / {is_last_page}."
+    )
     return data_list
 
 
