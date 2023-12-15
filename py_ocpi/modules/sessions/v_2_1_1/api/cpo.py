@@ -59,6 +59,7 @@ async def get_sessions(
         sessions.append(
             adapter.session_adapter(data, VersionNumber.v_2_1_1).dict()
         )
+    logger.debug(f"Amount of sessions in response: {len(sessions)}")
     return OCPIResponse(
         data=sessions,
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
