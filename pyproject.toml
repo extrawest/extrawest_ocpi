@@ -51,6 +51,11 @@ Repository = "https://github.com/extrawest/extrawest_ocpi"
 [tool.hatch.version]
 path = "py_ocpi/__init__.py"
 
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/docs/",
+]
+
 [tool.flake8]
 max-line-length = 88
 per-file-ignores = [
