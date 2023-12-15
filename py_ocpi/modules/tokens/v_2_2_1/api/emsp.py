@@ -61,7 +61,7 @@ async def get_tokens(
     tokens = []
     for data in data_list:
         tokens.append(adapter.token_adapter(data).dict())
-
+    logger.debug(f"Amount of tokens in response: {len(tokens)}")
     return OCPIResponse(
         data=tokens,
         **status.OCPI_1000_GENERIC_SUCESS_CODE,
