@@ -1,8 +1,22 @@
 [build-system]
-requires = [
- "hatchling>=1.18.0",
-]
+requires = ["hatchling>=1.18.0"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["py_ocpi"]
+include = ["README.md", "LICENSE"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/docs/",
+  "/.github/",
+  "/tests/",
+  "/.gitignore",
+  "/.pre-commit",
+  "/Pipfile",
+  "/Pipfile.lock",
+  "/readthedocs.yaml",
+]
 
 [tool.black]
 line-length = 80
@@ -50,9 +64,6 @@ Repository = "https://github.com/extrawest/extrawest_ocpi"
 
 [tool.hatch.version]
 path = "py_ocpi/__init__.py"
-
-[tool.hatch.build.targets.wheel]
-packages = ["py_ocpi/__init__.py"]
 
 [tool.flake8]
 max-line-length = 88
