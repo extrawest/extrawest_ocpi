@@ -270,7 +270,7 @@ async def update_credentials(
             if response_endpoints.status_code == fastapistatus.HTTP_200_OK:
                 # Update server credentials to access client's
                 # system and generate new credentials token
-                endpoints = response_endpoints.json()["data"][0]
+                endpoints = response_endpoints.json()["data"]
 
                 logger.debug(
                     "GET version details response data: %s" % endpoints
