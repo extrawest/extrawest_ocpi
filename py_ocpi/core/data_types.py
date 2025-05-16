@@ -2,7 +2,7 @@
 OCPI data types based on https://github.com/ocpi/ocpi/blob/2.2.1/types.asciidoc
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Type
 from pydantic.fields import ModelField
 
@@ -130,13 +130,28 @@ class DateTime(str):
     @classmethod
     def __modify_schema__(cls, field_schema):
         field_schema.update(
-            examples=[str(datetime.now())],
+            examples=[
+                (
+                    datetime.now(timezone.utc)
+                    .isoformat(timespec="seconds")
+                    .replace("+00:00", "Z")
+                ),
+            ],
         )
 
     @classmethod
     def validate(cls, v):
-        formated_v = datetime.fromisoformat(v)
-        return cls(formated_v)
+        if v.endswith("Z"):
+            v = f"{v[:-1]}+00:00"
+
+        try:
+            formatted_v = datetime.fromisoformat(v)
+        except ValueError as e:
+            raise ValueError(f"Invalid RFC 3339 timestamp: {v}") from e
+
+        return cls(
+            formatted_v.isoformat(timespec="seconds").replace("+00:00", "Z")
+        )
 
     def __repr__(self):
         return f"DateTime({super().__repr__()})"

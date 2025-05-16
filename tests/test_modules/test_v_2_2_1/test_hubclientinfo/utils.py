@@ -17,7 +17,7 @@ CLIENT_INFO = [
         "country_code": "us",
         "role": enums.RoleEnum.cpo,
         "status": ConnectionStatus.connected,
-        "last_updated": "2022-01-01 00:00:00+00:00",
+        "last_updated": "2022-01-01T00:00:00Z",
     }
 ]
 
