@@ -130,6 +130,7 @@ async def authorize_token(
             Action.authorize_token,
             data=data,
             auth_token=auth_token,
+            version=VersionNumber.v_2_2_1,
         )
 
         # when the token information is not enough
