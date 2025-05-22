@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import List, Union
+from typing import Optional, List, Union
 
 from pydantic import BaseModel, Field
 
@@ -14,7 +14,7 @@ class OCPIResponse(BaseModel):
 
     data: Union[list, dict]
     status_code: int
-    status_message: String(255)  # type: ignore
+    status_message: Optional[String(255)]  # type: ignore
     timestamp: DateTime = Field(  # type: ignore
         default_factory=lambda: (
             datetime.now(tz=timezone.utc)
