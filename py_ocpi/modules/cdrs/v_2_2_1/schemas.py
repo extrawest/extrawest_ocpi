@@ -21,7 +21,7 @@ class SignedValue(BaseModel):
 
     nature: CiString(32)  # type: ignore
     plain_data: String(512)  # type: ignore
-    singed_data: String(5000)  # type: ignore
+    signed_data: String(5000)  # type: ignore
 
 
 class SignedData(BaseModel):
@@ -32,7 +32,7 @@ class SignedData(BaseModel):
     encoding_method: CiString(36)  # type: ignore
     encoding_method_version: Optional[int]
     public_key: Optional[String(512)]  # type: ignore
-    signed_value: List[SignedValue]
+    signed_values: List[SignedValue]
     url: Optional[String(512)]  # type: ignore
 
 

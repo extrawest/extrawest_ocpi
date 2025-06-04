@@ -1,7 +1,7 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-from py_ocpi.core.data_types import Number, Price, String, DateTime
+from py_ocpi.core.data_types import Number, String, DateTime
 from py_ocpi.modules.cdrs.v_2_1_1.enums import AuthMethod
 from py_ocpi.modules.cdrs.v_2_1_1.schemas import ChargingPeriod
 from py_ocpi.modules.locations.v_2_1_1.schemas import Location
@@ -23,7 +23,7 @@ class Session(BaseModel):
     meter_id: Optional[String(255)]  # type: ignore
     currency: String(3)  # type: ignore
     charging_periods: List[ChargingPeriod] = []
-    total_cost: Optional[Price]
+    total_cost: Optional[Number]
     status: SessionStatus
     last_updated: DateTime
 
@@ -39,6 +39,6 @@ class SessionPartialUpdate(BaseModel):
     meter_id: Optional[String(255)]  # type: ignore
     currency: Optional[String(3)]  # type: ignore
     charging_periods: Optional[List[ChargingPeriod]]
-    total_cost: Optional[Price]
+    total_cost: Optional[Number]
     status: Optional[SessionStatus]
     last_updated: Optional[DateTime]
