@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from typing import Type
 from pydantic.fields import ModelField
 
+from .config import settings
+
 
 class StringBase(str):
     """
@@ -78,7 +80,11 @@ class CiStringBase(str):
             raise ValueError(
                 f"{field.name} length must be lower or equal to {cls.max_length}"
             )
-        return cls(v.lower())
+
+        if settings.CI_STRING_LOWERCASE_PREFERENCE:
+            return cls(v.lower())
+
+        return cls(v.upper())
 
     def __repr__(self):
         return f"CiString({super().__repr__()})"
