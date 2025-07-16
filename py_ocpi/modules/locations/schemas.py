@@ -66,7 +66,7 @@ class Hours(BaseModel):
     """
 
     twentyfourseven: bool
-    regular_hours: List[RegularHours]
+    regular_hours: List[RegularHours] = []
     exceptional_openings: List[ExceptionalPeriod] = []
     exceptional_closings: List[ExceptionalPeriod] = []
 
